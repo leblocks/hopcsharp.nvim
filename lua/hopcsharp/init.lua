@@ -1,3 +1,5 @@
+local ts = require('hopcsharp.parse')
+
 local M = {}
 
 M.init_database = function(work_folder)
