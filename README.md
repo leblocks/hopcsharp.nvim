@@ -10,11 +10,6 @@ cached treesitter navigation on a big projects, an attempt to make navigation in
 - [squalite.lua](https://github.com/lrangell/sql.nvim)
 - fd?
 
-### TODOs
-
-
-* provide type docs
-
 
 ### MVP TODOs
 
