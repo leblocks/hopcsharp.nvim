@@ -11,9 +11,8 @@ describe('db', function()
         assert(name == 'home-john-nvim.sql')
     end)
 
-    it('__get_path_to_db_file provides correct path', function()
-        local path = db.__get_path_to_db_folder()
-        assert(path:match("data/hopcsharp$"))
+    it('__init_db returns db object', function()
+        assert(db.__init_db() ~= nil)
+        db.__delete_db()
     end)
-
 end)
