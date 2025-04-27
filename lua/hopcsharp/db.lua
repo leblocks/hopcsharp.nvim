@@ -30,6 +30,8 @@ M.__init_db = function()
     return sqlite({
         uri = URI,
         classes = {
+            -- TODO dedupe schema, namespace and file_path are good candidates
+            file_path = 'text',
             namespace = 'text',
             name = 'text',
             start_row = 'integer',
