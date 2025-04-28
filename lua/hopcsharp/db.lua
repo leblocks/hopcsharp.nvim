@@ -1,6 +1,4 @@
 local sqlite = require('sqlite.db')
-local os = require('os')
-local Path = require('plenary.path')
 
 local M = {}
 
@@ -15,39 +13,35 @@ end
 
 local URI = vim.fs.joinpath(vim.fn.stdpath('state'), M.__get_db_file_name(vim.fn.getcwd()))
 
-M.__delete_db = function()
-    if vim.fn.filereadable(URI) == 1 then
-        local result, reason = os.remove(URI)
-        if not result then
-            error('could not delete "' .. URI .. '" reason: ' .. reason)
-        end
-    end
-end
-
 ---@return sqlite_db @Main sqlite.lua object.
 M.__init_db = function()
-
     return sqlite({
         uri = URI,
+        files = {
+            id = true,
+            file_path = { type = 'text', unique = true },
+        },
+        namespaces = {
+            id = true,
+            name = { type = 'text', unique = true }
+        },
         classes = {
-            -- TODO dedupe schema, namespace and file_path are good candidates
-            file_path = 'text',
-            namespace = 'text',
+            id = true,
+            file_path_id = { type = 'integer', reference = 'files.id' },
+            namespace_id = { type = 'integer', reference = 'namespaces.id' },
             name = 'text',
             start_row = 'integer',
             start_column = 'integer',
         },
-        opts = {},
+        opts = {
+            -- TODO read pragma docs!
+            keep_open = true,
+        },
     })
 end
 
-M.__open_db = function()
-end
-
--- TODO some state management?
 ---@return sqlite_db @Main sqlite.lua object.
 M.__get_db = function()
-
     if _db ~= nil then
         return _db
     end
