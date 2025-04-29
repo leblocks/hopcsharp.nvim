@@ -25,6 +25,7 @@ local CLASS_DECLARATION_QUERY = get_query('(class_declaration) @class')
 local CLASS_IDENTIFIER_QUERY = get_query('(class_declaration (identifier) @name)')
 
 
+-- TODO ditch plenary?
 M.__get_source_files = function()
     local files = {}
     ---@diagnostic disable-next-line: missing-fields
