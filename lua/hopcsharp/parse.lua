@@ -9,18 +9,14 @@ local function get_query(query)
     return vim.treesitter.query.parse('c_sharp', query)
 end
 
----@param db sqlite_db db object
----@param name string namespace name
----@return integer id of inserted namespace
-local function insert_namespace(db, name)
-    -- TODO
-end
-
----@param db sqlite_db db object
----@param file_path string file path
----@return integer id of inserted file_path
-local function insert_file_path(db, file_path)
-    -- TODO
+---@param query vim.treesitter.Query
+---@param tree TSNode
+---@param file_content string
+---@param callback function
+local function icaptures(query, tree, file_content, callback)
+    for _, node, _, _ in query:iter_captures(tree, file_content, 0, -1) do
+        callback(node, file_content)
+    end
 end
 
 local NAMESPACE_QUERY = get_query('([(namespace_declaration (qualified_name) @name)(file_scoped_namespace_declaration (qualified_name) @name)])')
@@ -52,7 +48,7 @@ end
 
 -- TODO skip trees with errors?
 M.__parse_tree = function(file_path, callback)
-    local db = P(database.__get_db())
+    local db = database.__get_db()
     context.with(context.open(file_path), function(reader)
         local file_content = reader:read('*a')
         local parser = vim.treesitter.get_string_parser(file_content, "c_sharp", { error = false })
@@ -70,34 +66,25 @@ end
 ---@param db sqlite_db db object
 M.__parse_classes = function(tree, file_path, file_content, db)
     local namespace_id = nil
-    local file_path_id = nil
+    local file_path_id = database.__insert_file(db, file_path)
 
-    local success, id = db:insert('files', { file_path = file_path })
+    icaptures(NAMESPACE_QUERY, tree, file_content, function(node, content)
+        local name = vim.treesitter.get_node_text(node, content, nil)
+        namespace_id = database.__insert_namespace(db, name)
+    end)
 
-    if success then
-        file_path_id = id
-    end
-
-    for _, node, _, _ in NAMESPACE_QUERY:iter_captures(tree, file_content, 0, -1) do
-        local name = vim.treesitter.get_node_text(node, file_content, nil)
-        success, id = db:insert('namespaces', { name = name })
-        if success then
-            namespace_id = id
-        end
-    end
-
-    for _, node, _, _ in CLASS_DECLARATION_QUERY:iter_captures(tree, file_content, 0, -1) do
-        for _, n, _, _ in CLASS_IDENTIFIER_QUERY:iter_captures(node, file_content, 0, -1) do
+    icaptures(CLASS_DECLARATION_QUERY, tree, file_content, function(node, content)
+        icaptures(CLASS_IDENTIFIER_QUERY, node, content, function(n, c)
             local start_row, start_column, _, _ = n:range()
             db:insert('classes', {
                 file_path_id = file_path_id,
                 namespace_id = namespace_id,
-                name = vim.treesitter.get_node_text(n, file_content, nil),
+                name = vim.treesitter.get_node_text(n, c, nil),
                 start_row = start_row,
                 start_column = start_column,
             })
-        end
-    end
+        end)
+    end)
 end
 
 return M
