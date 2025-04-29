@@ -19,7 +19,9 @@ local function icaptures(query, tree, file_content, callback)
     end
 end
 
-local NAMESPACE_QUERY = get_query('([(namespace_declaration (qualified_name) @name)(file_scoped_namespace_declaration (qualified_name) @name)])')
+local NAMESPACE_QUERY = get_query([[(
+    [(namespace_declaration (qualified_name) @name)(file_scoped_namespace_declaration (qualified_name) @name)])
+]])
 
 local CLASS_DECLARATION_QUERY = get_query('(class_declaration) @class')
 local CLASS_IDENTIFIER_QUERY = get_query('(class_declaration (identifier) @name)')
@@ -52,7 +54,8 @@ M.__parse_tree = function(file_path, callback)
     local db = database.__get_db()
     context.with(context.open(file_path), function(reader)
         local file_content = reader:read('*a')
-        local parser = vim.treesitter.get_string_parser(file_content, "c_sharp", { error = false })
+        local parser = vim.treesitter.get_string_parser(file_content,
+            "c_sharp", { error = false })
         parser:parse(false, function(_, trees)
             parser:for_each_tree(function(tree, ltree)
                 callback(tree, file_path, file_content, db)
@@ -74,18 +77,19 @@ M.__parse_classes = function(tree, file_path, file_content, db)
         namespace_id = database.__insert_namespace(db, name)
     end)
 
-    icaptures(CLASS_DECLARATION_QUERY, tree, file_content, function(node, content)
-        icaptures(CLASS_IDENTIFIER_QUERY, node, content, function(n, c)
-            local start_row, start_column, _, _ = n:range()
-            db:insert('classes', {
-                file_path_id = file_path_id,
-                namespace_id = namespace_id,
-                name = vim.treesitter.get_node_text(n, c, nil),
-                start_row = start_row,
-                start_column = start_column,
-            })
+    icaptures(CLASS_DECLARATION_QUERY, tree, file_content,
+        function(node, content)
+            icaptures(CLASS_IDENTIFIER_QUERY, node, content, function(n, c)
+                local start_row, start_column, _, _ = n:range()
+                db:insert('classes', {
+                    file_path_id = file_path_id,
+                    namespace_id = namespace_id,
+                    name = vim.treesitter.get_node_text(n, c, nil),
+                    start_row = start_row,
+                    start_column = start_column,
+                })
+            end)
         end)
-    end)
 end
 
 return M
