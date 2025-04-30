@@ -1,4 +1,4 @@
-local database = require('hopcsharp.db')
+local database = require('hopcsharp.database')
 
 local M = {}
 

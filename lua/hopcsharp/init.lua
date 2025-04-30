@@ -1,5 +1,5 @@
 local parse = require('hopcsharp.parse')
-local database = require('hopcsharp.db')
+local database = require('hopcsharp.database')
 
 local M = {}
 
@@ -7,10 +7,10 @@ local function log(message)
     vim.notify('hopscsharp: ' .. message, vim.log.levels.INFO)
 end
 
-local is_processing = false
+local hopcsharp_is_processing = false
 
 local function check_init_database_is_running()
-    if is_processing then
+    if hopcsharp_is_processing then
         error('init_database is running')
     end
 end
@@ -28,7 +28,7 @@ end
 M.init_database = function()
     check_init_database_is_running()
 
-    is_processing = true
+    hopcsharp_is_processing = true
 
     -- drop existing schema
     local db = database.__get_db()
@@ -59,8 +59,8 @@ M.init_database = function()
             log('processed ' .. total_percent_progress .. '% of source files')
         end
 
-        if i == #files then
-            is_processing = false
+        if i == #items then
+            hopcsharp_is_processing = false
             log('finished processing source files')
         end
     end)
@@ -70,11 +70,6 @@ M.goto_definition = function()
     check_init_database_is_running()
 end
 
-M.goto_reference = function()
-    check_init_database_is_running()
-end
-
---- TODO docs
 ---@return sqlite_db
 M.get_code_db = function()
     check_init_database_is_running()

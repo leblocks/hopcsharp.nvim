@@ -1,4 +1,4 @@
-local database = require('hopcsharp.db')
+local database = require('hopcsharp.database')
 
 describe('db', function()
     it('__get_db_file_name works for windows path', function()
