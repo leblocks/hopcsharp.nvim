@@ -35,8 +35,6 @@ M.__init_db = function()
             start_column = 'integer',
         },
         opts = {
-            -- TODO read pragma docs!
-            keep_open = true,
         },
     })
 end

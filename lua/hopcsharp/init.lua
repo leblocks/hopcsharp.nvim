@@ -18,10 +18,12 @@ M.init_database = function()
 
     -- drop existing schema
     local db = database.__get_db()
-    db:eval("delete from classes")
-    db:eval("delete from namespaces")
-    db:eval("delete from files")
-    db:eval("vacuum")
+    db:with_open(function()
+        db:eval("delete from classes")
+        db:eval("delete from namespaces")
+        db:eval("delete from files")
+        db:eval("vacuum")
+    end)
 
     -- get files to process and calculate progress
     local files = parse.__get_source_files()
@@ -32,24 +34,22 @@ M.init_database = function()
 
     log('found ' .. #files .. ' files to process')
     for i, file in ipairs(files) do
-        vim.schedule(function()
-            parse.__parse_tree(file, function(tree, file_path, file_content, db)
-                parse.__parse_classes(tree:root(), file_path, file_content, db)
-            end)
-
-            counter = counter + 1
-
-            if counter >= step then
-                counter = 0
-                total_percent_progress = total_percent_progress + percent_step
-                log('processed ' .. total_percent_progress .. '% of source files')
-            end
-
-            if i == #files then
-                is_processing = false
-                log('finished processing source files')
-            end
+        parse.__parse_tree(file, function(tree, file_path, file_content, db)
+            parse.__parse_classes(tree:root(), file_path, file_content, db)
         end)
+
+        counter = counter + 1
+
+        if counter >= step then
+            counter = 0
+            total_percent_progress = total_percent_progress + percent_step
+            log('processed ' .. total_percent_progress .. '% of source files')
+        end
+
+        if i == #files then
+            is_processing = false
+            log('finished processing source files')
+        end
     end
 end
 

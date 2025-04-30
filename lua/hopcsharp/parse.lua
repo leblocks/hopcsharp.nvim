@@ -1,5 +1,3 @@
-local Job = require('plenary.job')
-local context = require('plenary.context_manager')
 local database = require('hopcsharp.db')
 
 local M = {}
@@ -27,24 +25,17 @@ local CLASS_DECLARATION_QUERY = get_query('(class_declaration) @class')
 local CLASS_IDENTIFIER_QUERY = get_query('(class_declaration (identifier) @name)')
 
 
--- TODO ditch plenary?
 M.__get_source_files = function()
+    local result = vim.system({ 'fd', '--extension', 'cs' },
+        { text = true, cwd = vim.fn.getcwd(), }):wait()
+
     local files = {}
-    ---@diagnostic disable-next-line: missing-fields
-    Job:new({
-        command = 'fd',
-        args = { '--extension', 'cs' },
-        cwd = vim.fn.getcwd(),
 
-        on_stderr = function(err, data)
-            error('fd --extension cs failed with: ' .. err .. ' ' .. data)
-        end,
-
-        on_stdout = function(err, data)
-            table.insert(files, data)
-        end,
-
-    }):sync()
+    for line in result.stdout:gmatch("([^\n]*)\n?") do
+        if line ~= "" then
+            table.insert(files, line)
+        end
+    end
 
     return files
 end
@@ -52,16 +43,34 @@ end
 -- TODO skip trees with errors?
 M.__parse_tree = function(file_path, callback)
     local db = database.__get_db()
-    context.with(context.open(file_path), function(reader)
-        local file_content = reader:read('*a')
-        local parser = vim.treesitter.get_string_parser(file_content,
-            "c_sharp", { error = false })
-        parser:parse(false, function(_, trees)
-            parser:for_each_tree(function(tree, ltree)
-                callback(tree, file_path, file_content, db)
-            end)
+    db:open()
+
+    local file, err = io.open(file_path, 'r')
+
+    if not file then
+        print('error opening ' .. file_path .. ' error: ' .. err)
+    end
+
+    local file_content = file:read('*a')
+    local parser = vim.treesitter.get_string_parser(file_content, "c_sharp", { error = false })
+
+    if not parser then
+        return
+    end
+
+    parser:parse(false, function(_, trees)
+        if not trees then
+            return
+        end
+
+        -- TODO pull this out?
+        parser:for_each_tree(function(tree, _)
+            callback(tree, file_path, file_content, db)
         end)
     end)
+
+    file:close()
+    db:close()
 end
 
 ---@param tree TSNode under which the search will occur

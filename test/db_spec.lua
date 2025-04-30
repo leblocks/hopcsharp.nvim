@@ -14,11 +14,11 @@ describe('db', function()
     it('__init_db returns db object', function()
         local db = database.__init_db()
         assert(db ~= nil)
-        assert(db:isopen())
     end)
 
     it('__insert_file positive flow', function()
         local db = database.__init_db()
+        db:open()
 
         local id1 = database.__insert_file(db, "test_path")
         local id2 = database.__insert_file(db, "test_path")
@@ -26,10 +26,12 @@ describe('db', function()
 
         local rows = db:eval("select count(*) as count from files where file_path = :file_path", { file_path = "test_path" })
         assert(rows[1].count == 1)
+        db:close()
     end)
 
     it('__insert_namespace positive flow', function()
         local db = database.__init_db()
+        db:open()
 
         local id1 = database.__insert_namespace(db, "namespace1")
         local id2 = database.__insert_namespace(db, "namespace1")
@@ -37,5 +39,6 @@ describe('db', function()
 
         local rows = db:eval("select count(*) as count from namespaces where name = :name", { name = "namespace1" })
         assert(rows[1].count == 1)
+        db:close()
     end)
 end)
