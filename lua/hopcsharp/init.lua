@@ -1,4 +1,5 @@
 local parse = require('hopcsharp.parse')
+local gt = require('hopcsharp.goto')
 local database = require('hopcsharp.database')
 
 local M = {}
@@ -68,6 +69,7 @@ end
 
 M.goto_definition = function()
     check_init_database_is_running()
+    gt.__goto_definition()
 end
 
 ---@return sqlite_db
