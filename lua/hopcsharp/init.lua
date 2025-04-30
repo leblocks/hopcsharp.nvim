@@ -4,15 +4,29 @@ local database = require('hopcsharp.db')
 local M = {}
 
 local function log(message)
-    print('hopcsharp: ' .. message)
+    vim.notify('hopscsharp: ' .. message, vim.log.levels.INFO)
 end
 
 local is_processing = false
 
-M.init_database = function()
+local function check_init_database_is_running()
     if is_processing then
+        error('init_database is running')
+    end
+end
+
+local function scheduled_iteration(i, iterable, callback)
+    if i > #iterable then
         return
     end
+
+    callback(i, iterable)
+
+    vim.schedule(function() scheduled_iteration(i + 1, iterable, callback) end)
+end
+
+M.init_database = function()
+    check_init_database_is_running()
 
     is_processing = true
 
@@ -31,8 +45,9 @@ M.init_database = function()
     local counter = 0;
 
     log('found ' .. #files .. ' files to process')
-    for i, file in ipairs(files) do
-        parse.__parse_tree(file, function(tree, file_path, file_content, db)
+
+    scheduled_iteration(1, files, function(i, items)
+        parse.__parse_tree(items[i], function(tree, file_path, file_content, db)
             parse.__parse_classes(tree:root(), file_path, file_content, db)
         end)
 
@@ -48,27 +63,21 @@ M.init_database = function()
             is_processing = false
             log('finished processing source files')
         end
-    end
+    end)
 end
 
 M.goto_definition = function()
-    if is_processing then
-        return
-    end
+    check_init_database_is_running()
 end
 
 M.goto_reference = function()
-    if is_processing then
-        return
-    end
+    check_init_database_is_running()
 end
 
 --- TODO docs
 ---@return sqlite_db
 M.get_code_db = function()
-    if is_processing then
-        return
-    end
+    check_init_database_is_running()
     return database.__get_db()
 end
 
