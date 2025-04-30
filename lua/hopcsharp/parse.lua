@@ -43,12 +43,11 @@ end
 -- TODO skip trees with errors?
 M.__parse_tree = function(file_path, callback)
     local db = database.__get_db()
-    db:open()
-
     local file, err = io.open(file_path, 'r')
 
     if not file then
         print('error opening ' .. file_path .. ' error: ' .. err)
+        return
     end
 
     local file_content = file:read('*a')
@@ -70,7 +69,6 @@ M.__parse_tree = function(file_path, callback)
     end)
 
     file:close()
-    db:close()
 end
 
 ---@param tree TSNode under which the search will occur

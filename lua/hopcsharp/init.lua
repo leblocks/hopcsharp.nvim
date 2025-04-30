@@ -18,12 +18,10 @@ M.init_database = function()
 
     -- drop existing schema
     local db = database.__get_db()
-    db:with_open(function()
-        db:eval("delete from classes")
-        db:eval("delete from namespaces")
-        db:eval("delete from files")
-        db:eval("vacuum")
-    end)
+    db:eval("delete from classes")
+    db:eval("delete from namespaces")
+    db:eval("delete from files")
+    db:eval("vacuum")
 
     -- get files to process and calculate progress
     local files = parse.__get_source_files()
