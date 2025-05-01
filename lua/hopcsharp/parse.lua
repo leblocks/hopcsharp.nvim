@@ -2,7 +2,6 @@ local database = require('hopcsharp.database')
 
 local M = {}
 
-
 local function get_query(query)
     return vim.treesitter.query.parse('c_sharp', query)
 end
@@ -15,6 +14,14 @@ local function icaptures(query, tree, file_content, callback)
     for _, node, _, _ in query:iter_captures(tree, file_content, 0, -1) do
         callback(node, file_content)
     end
+end
+
+local function insert_namespace(db, name)
+    return database.__insert_unique(db, 'namespaces', { name = name })
+end
+
+local function insert_file(db, path)
+    return database.__insert_unique(db, 'files', { path = path })
 end
 
 local NAMESPACE_QUERY = get_query([[(
@@ -82,11 +89,11 @@ end
 ---@param db sqlite_db db object
 M.__parse_classes = function(tree, file_path, file_content, db)
     local namespace_id = nil
-    local file_path_id = database.__insert_file(db, file_path)
+    local file_path_id = insert_file(db, file_path)
 
     icaptures(NAMESPACE_QUERY, tree, file_content, function(node, content)
         local name = vim.treesitter.get_node_text(node, content, nil)
-        namespace_id = database.__insert_namespace(db, name)
+        namespace_id = insert_namespace(db, name)
     end)
 
     icaptures(CLASS_DECLARATION_QUERY, tree, file_content,
@@ -110,11 +117,11 @@ end
 ---@param db sqlite_db db object
 M.__parse_interfaces = function(tree, file_path, file_content, db)
     local namespace_id = nil
-    local file_path_id = database.__insert_file(db, file_path)
+    local file_path_id = insert_file(db, file_path)
 
     icaptures(NAMESPACE_QUERY, tree, file_content, function(node, content)
         local name = vim.treesitter.get_node_text(node, content, nil)
-        namespace_id = database.__insert_namespace(db, name)
+        namespace_id = insert_namespace(db, name)
     end)
 
     icaptures(INTERFACE_DECLARATION_QUERY, tree, file_content,
@@ -131,7 +138,6 @@ M.__parse_interfaces = function(tree, file_path, file_content, db)
             end)
         end)
 end
-
 
 
 return M

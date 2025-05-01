@@ -67,43 +67,20 @@ M.__drop_db = function()
     db:eval("vacuum")
 end
 
----@param db sqlite_db db object
----@param path string file path
----@return integer id of inserted file_path
-M.__insert_file = function(db, path)
-    local rows = db:select('files', { where = { path = path } })
+M.__insert_unique = function(db, table_name, query)
+    local rows = db:select(table_name, { where = query })
 
     if #rows > 0 then
         return rows[1].id
     end
 
-    local success, id = db:insert('files', { path = path })
+    local success, id = db:insert(table_name, query)
 
     if not success then
-        error('failed to insert file: ' .. path)
+        error('failed to insert into ' .. table_name .. ' with query ' .. vim.inspect(query))
     end
 
     return id
 end
-
----@param db sqlite_db db object
----@param name string namespace name
----@return integer id of inserted file_path
-M.__insert_namespace = function(db, name)
-    local rows = db:select('namespaces', { where = { name = name } })
-
-    if #rows > 0 then
-        return rows[1].id
-    end
-
-    local success, id = db:insert('namespaces', { name = name })
-
-    if not success then
-        error('failed to insert namespace: ' .. name)
-    end
-
-    return id
-end
-
 
 return M
