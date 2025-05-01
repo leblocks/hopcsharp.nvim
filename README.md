@@ -3,28 +3,56 @@
 
 cached treesitter navigation on a big projects, an attempt to make navigation in large c# projects better
 
+### description
+todo
+
 ### requirements
 
-
-- [plenary](https://github.com/nvim-lua/plenary.nvim)
 - [squalite.lua](https://github.com/lrangell/sql.nvim)
-- fd?
+- fd
 
 
-### MVP TODOs
+### TODOs
 
+#### refactorings
 
-* being able to parse really huge c_sharp repository
+* drop_db method
+* store db files in cache folder? read vim.fn.stdpath docs
+* DRY insert unique methods, like __insert_file and __insert_namespace
 
-* class
-    * goto_definition
+#### first release
 
+* goto_functionality
+    * 1 match -> jump
+    * provide ability to hook telescope\fzf-lua
 
+* goto_definition
+    * supported entities:
+        * class
+        * interface
+        * method
+        * constructor
+        * enum
 
-### NON MVP
+* goto_implementation
+    * from class to subclass
+    * from interface to implementation
 
+* list_symbols
+    * for fast navigation
+    * list by
+        * class
+        * interface
+        * method
+        * constructor
+        * enum
 
-* see how to write and generate docs here https://www.youtube.com/watch?v=n4Lp4cV8YR0
+#### stretch
+
+* goto_reference
+* get_type_hierarchy
+* visual buffer with init_db info (like in packer)
+
 
 
 
