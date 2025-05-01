@@ -4,15 +4,15 @@ local database = require('hopcsharp.database')
 
 local M = {}
 
+local is_processing = false
+
 local function log(message)
     vim.notify('hopscsharp: ' .. message, vim.log.levels.INFO)
 end
 
-local hopcsharp_is_processing = false
-
-local function check_init_database_is_running()
-    if hopcsharp_is_processing then
-        error('init_database is running')
+local function throw_on_processing()
+    if is_processing then
+        error('init_database is running, try again later')
     end
 end
 
@@ -27,9 +27,9 @@ local function scheduled_iteration(i, iterable, callback)
 end
 
 M.init_database = function()
-    check_init_database_is_running()
+    throw_on_processing()
 
-    hopcsharp_is_processing = true
+    is_processing = true
 
     -- drop existing schema
     local db = database.__get_db()
@@ -61,20 +61,20 @@ M.init_database = function()
         end
 
         if i == #items then
-            hopcsharp_is_processing = false
+            is_processing = false
             log('finished processing source files')
         end
     end)
 end
 
 M.goto_definition = function()
-    check_init_database_is_running()
+    throw_on_processing()
     gt.__goto_definition()
 end
 
 ---@return sqlite_db
-M.get_code_db = function()
-    check_init_database_is_running()
+M.get_db = function()
+    throw_on_processing()
     return database.__get_db()
 end
 

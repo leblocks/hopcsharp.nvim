@@ -40,7 +40,6 @@ M.__get_source_files = function()
     return files
 end
 
--- TODO skip trees with errors?
 M.__parse_tree = function(file_path, callback)
     local db = database.__get_db()
     local file, err = io.open(file_path, 'r')
@@ -62,8 +61,11 @@ M.__parse_tree = function(file_path, callback)
             return
         end
 
-        -- TODO pull this out?
         parser:for_each_tree(function(tree, _)
+            if tree:root():has_error() then
+                return
+            end
+
             callback(tree, file_path, file_content, db)
         end)
     end)

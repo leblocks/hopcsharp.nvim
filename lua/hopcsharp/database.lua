@@ -11,7 +11,6 @@ M.__get_db_file_name = function(work_dir)
         :gsub('^-', '') .. '.sql'
 end
 
--- TODO use different folder here
 local URI = vim.fs.joinpath(vim.fn.stdpath('state'), M.__get_db_file_name(vim.fn.getcwd()))
 
 ---@return sqlite_db @Main sqlite.lua object.
