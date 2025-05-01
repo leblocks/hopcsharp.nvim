@@ -24,6 +24,9 @@ local NAMESPACE_QUERY = get_query([[(
 local CLASS_DECLARATION_QUERY = get_query('(class_declaration) @class')
 local CLASS_IDENTIFIER_QUERY = get_query('(class_declaration (identifier) @name)')
 
+local INTERFACE_DECLARATION_QUERY = get_query('(interface_declaration) @interface')
+local INTERFACE_IDENTIFIER_QUERY = get_query('(interface_declaration (identifier) @name)')
+
 
 M.__get_source_files = function()
     local result = vim.system({ 'fd', '--extension', 'cs' },
@@ -94,11 +97,41 @@ M.__parse_classes = function(tree, file_path, file_content, db)
                     file_path_id = file_path_id,
                     namespace_id = namespace_id,
                     name = vim.treesitter.get_node_text(n, c, nil),
-                    start_row = start_row,
-                    start_column = start_column,
+                    row = start_row,
+                    column = start_column,
                 })
             end)
         end)
 end
+
+---@param tree TSNode under which the search will occur
+---@param file_path string file path
+---@param file_content string file content
+---@param db sqlite_db db object
+M.__parse_interfaces = function(tree, file_path, file_content, db)
+    local namespace_id = nil
+    local file_path_id = database.__insert_file(db, file_path)
+
+    icaptures(NAMESPACE_QUERY, tree, file_content, function(node, content)
+        local name = vim.treesitter.get_node_text(node, content, nil)
+        namespace_id = database.__insert_namespace(db, name)
+    end)
+
+    icaptures(INTERFACE_DECLARATION_QUERY, tree, file_content,
+        function(node, content)
+            icaptures(INTERFACE_IDENTIFIER_QUERY, node, content, function(n, c)
+                local start_row, start_column, _, _ = n:range()
+                db:insert('interfaces', {
+                    file_path_id = file_path_id,
+                    namespace_id = namespace_id,
+                    name = vim.treesitter.get_node_text(n, c, nil),
+                    row = start_row,
+                    column = start_column,
+                })
+            end)
+        end)
+end
+
+
 
 return M

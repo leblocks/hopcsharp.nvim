@@ -32,11 +32,7 @@ M.init_database = function()
     is_processing = true
 
     -- drop existing schema
-    local db = database.__get_db()
-    db:eval("delete from classes")
-    db:eval("delete from namespaces")
-    db:eval("delete from files")
-    db:eval("vacuum")
+    database.__drop_db()
 
     -- get files to process and calculate progress
     local files = parse.__get_source_files()
@@ -50,6 +46,7 @@ M.init_database = function()
     scheduled_iteration(1, files, function(i, items)
         parse.__parse_tree(items[i], function(tree, file_path, file_content, db)
             parse.__parse_classes(tree:root(), file_path, file_content, db)
+            parse.__parse_interfaces(tree:root(), file_path, file_content, db)
         end)
 
         counter = counter + 1
@@ -67,9 +64,9 @@ M.init_database = function()
     end)
 end
 
-M.goto_definition = function()
+M.goto_definition = function(callback)
     throw_on_processing()
-    gt.__goto_definition()
+    gt.__goto_definition(callback)
 end
 
 ---@return sqlite_db

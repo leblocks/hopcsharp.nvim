@@ -6,7 +6,9 @@ namespace My.Very.Own.Namespace
 
     }
 
-    public class DummiestClass2 {
+    public interface DummiestClass2 {}
+
+    public class DummiestClass2 : IDummy2 {
 
     }
 }

@@ -4,4 +4,11 @@ namespace My.Very.Own.Namespace;
 
 public class DummyClass {
 
+
+}
+
+public enum DummyEnum {
+    One,
+    Two,
+    Three
 }

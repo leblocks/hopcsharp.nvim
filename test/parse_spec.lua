@@ -1,4 +1,5 @@
 local parse = require('hopcsharp.parse')
+local database = require('hopcsharp.database')
 
 describe('parse', function()
     it('__get_sorce_files returns only cs files', function()
@@ -23,21 +24,17 @@ describe('parse', function()
         local path = vim.fn.getcwd() .. '/test/sources/DummyClass1.cs'
         parse.__parse_tree(path, function(tree, file_path, file_content, db)
 
-            -- reset db
-            db:eval("delete from classes")
-            db:eval("delete from namespaces")
-            db:eval("delete from files")
-            db:eval("vacuum")
+            database.__drop_db()
 
             parse.__parse_classes(tree:root(), file_path, file_content, db)
 
             local rows = db:eval([[
                 SELECT
-                    c.name AS class_name,
+                    c.name,
                     n.name AS namespace_name,
-                    f.file_path AS path,
-                    c.start_row AS row,
-                    c.start_column AS column
+                    f.path,
+                    c.row,
+                    c.column
                 FROM classes c
                 JOIN files f on f.id = c.file_path_id
                 JOIN namespaces n on n.id = c.namespace_id
@@ -45,10 +42,40 @@ describe('parse', function()
             ]])
 
             assert(#rows == 1)
-            assert(rows[1].class_name == 'DummyClass')
+            assert(rows[1].name == 'DummyClass')
             assert(rows[1].namespace_name == 'My.Very.Own.Namespace')
-            assert(rows[1].file_path ~= '')
+            assert(rows[1].path ~= '')
         end)
     end)
+
+
+    it('__parse_parse_interfaces populates database correctly', function()
+        local path = vim.fn.getcwd() .. '/test/sources/DummyInterface.cs'
+        parse.__parse_tree(path, function(tree, file_path, file_content, db)
+
+            database.__drop_db()
+
+            parse.__parse_interfaces(tree:root(), file_path, file_content, db)
+
+            local rows = db:eval([[
+                SELECT
+                    i.name,
+                    n.name AS namespace_name,
+                    f.path,
+                    i.row,
+                    i.column
+                FROM interfaces i
+                JOIN files f on f.id = i.file_path_id
+                JOIN namespaces n on n.id = i.namespace_id
+                WHERE i.name = 'IDummy'
+            ]])
+
+            assert(#rows == 1)
+            assert(rows[1].name == 'IDummy')
+            assert(rows[1].namespace_name == 'My.Very.Own.Namespace3')
+            assert(rows[1].path ~= '')
+        end)
+    end)
+
 end)
 

@@ -19,7 +19,7 @@ M.__init_db = function()
         uri = URI,
         files = {
             id = true,
-            file_path = { type = 'text', unique = true },
+            path = { type = 'text', unique = true },
         },
         namespaces = {
             id = true,
@@ -30,8 +30,16 @@ M.__init_db = function()
             file_path_id = { type = 'integer', reference = 'files.id' },
             namespace_id = { type = 'integer', reference = 'namespaces.id' },
             name = 'text',
-            start_row = 'integer',
-            start_column = 'integer',
+            row = 'integer',
+            column = 'integer',
+        },
+        interfaces = {
+            id = true,
+            file_path_id = { type = 'integer', reference = 'files.id' },
+            namespace_id = { type = 'integer', reference = 'namespaces.id' },
+            name = 'text',
+            row = 'integer',
+            column = 'integer',
         },
         opts = {
             keep_open = true,
@@ -50,26 +58,34 @@ M.__get_db = function()
     return _db
 end
 
+M.__drop_db = function()
+    local db = M.__get_db()
+    db:eval("delete from classes")
+    db:eval("delete from interfaces")
+    db:eval("delete from namespaces")
+    db:eval("delete from files")
+    db:eval("vacuum")
+end
+
 ---@param db sqlite_db db object
----@param file_path string file path
+---@param path string file path
 ---@return integer id of inserted file_path
-M.__insert_file = function(db, file_path)
-    local rows = db:select('files', { where = { file_path = file_path } })
+M.__insert_file = function(db, path)
+    local rows = db:select('files', { where = { path = path } })
 
     if #rows > 0 then
         return rows[1].id
     end
 
-    local success, id = db:insert('files', { file_path = file_path })
+    local success, id = db:insert('files', { path = path })
 
     if not success then
-        error('failed to insert file: ' .. file_path)
+        error('failed to insert file: ' .. path)
     end
 
     return id
 end
 
--- TODO dedupe with __insert_file
 ---@param db sqlite_db db object
 ---@param name string namespace name
 ---@return integer id of inserted file_path

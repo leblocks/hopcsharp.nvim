@@ -16,9 +16,12 @@ todo
 
 #### refactorings
 
-* drop_db method
 * store db files in cache folder? read vim.fn.stdpath docs
 * DRY insert unique methods, like __insert_file and __insert_namespace
+* pull out queries into separate file
+* restore is_processing on crash?
+* split parsing in files (separate file for class parser, separate one for interface and so on...)
+* check 3rd party integration in goto methods
 
 #### first release
 
@@ -28,8 +31,8 @@ todo
 
 * goto_definition
     * supported entities:
-        * class
-        * interface
+        * ~class~
+        * ~interface~
         * method
         * constructor
         * enum
