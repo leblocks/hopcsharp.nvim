@@ -10,6 +10,7 @@ todo
 
 - [squalite.lua](https://github.com/lrangell/sql.nvim)
 - fd
+* treesitter c_sharp language installed
 
 
 ### TODOs
@@ -17,11 +18,10 @@ todo
 #### refactorings
 
 * store db files in cache folder? read vim.fn.stdpath docs
-* DRY insert unique methods, like __insert_file and __insert_namespace
-* pull out queries into separate file
 * restore is_processing on crash?
 * split parsing in files (separate file for class parser, separate one for interface and so on...)
 * check 3rd party integration in goto methods
+* sources folder, make proper examples
 
 #### first release
 
@@ -32,10 +32,13 @@ todo
 * goto_definition
     * supported entities:
         * ~class~
+            * attribute!
         * ~interface~
         * method
         * constructor
         * enum
+        * record
+        * struct
 
 * goto_implementation
     * from class to subclass
@@ -45,10 +48,13 @@ todo
     * for fast navigation
     * list by
         * class
+            * attribute!
         * interface
         * method
         * constructor
         * enum
+        * record
+        * struct
 
 #### stretch
 

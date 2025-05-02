@@ -1,4 +1,5 @@
 local database = require('hopcsharp.database')
+local query = require('hopcsharp.query')
 
 local M = {}
 
@@ -30,34 +31,7 @@ M.__goto_definition = function(callback)
     local db = database.__get_db()
     local cword = vim.fn.expand('<cword>')
 
-    local rows = db:eval([[
-        SELECT
-            c.name,
-            n.name         AS namespace_name,
-            f.path,
-            c.row,
-            c.column,
-            'class    '    AS type
-        FROM classes c
-        JOIN files f on f.id = c.file_path_id
-        JOIN namespaces n on n.id = c.namespace_id
-        WHERE c.name = :name
-
-        UNION ALL
-
-        SELECT
-            i.name,
-            n.name         AS namespace_name,
-            f.path,
-            i.row,
-            i.column,
-            'interface'    AS type
-        FROM interfaces i
-        JOIN files f on f.id = i.file_path_id
-        JOIN namespaces n on n.id = i.namespace_id
-        WHERE i.name = :name
-
-    ]], { name = cword  })
+    local rows = db:eval(query.get_definition_by_name, { name = cword  })
 
     if type(rows) ~= 'table' then
         -- query found nothing
@@ -75,7 +49,7 @@ M.__goto_definition = function(callback)
     end
 
     vim.ui.select(rows, {
-        prompt = cword .. '>',
+        prompt = ' definitions >',
         format_item = function(row)
             return row.type .. '\t\t' .. row.namespace_name .. '\t\t' .. row.path
         end,

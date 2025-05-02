@@ -1,4 +1,5 @@
 local parse = require('hopcsharp.parse')
+local query = require('hopcsharp.query')
 local database = require('hopcsharp.database')
 
 describe('parse', function()
@@ -28,18 +29,7 @@ describe('parse', function()
 
             parse.__parse_classes(tree:root(), file_path, file_content, db)
 
-            local rows = db:eval([[
-                SELECT
-                    c.name,
-                    n.name AS namespace_name,
-                    f.path,
-                    c.row,
-                    c.column
-                FROM classes c
-                JOIN files f on f.id = c.file_path_id
-                JOIN namespaces n on n.id = c.namespace_id
-                WHERE c.name = 'DummyClass'
-            ]])
+            local rows = db:eval(query.get_class_by_name, { name = 'DummyClass' })
 
             assert(#rows == 1)
             assert(rows[1].name == 'DummyClass')
@@ -57,18 +47,7 @@ describe('parse', function()
 
             parse.__parse_interfaces(tree:root(), file_path, file_content, db)
 
-            local rows = db:eval([[
-                SELECT
-                    i.name,
-                    n.name AS namespace_name,
-                    f.path,
-                    i.row,
-                    i.column
-                FROM interfaces i
-                JOIN files f on f.id = i.file_path_id
-                JOIN namespaces n on n.id = i.namespace_id
-                WHERE i.name = 'IDummy'
-            ]])
+            local rows = db:eval(query.get_interface_by_name, { name = 'IDummy' })
 
             assert(#rows == 1)
             assert(rows[1].name == 'IDummy')
