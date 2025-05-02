@@ -17,9 +17,9 @@ todo
 
 #### refactorings
 
+* move db to a separate folder as well
 * store db files in cache folder? read vim.fn.stdpath docs
 * restore is_processing on crash?
-* split parsing in files (separate file for class parser, separate one for interface and so on...)
 * check 3rd party integration in goto methods
 * sources folder, make proper examples
 

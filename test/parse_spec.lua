@@ -1,4 +1,7 @@
 local parse = require('hopcsharp.parse')
+local class = require('hopcsharp.parse.class')
+local interface = require('hopcsharp.parse.interface')
+
 local query = require('hopcsharp.query')
 local database = require('hopcsharp.database')
 
@@ -27,7 +30,7 @@ describe('parse', function()
 
             database.__drop_db()
 
-            parse.__parse_classes(tree:root(), file_path, file_content, db)
+            class.__parse_classes(tree:root(), file_path, file_content, db)
 
             local rows = db:eval(query.get_class_by_name, { name = 'DummyClass' })
 
@@ -39,13 +42,13 @@ describe('parse', function()
     end)
 
 
-    it('__parse_parse_interfaces populates database correctly', function()
+    it('__parse_interfaces populates database correctly', function()
         local path = vim.fn.getcwd() .. '/test/sources/DummyInterface.cs'
         parse.__parse_tree(path, function(tree, file_path, file_content, db)
 
             database.__drop_db()
 
-            parse.__parse_interfaces(tree:root(), file_path, file_content, db)
+            interface.__parse_interfaces(tree:root(), file_path, file_content, db)
 
             local rows = db:eval(query.get_interface_by_name, { name = 'IDummy' })
 
