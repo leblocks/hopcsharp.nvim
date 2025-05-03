@@ -34,5 +34,4 @@ describe('database.utils', function()
         local rows = db:eval("select count(*) as count from namespaces where name = :name", { name = "namespace1" })
         assert(rows[1].count == 1)
     end)
-
 end)

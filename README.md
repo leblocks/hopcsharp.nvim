@@ -21,9 +21,7 @@ todo
 * restore is_processing on crash?
 * check 3rd party integration in goto methods
 * sources folder, make proper examples
-* rename goto to hop
 * checkhealth\requirement function
-* db locked issue (parallel test execution?)
 
 #### first release
 

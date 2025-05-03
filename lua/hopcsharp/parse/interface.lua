@@ -9,15 +9,15 @@ local M = {}
 ---@param db sqlite_db db object
 M.__parse_interfaces = function(tree, file_path, file_content, db)
     local namespace_id = nil
-    local file_path_id = utils.insert_file(db, file_path)
+    local file_path_id = utils.__insert_file(db, file_path)
 
-    utils.icaptures(query.namespace, tree, file_content, function(node, content)
+    utils.__icaptures(query.namespace, tree, file_content, function(node, content)
         local name = vim.treesitter.get_node_text(node, content, nil)
-        namespace_id = utils.insert_namespace(db, name)
+        namespace_id = utils.__insert_namespace(db, name)
     end)
 
-    utils.icaptures(query.interface_declaration, tree, file_content, function(node, content)
-        utils.icaptures(query.interface_identifier, node, content, function(n, c)
+    utils.__icaptures(query.interface_declaration, tree, file_content, function(node, content)
+        utils.__icaptures(query.interface_identifier, node, content, function(n, c)
             local start_row, start_column, _, _ = n:range()
             db:insert('interfaces', {
                 file_path_id = file_path_id,

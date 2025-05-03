@@ -2,7 +2,7 @@ local parse = require('hopcsharp.parse')
 local class = require('hopcsharp.parse.class')
 local interface = require('hopcsharp.parse.interface')
 
-local gt = require('hopcsharp.goto')
+local hop = require('hopcsharp.hop')
 local database = require('hopcsharp.database')
 
 local M = {}
@@ -67,9 +67,9 @@ M.init_database = function()
     end)
 end
 
-M.goto_definition = function(callback)
+M.hop_to_definition = function(callback)
     throw_on_processing()
-    gt.__goto_definition(callback)
+    hop.__hop_to_definition(callback)
 end
 
 ---@return sqlite_db
