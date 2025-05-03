@@ -1,4 +1,4 @@
-local database = require('hopcsharp.database')
+local utils = require('hopcsharp.database.utils')
 
 local M = {}
 
@@ -20,12 +20,12 @@ end
 
 ---@return integer namespace id
 M.insert_namespace = function(db, name)
-    return database.__insert_unique(db, 'namespaces', { name = name })
+    return utils.__insert_unique(db, 'namespaces', { name = name })
 end
 
 ---@return integer file id
 M.insert_file = function(db, path)
-    return database.__insert_unique(db, 'files', { path = path })
+    return utils.__insert_unique(db, 'files', { path = path })
 end
 
 return M

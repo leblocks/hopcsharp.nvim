@@ -1,5 +1,5 @@
 local database = require('hopcsharp.database')
-local query = require('hopcsharp.query')
+local query = require('hopcsharp.database.query')
 
 local M = {}
 

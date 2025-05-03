@@ -17,19 +17,17 @@ todo
 
 #### refactorings
 
-* move db to a separate folder as well
 * store db files in cache folder? read vim.fn.stdpath docs
 * restore is_processing on crash?
 * check 3rd party integration in goto methods
 * sources folder, make proper examples
+* rename goto to hop
+* checkhealth\requirement function
+* db locked issue (parallel test execution?)
 
 #### first release
 
-* goto_functionality
-    * 1 match -> jump
-    * provide ability to hook telescope\fzf-lua
-
-* goto_definition
+* hop_to_definition
     * supported entities:
         * ~class~
             * attribute!
@@ -40,7 +38,7 @@ todo
         * record
         * struct
 
-* goto_implementation
+* hop_to_implementation
     * from class to subclass
     * from interface to implementation
 
@@ -58,7 +56,7 @@ todo
 
 #### stretch
 
-* goto_reference
+* hop_to_reference
 * get_type_hierarchy
 * visual buffer with init_db info (like in packer)
 
