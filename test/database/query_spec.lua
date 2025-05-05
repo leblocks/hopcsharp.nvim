@@ -28,4 +28,8 @@ describe('query', function()
         assert(db:eval(query.get_enum_by_name, { name = 'test' }))
     end)
 
+    it('can invoke get_struct_by_name query', function()
+        local db = database.__get_db()
+        assert(db:eval(query.get_struct_by_name, { name = 'test' }))
+    end)
 end)

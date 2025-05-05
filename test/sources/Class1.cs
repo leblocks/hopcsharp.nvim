@@ -14,3 +14,6 @@ public enum Enum1 {
     One, Two, Three
 }
 
+public struct Struct1 {
+}
+

@@ -57,6 +57,20 @@ M.get_enum_by_name = [[
     WHERE e.name = :name
 ]]
 
+M.get_struct_by_name = [[
+    SELECT
+        s.name,
+        n.name         AS namespace_name,
+        f.path,
+        s.row,
+        s.column,
+        'struct'       AS type
+    FROM structs s
+    JOIN files f on f.id = s.file_path_id
+    JOIN namespaces n on n.id = s.namespace_id
+    WHERE s.name = :name
+]]
+
 M.get_definition_by_name =
     M.get_class_by_name .. [[
         UNION ALL
@@ -64,6 +78,8 @@ M.get_definition_by_name =
         UNION ALL
     ]] .. M.get_attribute_by_name .. [[
         UNION ALL
-    ]] .. M.get_enum_by_name
+    ]] .. M.get_enum_by_name .. [[
+        UNION ALL
+    ]] .. M.get_struct_by_name
 
 return M

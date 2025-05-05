@@ -29,10 +29,10 @@ todo
 * hop_to_definition
     * supported entities:
         * ~class~
-            * ~attribute!~
+            * ~attribute~
         * ~interface~
         * record
-        * struct
+        * ~struct~
         * ~enum~
         * method
         * constructor

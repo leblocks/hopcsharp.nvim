@@ -15,4 +15,8 @@ M.interface_identifier = utils.__get_query('(interface_declaration (identifier) 
 M.enum_declaration = utils.__get_query('(enum_declaration) @enum')
 M.enum_identifier = utils.__get_query('(enum_declaration (identifier) @name)')
 
+M.struct_declaration = utils.__get_query('(struct_declaration) @struct')
+M.struct_identifier = utils.__get_query('(struct_declaration (identifier) @name)')
+
+
 return M
