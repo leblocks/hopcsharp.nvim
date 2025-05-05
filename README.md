@@ -20,7 +20,6 @@ todo
 * store db files in cache folder? read vim.fn.stdpath docs
 * restore is_processing on crash?
 * check 3rd party integration in hop methods
-* sources folder, make proper examples
 * checkhealth\requirement function
 
 #### first release
