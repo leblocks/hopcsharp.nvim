@@ -116,4 +116,43 @@ describe('parse.query', function()
             end)
         end)
     end)
+
+    it('enum declaration query', function()
+        local content = [[
+            namespace My.Test.Namespace;
+            public enum Enum1 { One, Two, Three }
+        ]]
+
+        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.enum_declaration:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    assert(name == 'public enum Enum1 { One, Two, Three }')
+                end
+            end)
+        end)
+    end)
+
+    it('enum identifier query', function()
+        local content = [[
+            namespace My.Test.Namespace;
+            public enum Enum1 { One, Two, Three }
+        ]]
+
+        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.enum_identifier:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    print(name)
+                    assert(name == 'Enum1')
+                end
+            end)
+        end)
+    end)
 end)

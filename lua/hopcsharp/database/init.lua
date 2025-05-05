@@ -35,6 +35,14 @@ M.__init_db = function()
             row = 'integer',
             column = 'integer',
         },
+        enums = {
+            id = true,
+            file_path_id = { type = 'integer', reference = 'files.id' },
+            namespace_id = { type = 'integer', reference = 'namespaces.id' },
+            name = 'text',
+            row = 'integer',
+            column = 'integer',
+        },
         opts = {
             keep_open = true,
         },
@@ -58,6 +66,7 @@ M.__drop_db = function()
     db:eval('delete from interfaces')
     db:eval('delete from files')
     db:eval('delete from namespaces')
+    db:eval('delete from enums')
     db:eval('vacuum')
 end
 

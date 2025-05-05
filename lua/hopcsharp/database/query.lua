@@ -43,12 +43,27 @@ M.get_interface_by_name = [[
     WHERE i.name = :name
 ]]
 
+M.get_enum_by_name = [[
+    SELECT
+        e.name,
+        n.name         AS namespace_name,
+        f.path,
+        e.row,
+        e.column,
+        'enum'         AS type
+    FROM enums e
+    JOIN files f on f.id = e.file_path_id
+    JOIN namespaces n on n.id = e.namespace_id
+    WHERE e.name = :name
+]]
 
 M.get_definition_by_name =
     M.get_class_by_name .. [[
         UNION ALL
     ]] .. M.get_interface_by_name .. [[
         UNION ALL
-    ]] .. M.get_attribute_by_name
+    ]] .. M.get_attribute_by_name .. [[
+        UNION ALL
+    ]] .. M.get_enum_by_name
 
 return M

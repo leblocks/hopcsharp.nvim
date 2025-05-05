@@ -11,6 +11,7 @@ todo
 - [squalite.lua](https://github.com/lrangell/sql.nvim)
 - fd
 * treesitter c_sharp language installed
+* nvim-treesitter?
 
 
 ### TODOs
@@ -21,6 +22,7 @@ todo
 * restore is_processing on crash?
 * check 3rd party integration in hop methods
 * checkhealth\requirement function
+* DRY all __parse_XXX methods
 
 #### first release
 
@@ -29,11 +31,11 @@ todo
         * ~class~
             * ~attribute!~
         * ~interface~
-        * method
-        * constructor
-        * enum
         * record
         * struct
+        * ~enum~
+        * method
+        * constructor
 
 * hop_to_implementation
     * from class to subclass

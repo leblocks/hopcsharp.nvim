@@ -9,3 +9,8 @@ public class Class1 : Interface1 {
 public class Attributed1Attribute : Attribute {
 
 }
+
+public enum Enum1 {
+    One, Two, Three
+}
+
