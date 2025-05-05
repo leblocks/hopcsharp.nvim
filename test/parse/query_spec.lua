@@ -193,5 +193,43 @@ describe('parse.query', function()
         end)
     end)
 
+    it('record declaration query', function()
+        local content = [[
+            namespace My.Test.Namespace;
+            public record Record1 {}
+        ]]
+
+        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.record_declaration:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    assert(name == 'public record Record1 {}')
+                end
+            end)
+        end)
+    end)
+
+    it('record identifier query', function()
+        local content = [[
+            namespace My.Test.Namespace;
+            public record Record1 {}
+        ]]
+
+        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.record_identifier:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    assert(name == 'Record1')
+                end
+            end)
+        end)
+    end)
+
 
 end)

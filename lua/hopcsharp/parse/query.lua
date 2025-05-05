@@ -18,5 +18,7 @@ M.enum_identifier = utils.__get_query('(enum_declaration (identifier) @name)')
 M.struct_declaration = utils.__get_query('(struct_declaration) @struct')
 M.struct_identifier = utils.__get_query('(struct_declaration (identifier) @name)')
 
+M.record_declaration = utils.__get_query('(record_declaration) @record')
+M.record_identifier = utils.__get_query('(record_declaration (identifier) @name)')
 
 return M

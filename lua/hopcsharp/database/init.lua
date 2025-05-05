@@ -51,6 +51,14 @@ M.__init_db = function()
             row = 'integer',
             column = 'integer',
         },
+        records = {
+            id = true,
+            file_path_id = { type = 'integer', reference = 'files.id' },
+            namespace_id = { type = 'integer', reference = 'namespaces.id' },
+            name = 'text',
+            row = 'integer',
+            column = 'integer',
+        },
         opts = {
             keep_open = true,
         },
@@ -76,6 +84,7 @@ M.__drop_db = function()
     db:eval('delete from namespaces')
     db:eval('delete from enums')
     db:eval('delete from structs')
+    db:eval('delete from records')
     db:eval('vacuum')
 end
 

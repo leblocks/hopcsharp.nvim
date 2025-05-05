@@ -2,6 +2,7 @@ local parse = require('hopcsharp.parse')
 local enum = require('hopcsharp.parse.enum')
 local class = require('hopcsharp.parse.class')
 local struct = require('hopcsharp.parse.struct')
+local record = require('hopcsharp.parse.record')
 local interface = require('hopcsharp.parse.interface')
 
 local hop = require('hopcsharp.hop')
@@ -54,6 +55,7 @@ M.init_database = function()
             interface.__parse_interfaces(tree:root(), file_path, file_content, db)
             enum.__parse_enums(tree:root(), file_path, file_content, db)
             struct.__parse_structs(tree:root(), file_path, file_content, db)
+            record.__parse_records(tree:root(), file_path, file_content, db)
         end)
 
         counter = counter + 1

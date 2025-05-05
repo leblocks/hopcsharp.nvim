@@ -17,3 +17,6 @@ public enum Enum1 {
 public struct Struct1 {
 }
 
+public record Record1 {
+}
+
