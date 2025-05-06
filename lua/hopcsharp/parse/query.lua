@@ -21,4 +21,7 @@ M.struct_identifier = utils.__get_query('(struct_declaration (identifier) @name)
 M.record_declaration = utils.__get_query('(record_declaration) @record')
 M.record_identifier = utils.__get_query('(record_declaration (identifier) @name)')
 
+M.method_declaration = utils.__get_query('(method_declaration) @method')
+M.method_identifier = utils.__get_query('(method_declaration (identifier) @name)')
+
 return M

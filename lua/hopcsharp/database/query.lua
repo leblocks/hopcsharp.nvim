@@ -85,6 +85,21 @@ M.get_record_by_name = [[
     WHERE r.name = :name
 ]]
 
+M.get_class_method_by_name = [[
+    SELECT
+        cm.name,
+        n.name               AS namespace_name,
+        f.path,
+        cm.row,
+        cm.column,
+        'class method'       AS type
+    FROM class_methods cm
+    JOIN classes c on c.id = cm.class_id
+    JOIN files f on f.id = c.file_path_id
+    JOIN namespaces n on n.id = c.namespace_id
+    WHERE cm.name = :name
+]]
+
 M.get_definition_by_name =
     M.get_class_by_name .. [[
         UNION ALL
@@ -96,6 +111,8 @@ M.get_definition_by_name =
         UNION ALL
     ]] .. M.get_struct_by_name .. [[
         UNION ALL
-    ]] .. M.get_record_by_name
+    ]] .. M.get_record_by_name .. [[
+        UNION ALL
+    ]] .. M.get_class_method_by_name
 
 return M

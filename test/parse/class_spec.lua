@@ -14,11 +14,28 @@ describe('parse.class', function()
 
             local rows = db:eval(query.get_class_by_name, { name = 'Class1' })
 
+            -- classes table is populated correctly
             assert(#rows == 1)
             assert(rows[1].name == 'Class1')
             assert(rows[1].namespace_name == 'This.Is.Namespace.One')
             assert(rows[1].path:match('test/sources/Class1.cs$'))
             assert(rows[1].type == 'class')
+
+            -- class_methods table is populated correctly
+            rows = db:eval(query.get_class_method_by_name, { name = 'Foo' })
+            assert(#rows == 1)
+            assert(rows[1].name == 'Foo')
+            assert(rows[1].namespace_name == 'This.Is.Namespace.One')
+            assert(rows[1].path:match('test/sources/Class1.cs$'))
+            assert(rows[1].type == 'class method')
+
+            -- class_methods table is populated correctly
+            rows = db:eval(query.get_class_method_by_name, { name = 'Bar' })
+            assert(#rows == 1)
+            assert(rows[1].name == 'Bar')
+            assert(rows[1].namespace_name == 'This.Is.Namespace.One')
+            assert(rows[1].path:match('test/sources/Class1.cs$'))
+            assert(rows[1].type == 'class method')
         end)
     end)
 end)

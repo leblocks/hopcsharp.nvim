@@ -31,11 +31,14 @@ todo
         * ~class~
             * ~attribute~
         * ~interface~
-        * record
+        * ~record~
         * ~struct~
         * ~enum~
         * method
-        * constructor
+            * class
+            * interface
+            * record
+            * struct
 
 * hop_to_implementation
     * from class to subclass
@@ -58,7 +61,4 @@ todo
 * hop_to_reference
 * get_type_hierarchy
 * visual buffer with init_db info (like in packer)
-
-
-
 

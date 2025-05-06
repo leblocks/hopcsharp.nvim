@@ -17,15 +17,28 @@ M.__parse_classes = function(tree, file_path, file_content, db)
     end)
 
     utils.__icaptures(query.class_declaration, tree, file_content, function(node, content)
+        local class_id
         utils.__icaptures(query.class_identifier, node, content, function(n, c)
             local start_row, start_column, _, _ = n:range()
-            db:insert('classes', {
+            _, class_id = db:insert('classes', {
                 file_path_id = file_path_id,
                 namespace_id = namespace_id,
                 name = vim.treesitter.get_node_text(n, c, nil),
                 row = start_row,
                 column = start_column,
             })
+        end)
+
+        utils.__icaptures(query.method_declaration, node, content, function(n, c)
+            utils.__icaptures(query.method_identifier, n, c, function(nn, cc)
+                local start_row, start_column, _, _ = nn:range()
+                db:insert('class_methods', {
+                    class_id = class_id,
+                    name = vim.treesitter.get_node_text(nn, cc, nil),
+                    row = start_row,
+                    column = start_column,
+                })
+            end)
         end)
     end)
 end

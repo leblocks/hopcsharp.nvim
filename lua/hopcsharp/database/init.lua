@@ -27,6 +27,13 @@ M.__init_db = function()
             row = 'integer',
             column = 'integer',
         },
+        class_methods = {
+            id = true,
+            class_id = { type = 'integer', reference = 'classes.id' },
+            name = 'text',
+            row = 'integer',
+            column = 'integer',
+        },
         interfaces = {
             id = true,
             file_path_id = { type = 'integer', reference = 'files.id' },
@@ -79,6 +86,7 @@ end
 M.__drop_db = function()
     local db = M.__get_db()
     db:eval('delete from classes')
+    db:eval('delete from class_methods')
     db:eval('delete from interfaces')
     db:eval('delete from files')
     db:eval('delete from namespaces')
