@@ -2,9 +2,9 @@ local M = {}
 
 M.get_object_by_name = [[
     SELECT
+        o.name,
         n.name         AS namespace,
         f.path,
-        o.name,
         o.row,
         o.column,
         o.type
