@@ -2,6 +2,7 @@ local parse = require('hopcsharp.parse')
 local interface = require('hopcsharp.parse.interface')
 
 local database = require('hopcsharp.database')
+local utils = require('hopcsharp.database.utils')
 local query = require('hopcsharp.database.query')
 
 describe('parse.interface', function()
@@ -12,13 +13,13 @@ describe('parse.interface', function()
 
             interface.__parse_interfaces(tree:root(), file_path, file_content, db)
 
-            local rows = db:eval(query.get_interface_by_name, { name = 'Interface1' })
+            local rows = db:eval(query.get_object_by_name, { name = 'Interface1' })
 
             assert(#rows == 1)
             assert(rows[1].name == 'Interface1')
-            assert(rows[1].namespace_name == 'This.Is.Namespace.One')
+            assert(rows[1].namespace == 'This.Is.Namespace.One')
             assert(rows[1].path:match('/test/sources/Interface1.cs$'))
-            assert(rows[1].type == 'interface')
+            assert(rows[1].type == utils.__types.INTERFACE)
         end)
     end)
 end)

@@ -1,4 +1,5 @@
-local utils = require('hopcsharp.parse.utils')
+local pautils = require('hopcsharp.parse.utils')
+local dbutils = require('hopcsharp.database.utils')
 local query = require('hopcsharp.parse.query')
 
 local M = {}
@@ -9,23 +10,18 @@ local M = {}
 ---@param db sqlite_db db object
 M.__parse_structs = function(tree, file_path, file_content, db)
     local namespace_id = nil
-    local file_path_id = utils.__insert_file(db, file_path)
+    local path_id = pautils.__insert_file(db, file_path)
 
-    utils.__icaptures(query.namespace, tree, file_content, function(node, content)
+    pautils.__icaptures(query.namespace, tree, file_content, function(node, content)
         local name = vim.treesitter.get_node_text(node, content, nil)
-        namespace_id = utils.__insert_namespace(db, name)
+        namespace_id = pautils.__insert_namespace(db, name)
     end)
 
-    utils.__icaptures(query.struct_declaration, tree, file_content, function(node, content)
-        utils.__icaptures(query.struct_identifier, node, content, function(n, c)
-            local start_row, start_column, _, _ = n:range()
-            db:insert('structs', {
-                file_path_id = file_path_id,
-                namespace_id = namespace_id,
-                name = vim.treesitter.get_node_text(n, c, nil),
-                row = start_row,
-                column = start_column,
-            })
+    pautils.__icaptures(query.struct_declaration, tree, file_content, function(node, content)
+        pautils.__icaptures(query.struct_identifier, node, content, function(n, c)
+            local row, col, _, _ = n:range()
+            local name = vim.treesitter.get_node_text(n, c, nil)
+            dbutils.__insert_object(db, path_id, namespace_id, dbutils.__types.STRUCT, name, row, col)
         end)
     end)
 end

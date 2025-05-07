@@ -23,4 +23,61 @@ M.__insert_unique = function(db, table_name, query)
     return id
 end
 
+M.__insert_object = function(db, path_id, namespace_id, type, name, row, column)
+    local success, id = db:insert('objects', {
+        file_path_id = path_id,
+        namespace_id = namespace_id,
+        type = type,
+        name = name,
+        row = row,
+        column = column,
+    })
+
+    if not success then
+        vim.notify('could not insert object "' .. name .. '"', vim.log.levels.WARN)
+    end
+
+    return id
+end
+
+M.__types = {
+    CLASS = 1,
+    INTERFACE = 2,
+    STRUCT = 3,
+    RECORD = 4,
+    ENUM = 5,
+    METHOD = 6,
+    CONSTRUCTOR = 7,
+}
+
+M.__get_type_name = function(type)
+    if type == M.__types.CLASS then
+        return 'class'
+    end
+
+    if type == M.__types.INTERFACE then
+        return 'interface'
+    end
+
+    if type == M.__types.STRUCT then
+        return 'struct'
+    end
+
+    if type == M.__types.RECORD then
+        return 'record'
+    end
+
+    if type == M.__types.ENUM then
+        return 'enum'
+    end
+
+    if type == M.__types.METHOD then
+        return 'method'
+    end
+
+    if type == M.__types.CONSTRUCTOR then
+        return 'constructor'
+    end
+end
+
 return M

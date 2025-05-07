@@ -1,5 +1,6 @@
 local utils = require('hopcsharp.hop.utils')
 local database = require('hopcsharp.database')
+local dbutils = require('hopcsharp.database.utils')
 local query = require('hopcsharp.database.query')
 
 local M = {}
@@ -26,9 +27,9 @@ M.__hop_to_definition = function(callback)
     end
 
     vim.ui.select(rows, {
-        prompt = ' definitions >',
+        prompt = ' (' .. cword .. ') definitions >',
         format_item = function(row)
-            return row.type .. '\t\t' .. row.namespace_name .. '\t\t' .. row.path
+            return dbutils.__get_type_name(row.type) .. '\t\t' .. row.namespace .. '\t\t' .. row.path
         end,
     }, function(choice)
         if choice ~= nil then

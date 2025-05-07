@@ -3,14 +3,9 @@ local query = require('hopcsharp.database.query')
 
 
 describe('query', function()
-    it('can invoke get_class_by_name query', function()
+    it('can invoke get_object_by_name query', function()
         local db = database.__get_db()
-        assert(db:eval(query.get_class_by_name, { name = 'test' }))
-    end)
-
-    it('can invoke get_interface_by_name query', function()
-        local db = database.__get_db()
-        assert(db:eval(query.get_interface_by_name, { name = 'test' }))
+        assert(db:eval(query.get_object_by_name, { name = 'test' }))
     end)
 
     it('can invoke get_definition_by_name query', function()
@@ -23,23 +18,8 @@ describe('query', function()
         assert(db:eval(query.get_attribute_by_name, { name = 'test' }))
     end)
 
-    it('can invoke get_enum_by_name query', function()
+    it('can invoke get_method_by_name query', function()
         local db = database.__get_db()
-        assert(db:eval(query.get_enum_by_name, { name = 'test' }))
-    end)
-
-    it('can invoke get_struct_by_name query', function()
-        local db = database.__get_db()
-        assert(db:eval(query.get_struct_by_name, { name = 'test' }))
-    end)
-
-    it('can invoke get_record_by_name query', function()
-        local db = database.__get_db()
-        assert(db:eval(query.get_record_by_name, { name = 'test' }))
-    end)
-
-    it('can invoke get_class_method_by_name query', function()
-        local db = database.__get_db()
-        assert(db:eval(query.get_class_method_by_name, { name = 'test' }))
+        assert(db:eval(query.get_method_by_name, { name = 'test' }))
     end)
 end)

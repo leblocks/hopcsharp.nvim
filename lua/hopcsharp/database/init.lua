@@ -19,49 +19,19 @@ M.__init_db = function()
             id = true,
             name = { type = 'text', unique = true }
         },
-        classes = {
+        objects = {
             id = true,
             file_path_id = { type = 'integer', reference = 'files.id' },
             namespace_id = { type = 'integer', reference = 'namespaces.id' },
+            type = 'integer',
             name = 'text',
             row = 'integer',
             column = 'integer',
         },
-        class_methods = {
+        methods = {
             id = true,
-            class_id = { type = 'integer', reference = 'classes.id' },
-            name = 'text',
-            row = 'integer',
-            column = 'integer',
-        },
-        interfaces = {
-            id = true,
-            file_path_id = { type = 'integer', reference = 'files.id' },
-            namespace_id = { type = 'integer', reference = 'namespaces.id' },
-            name = 'text',
-            row = 'integer',
-            column = 'integer',
-        },
-        enums = {
-            id = true,
-            file_path_id = { type = 'integer', reference = 'files.id' },
-            namespace_id = { type = 'integer', reference = 'namespaces.id' },
-            name = 'text',
-            row = 'integer',
-            column = 'integer',
-        },
-        structs = {
-            id = true,
-            file_path_id = { type = 'integer', reference = 'files.id' },
-            namespace_id = { type = 'integer', reference = 'namespaces.id' },
-            name = 'text',
-            row = 'integer',
-            column = 'integer',
-        },
-        records = {
-            id = true,
-            file_path_id = { type = 'integer', reference = 'files.id' },
-            namespace_id = { type = 'integer', reference = 'namespaces.id' },
+            parent_id = { type = 'integer', reference = 'objects.id' },
+            type = 'integer',
             name = 'text',
             row = 'integer',
             column = 'integer',
@@ -85,14 +55,8 @@ end
 
 M.__drop_db = function()
     local db = M.__get_db()
-    db:eval('delete from classes')
-    db:eval('delete from class_methods')
-    db:eval('delete from interfaces')
-    db:eval('delete from files')
-    db:eval('delete from namespaces')
-    db:eval('delete from enums')
-    db:eval('delete from structs')
-    db:eval('delete from records')
+    db:eval('delete from objects')
+    db:eval('delete from methods')
     db:eval('vacuum')
 end
 

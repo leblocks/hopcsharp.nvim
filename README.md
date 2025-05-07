@@ -23,6 +23,9 @@ todo
 * check 3rd party integration in hop methods
 * checkhealth\requirement function
 * DRY all __parse_XXX methods
+* file_path_id -> path_id
+* test __insert_object
+* combine class\record\enum\struct\interface tables into one
 
 #### first release
 
@@ -35,10 +38,11 @@ todo
         * ~struct~
         * ~enum~
         * method
-            * class
+            * ~class~
             * interface
             * record
             * struct
+            * constructor
 
 * hop_to_implementation
     * from class to subclass

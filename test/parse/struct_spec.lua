@@ -2,6 +2,7 @@ local parse = require('hopcsharp.parse')
 local struct = require('hopcsharp.parse.struct')
 
 local database = require('hopcsharp.database')
+local utils = require('hopcsharp.database.utils')
 local query = require('hopcsharp.database.query')
 
 describe('parse.structs', function()
@@ -12,13 +13,13 @@ describe('parse.structs', function()
 
             struct.__parse_structs(tree:root(), file_path, file_content, db)
 
-            local rows = db:eval(query.get_struct_by_name, { name = 'Struct1' })
+            local rows = db:eval(query.get_object_by_name, { name = 'Struct1' })
 
             assert(#rows == 1)
             assert(rows[1].name == 'Struct1')
-            assert(rows[1].namespace_name == 'This.Is.Namespace.One')
+            assert(rows[1].namespace == 'This.Is.Namespace.One')
             assert(rows[1].path:match('/test/sources/Class1.cs$'))
-            assert(rows[1].type == 'struct')
+            assert(rows[1].type == utils.__types.STRUCT)
         end)
     end)
 end)
