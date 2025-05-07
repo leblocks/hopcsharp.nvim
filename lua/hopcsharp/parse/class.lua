@@ -37,6 +37,19 @@ M.__parse_classes = function(tree, file_path, file_content, db)
                 })
             end)
         end)
+
+        pautils.__icaptures(query.constructor_declaration, node, content, function(n, c)
+            pautils.__icaptures(query.constructor_identifier, n, c, function(nn, cc)
+                local start_row, start_column, _, _ = nn:range()
+                db:insert('methods', {
+                    parent_id = class_id,
+                    type = dbutils.__types.CONSTRUCTOR,
+                    name = vim.treesitter.get_node_text(nn, cc, nil),
+                    row = start_row,
+                    column = start_column,
+                })
+            end)
+        end)
     end)
 end
 

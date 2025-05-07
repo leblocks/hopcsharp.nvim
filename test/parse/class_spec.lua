@@ -24,7 +24,7 @@ describe('parse.class', function()
 
             local class_id = rows[1].id
 
-            -- class_methods table is populated correctly
+            -- method Foo
             rows = db:eval(query.get_method_by_name, { name = 'Foo' })
             assert(#rows == 1)
             assert(rows[1].name == 'Foo')
@@ -33,13 +33,22 @@ describe('parse.class', function()
             assert(rows[1].type == utils.__types.METHOD)
             assert(rows[1].parent_id == class_id)
 
-            -- class_methods table is populated correctly
+            -- method Bar
             rows = db:eval(query.get_method_by_name, { name = 'Bar' })
             assert(#rows == 1)
             assert(rows[1].name == 'Bar')
             assert(rows[1].namespace == 'This.Is.Namespace.One')
             assert(rows[1].path:match('test/sources/Class1.cs$'))
             assert(rows[1].type == utils.__types.METHOD)
+            assert(rows[1].parent_id == class_id)
+
+            -- constructor
+            rows = db:eval(query.get_method_by_name, { name = 'Class1' })
+            assert(#rows == 1)
+            assert(rows[1].name == 'Class1')
+            assert(rows[1].namespace == 'This.Is.Namespace.One')
+            assert(rows[1].path:match('test/sources/Class1.cs$'))
+            assert(rows[1].type == utils.__types.CONSTRUCTOR)
             assert(rows[1].parent_id == class_id)
         end)
     end)

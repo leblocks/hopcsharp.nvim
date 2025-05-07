@@ -272,4 +272,45 @@ describe('parse.query', function()
             end)
         end)
     end)
+
+    it('constructor declaration query', function()
+        local content = [[
+            namespace My.Test.Namespace;
+            public class Class1 {
+                public Class1() {}
+            }
+        ]]
+
+        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                for _, node, _, _ in query.constructor_declaration:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    assert(name == 'public Class1() {}')
+                end
+            end)
+        end)
+    end)
+
+    it('constructor identifier query', function()
+        local content = [[
+            namespace My.Test.Namespace;
+            public class Class1 {
+                public Class1() {}
+            }
+        ]]
+
+        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.constructor_identifier:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    assert(name == 'Class1')
+                end
+            end)
+        end)
+    end)
 end)

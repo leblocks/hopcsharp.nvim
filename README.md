@@ -25,7 +25,10 @@ todo
 * DRY all __parse_XXX methods
 * file_path_id -> path_id
 * test __insert_object
-* combine class\record\enum\struct\interface tables into one
+* hop tests!!!
+
+#### sub-optimizations (if needed)
+* constructor methods doesn't need separate query for name?
 
 #### first release
 
@@ -39,6 +42,7 @@ todo
         * ~enum~
         * method
             * ~class~
+                * constructors
             * interface
             * record
             * struct

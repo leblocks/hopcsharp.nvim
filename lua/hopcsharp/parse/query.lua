@@ -24,4 +24,7 @@ M.record_identifier = utils.__get_query('(record_declaration (identifier) @name)
 M.method_declaration = utils.__get_query('(method_declaration) @method')
 M.method_identifier = utils.__get_query('(method_declaration (identifier) @name)')
 
+M.constructor_declaration = utils.__get_query('(constructor_declaration) @constructor')
+M.constructor_identifier = utils.__get_query('(constructor_declaration (identifier) @name)')
+
 return M
