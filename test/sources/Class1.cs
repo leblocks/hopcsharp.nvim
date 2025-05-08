@@ -8,7 +8,7 @@ public class Class1 : Interface1 {
 
     public void Foo() {}
 
-    public void Bar() {}
+    public Class2 Bar() {}
 }
 
 public class Attributed1Attribute : Attribute {
