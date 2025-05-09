@@ -1,9 +1,5 @@
 local parse = require('hopcsharp.parse')
-local enum = require('hopcsharp.parse.enum')
-local class = require('hopcsharp.parse.class')
-local struct = require('hopcsharp.parse.struct')
-local record = require('hopcsharp.parse.record')
-local interface = require('hopcsharp.parse.interface')
+local definition = require('hopcsharp.parse.definition')
 
 local hop = require('hopcsharp.hop')
 local database = require('hopcsharp.database')
@@ -51,11 +47,7 @@ M.init_database = function()
 
     scheduled_iteration(1, files, function(i, items)
         parse.__parse_tree(items[i], function(tree, file_path, file_content, db)
-            class.__parse_classes(tree:root(), file_path, file_content, db)
-            interface.__parse_interfaces(tree:root(), file_path, file_content, db)
-            enum.__parse_enums(tree:root(), file_path, file_content, db)
-            struct.__parse_structs(tree:root(), file_path, file_content, db)
-            record.__parse_records(tree:root(), file_path, file_content, db)
+            definition.__parse_definitions(tree:root(), file_path, file_content, db)
         end)
 
         counter = counter + 1

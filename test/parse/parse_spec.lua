@@ -18,5 +18,4 @@ describe('parse', function()
             assert(db ~= nil)
         end)
     end)
-
 end)

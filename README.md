@@ -16,53 +16,34 @@ todo
 
 ### TODOs
 
-#### refactorings
+#### general
 
 * store db files in cache folder? read vim.fn.stdpath docs
-* restore is_processing on crash?
+* restore is_processing on crash? (make it global?)
 * check 3rd party integration in hop methods
 * checkhealth\requirement function
-* DRY all __parse_XXX methods
-* file_path_id -> path_id
-* test __insert_object
 * hop tests!!!
+* hop format table
+    * sort by namespace\filename?
+    * jumping in an unexpected coord (from attr to method for example) is it ok?
+    * remove current position from the list
 
-#### sub-optimizations (if needed)
-* constructor methods doesn't need separate query for name?
 
-#### first release
+#### roadmap
 
-* hop_to_definition
-    * supported entities:
-        * ~class~
-            * ~attribute~
-        * ~interface~
-        * ~record~
-        * ~struct~
-        * ~enum~
-        * method
-            * ~class~
-                * constructors
-            * interface
-            * record
-            * struct
-            * constructor
+* hop_to_definition (done)
 
 * hop_to_implementation
     * from class to subclass
     * from interface to implementation
+    * from method def in a interface to implementation?
 
-* list_symbols
-    * for fast navigation
-    * list by
-        * class
-            * attribute!
-        * interface
-        * method
-        * constructor
-        * enum
-        * record
-        * struct
+* list_all + hop (fzf-lua example)
+    * for fast navigation with picker (fzf-lua or telescope
+
+* make it faster (init_database)
+    * profile!
+
 
 #### stretch
 

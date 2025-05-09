@@ -19,18 +19,9 @@ M.__init_db = function()
             id = true,
             name = { type = 'text', unique = true }
         },
-        objects = {
-            id = true,
-            file_path_id = { type = 'integer', reference = 'files.id' },
+        definitions = {
+            path_id = { type = 'integer', reference = 'files.id' },
             namespace_id = { type = 'integer', reference = 'namespaces.id' },
-            type = 'integer',
-            name = 'text',
-            row = 'integer',
-            column = 'integer',
-        },
-        methods = {
-            id = true,
-            parent_id = { type = 'integer', reference = 'objects.id' },
             type = 'integer',
             name = 'text',
             row = 'integer',
@@ -55,8 +46,7 @@ end
 
 M.__drop_db = function()
     local db = M.__get_db()
-    db:eval('delete from objects')
-    db:eval('delete from methods')
+    db:eval('delete from definitions')
     db:eval('vacuum')
 end
 

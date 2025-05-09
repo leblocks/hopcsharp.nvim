@@ -27,9 +27,9 @@ M.__hop_to_definition = function(callback)
     end
 
     vim.ui.select(rows, {
-        prompt = ' (' .. cword .. ') definitions >',
+        prompt = string.format('(%s) definitions >', cword),
         format_item = function(row)
-            return dbutils.__get_type_name(row.type) .. '\t\t' .. row.namespace .. '\t\t' .. row.path
+            return utils.__format_entry(dbutils.__get_type_name(row.type), row.namespace, row.path)
         end,
     }, function(choice)
         if choice ~= nil then

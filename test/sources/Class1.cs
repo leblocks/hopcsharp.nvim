@@ -25,3 +25,4 @@ public struct Struct1 {
 public record Record1 {
 }
 
+public interface IInterface {}

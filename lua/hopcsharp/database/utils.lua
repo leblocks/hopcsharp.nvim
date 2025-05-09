@@ -23,23 +23,6 @@ M.__insert_unique = function(db, table_name, query)
     return id
 end
 
-M.__insert_object = function(db, path_id, namespace_id, type, name, row, column)
-    local success, id = db:insert('objects', {
-        file_path_id = path_id,
-        namespace_id = namespace_id,
-        type = type,
-        name = name,
-        row = row,
-        column = column,
-    })
-
-    if not success then
-        vim.notify('could not insert object "' .. name .. '"', vim.log.levels.WARN)
-    end
-
-    return id
-end
-
 M.__types = {
     CLASS = 1,
     INTERFACE = 2,

@@ -12,7 +12,6 @@ describe('database.utils', function()
         assert(name == 'home-john-nvim.sql')
     end)
 
-
     it('__insert_unique file positive flow', function()
         local db = database.__init_db()
 
