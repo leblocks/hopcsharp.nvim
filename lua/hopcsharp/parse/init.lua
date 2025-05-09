@@ -39,10 +39,6 @@ M.__parse_tree = function(file_path, callback)
         end
 
         parser:for_each_tree(function(tree, _)
-            if tree:root():has_error() then
-                return
-            end
-
             callback(tree, file_path, file_content, db)
         end)
     end)

@@ -6,15 +6,15 @@ local database = require('hopcsharp.database')
 
 local M = {}
 
-local is_processing = false
+vim.g.hopcsharp_processing = false
 
 local function log(message)
     vim.notify('hopscsharp: ' .. message, vim.log.levels.INFO)
 end
 
 local function throw_on_processing()
-    if is_processing then
-        error('init_database is running, try again later')
+    if vim.g.hopcsharp_processing then
+        error('init_database is running, try again later. If init_database failed - restart or manually set vim.g.hopcsharp_processing to false')
     end
 end
 
@@ -31,7 +31,7 @@ end
 M.init_database = function()
     throw_on_processing()
 
-    is_processing = true
+    vim.g.hopcsharp_processing = true
 
     -- drop existing schema
     database.__drop_db()
@@ -59,7 +59,7 @@ M.init_database = function()
         end
 
         if i == #items then
-            is_processing = false
+            vim.g.hopcsharp_processing = false
             log('finished processing source files')
         end
     end)

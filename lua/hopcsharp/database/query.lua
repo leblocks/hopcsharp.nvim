@@ -13,7 +13,6 @@ M.get_definition_by_name = [[
     JOIN namespaces n on n.id = d.namespace_id
     WHERE d.name = :name OR d.name = concat(:name, 'Attribute')
     ORDER BY
-        d.name ASC,
         f.path ASC
 ]]
 

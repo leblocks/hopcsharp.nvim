@@ -25,8 +25,8 @@ M.__hop = function(path, row, column)
     vim.fn.setcursorcharpos(row, column + 1)
 end
 
-M.__format_entry = function(type, namespace, path)
-    return string.format("%-15s %-30s %s", type, namespace, path)
+M.__format_entry = function(type, path)
+    return string.format("%-15s %s", type, vim.fn.pathshorten(path, 5))
 end
 
 return M
