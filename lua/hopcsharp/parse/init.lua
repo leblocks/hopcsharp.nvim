@@ -26,6 +26,8 @@ M.__parse_tree = function(file_path, callback)
         return
     end
 
+    local _, id = db:insert('files', { path = file_path })
+
     local file_content = file:read('*a')
     local parser = vim.treesitter.get_string_parser(file_content, "c_sharp", { error = false })
 
@@ -39,7 +41,7 @@ M.__parse_tree = function(file_path, callback)
         end
 
         parser:for_each_tree(function(tree, _)
-            callback(tree, file_path, file_content, db)
+            callback(tree, id, file_content, db)
         end)
     end)
 

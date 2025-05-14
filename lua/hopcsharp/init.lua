@@ -24,6 +24,8 @@ local function scheduled_iteration(i, iterable, callback)
 end
 
 M.__init_database = function()
+    require 'plenary.profile'.start("C:\\Users\\sagurevich\\hopcsharp.log")
+
     -- drop existing schema
     database.__drop_db()
 
@@ -37,6 +39,10 @@ M.__init_database = function()
 
         if counter % 100 == 0 then
             log(string.format('processed %s/%s of files', counter, #items))
+        end
+
+        if counter == #items then
+            require 'plenary.profile'.stop()
         end
     end)
 end
@@ -65,10 +71,7 @@ M.init_database = function()
     local on_exit = function(_)
         vim.g.hopcsharp_processing = false
         print('hopcsharp: finished processing files')
-        require 'plenary.profile'.stop()
     end
-
-    require 'plenary.profile'.start("C:\\Users\\sagurevich\\hopcsharp.log")
 
     -- spawn actual parsing in a separate instance of neovim
     vim.fn.jobstart(command, {

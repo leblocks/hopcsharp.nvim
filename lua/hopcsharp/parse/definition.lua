@@ -5,12 +5,11 @@ local query = require('hopcsharp.parse.query')
 local M = {}
 
 ---@param tree TSNode under which the search will occur
----@param file_path string file path
+---@param path_id number file path id
 ---@param file_content string file content
 ---@param db sqlite_db db object
-M.__parse_definitions = function(tree, file_path, file_content, db)
+M.__parse_definitions = function(tree, path_id, file_content, db)
     local namespace_id = nil
-    local path_id = pautils.__insert_file(db, file_path)
 
     pautils.__icaptures(query.namespace, tree, file_content, function(node, content)
         local name = vim.treesitter.get_node_text(node, content, nil)

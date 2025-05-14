@@ -73,7 +73,6 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 
 #### general
 
-* store db files in cache folder? read vim.fn.stdpath docs
 * check 3rd party integration in hop methods
 * checkhealth\requirement function
 * hop tests!!!
@@ -82,21 +81,19 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 
 #### roadmap
 
-* visual buffer with init_db info
+* make it faster (init_database)
+    * profile! mooore
 
 * hop_to_implementation
     * from class to subclass
     * from interface to implementation
     * from method def in a interface to implementation?
 
-* make it faster (init_database)
-    * profile!
+* help
 
 * update_database method (re-index changed files only)
 
-* help
-
-#### Nice to have in the feature
+#### Nice to have in the future
 
 * hop_to_reference
 * get_type_hierarchy
