@@ -7,10 +7,10 @@ public class Class2 : Interface2 {
     public Class2() {
     }
 
-    private void Foo() {
+    private Class1 Foo() {
     }
 
-    private void Bar() {
+    private Enum1 Bar() {
     }
 }
 

@@ -35,6 +35,8 @@ M.__hop_to_definition = function(callback)
     end
 
     if callback ~= nil then
+        -- user provided custom logic for navigation
+        -- execute and return
         callback(rows)
         return
     end
@@ -46,7 +48,7 @@ M.__hop_to_definition = function(callback)
     end
 
     -- sent to quickfix if there is too much
-    if #rows > 5 then
+    if #rows > 1 then
         local qflist = {}
         for _, row in ipairs(rows) do
             table.insert(qflist, { filename = row.path, lnum = row.row + 1, col = row.col, text = dbutils.__get_type_name(row.type) .. " " .. row.namespace })
@@ -56,17 +58,6 @@ M.__hop_to_definition = function(callback)
         vim.cmd([[ :copen ]])
         return
     end
-
-    vim.ui.select(rows, {
-        prompt = string.format('%s >', cword),
-        format_item = function(row)
-            return utils.__format_entry(dbutils.__get_type_name(row.type), row.path)
-        end,
-    }, function(choice)
-        if choice ~= nil then
-            utils.__hop(choice.path, choice.row + 1, choice.column)
-        end
-    end)
 end
 
 return M

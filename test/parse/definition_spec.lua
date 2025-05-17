@@ -8,12 +8,12 @@ local definition = require('hopcsharp.parse.definition')
 
 describe('parse.definition', function()
     it('__parse_definitions populates database correctly', function()
+        database.__drop_db()
         local path = vim.fn.getcwd() .. '/test/sources/Class1.cs'
 
-        parse.__parse_tree(path, function(tree, file_path, file_content, db)
-            database.__drop_db()
+        parse.__parse_tree(path, function(tree, path_id, file_content, db)
 
-            definition.__parse_definitions(tree:root(), file_path, file_content, db)
+            definition.__parse_definitions(tree:root(), path_id, file_content, db)
 
             local rows = db:eval(query.get_definition_by_name_and_type, { name = 'Class1', type = utils.__types.CLASS })
 

@@ -6,7 +6,7 @@ public class Class1 : Interface1 {
 
     public Class1() {}
 
-    public void Foo() {}
+    public Class2 Foo() {}
 
     public Class2 Bar() {}
 }
