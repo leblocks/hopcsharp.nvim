@@ -67,7 +67,7 @@ describe('hop', function()
     end)
 
     it('__hop_to_definition will not hop to current definition', function()
-        -- parse Class1.cs and stay on a word Class1 in a file Class2.cs
+        -- parse Class1.cs and stay on a word Class1 in a file Class1.cs
         prepare('test/sources/Class1.cs', 'test/sources/Class1.cs', 5, 17)
 
         local called = false
@@ -81,4 +81,18 @@ describe('hop', function()
 
         assert(called)
     end)
+
+    it('__hop_to_definition will not hop to current definition not other definitions', function()
+        -- parse Class1.cs and stay on a word Enum1 in a file Class1.cs
+        prepare('test/sources/Class1.cs', 'test/sources/Class1.cs', 18, 13)
+
+        local called = false
+
+        hop.__hop_to_definition(function(_)
+            called = true
+        end)
+
+        assert(called == false)
+    end)
+
 end)
