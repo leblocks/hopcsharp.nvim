@@ -21,7 +21,6 @@ M.__init_db = function()
         },
         definitions = {
             path_id = { type = 'integer', reference = 'files.id' },
-            namespace_id = { type = 'integer', reference = 'namespaces.id' },
             type = 'integer',
             name = 'text',
             row = 'integer',
@@ -47,7 +46,6 @@ end
 M.__drop_db = function()
     local db = M.__get_db()
     db:eval('delete from definitions')
-    db:eval('delete from namespaces')
     db:eval('delete from files')
     db:eval('vacuum')
 end

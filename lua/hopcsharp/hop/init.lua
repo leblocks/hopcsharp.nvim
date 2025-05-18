@@ -73,7 +73,7 @@ M.__hop_to_definition = function(callback)
                 filename = definition.path,
                 lnum = definition.row + 1,
                 col = definition.col,
-                text = dbutils.__get_type_name(definition.type) .. " " .. definition.namespace
+                text = dbutils.__get_type_name(definition.type)
             })
         end
 

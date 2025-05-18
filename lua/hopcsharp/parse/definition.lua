@@ -9,13 +9,6 @@ local M = {}
 ---@param file_content string file content
 ---@param db sqlite_db db object
 M.__parse_definitions = function(tree, path_id, file_content, db)
-    local namespace_id = nil
-
-    pautils.__icaptures(query.namespace, tree, file_content, function(node, content)
-        local name = vim.treesitter.get_node_text(node, content, nil)
-        namespace_id = pautils.__insert_namespace(db, name)
-    end)
-
     pautils.__icaptures(query.declaration_identifier, tree, file_content, function(node, content)
         local parent_node_type = node:parent():type()
         local type
@@ -40,7 +33,6 @@ M.__parse_definitions = function(tree, path_id, file_content, db)
 
         db:insert('definitions', {
             path_id = path_id,
-            namespace_id = namespace_id,
             type = type,
             name = vim.treesitter.get_node_text(node, content, nil),
             row = row,

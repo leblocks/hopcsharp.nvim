@@ -2,51 +2,6 @@ local query = require('hopcsharp.parse.query')
 
 
 describe('parse.query', function()
-    it('namesace query - regular', function()
-        local content = [[
-            namespace My.Test.Namespace {
-                public class Class1 {}
-            }
-        ]]
-
-        local visited = false
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
-        parser:parse(false, function(_, trees)
-            assert(trees)
-            parser:for_each_tree(function(tree, _)
-                assert(tree)
-                for _, node, _, _ in query.namespace:iter_captures(tree:root(), content, 0, -1) do
-                    local name = vim.treesitter.get_node_text(node, content, nil)
-                    visited = true
-                    assert(name == 'My.Test.Namespace')
-                end
-            end)
-        end)
-        assert(visited)
-    end)
-
-    it('namesace query - file scoped', function()
-        local content = [[
-            namespace My.Test.Namespace;
-            public class Class1 {}
-        ]]
-
-        local visited = false
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
-        parser:parse(false, function(_, trees)
-            assert(trees)
-            parser:for_each_tree(function(tree, _)
-                assert(tree)
-                for _, node, _, _ in query.namespace:iter_captures(tree:root(), content, 0, -1) do
-                    local name = vim.treesitter.get_node_text(node, content, nil)
-                    visited = true
-                    assert(name == 'My.Test.Namespace')
-                end
-            end)
-        end)
-        assert(visited)
-    end)
-
     it('declaration identifier - enum', function()
         local content = [[
             namespace My.Test.Namespace;

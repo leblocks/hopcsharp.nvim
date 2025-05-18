@@ -18,14 +18,4 @@ M.__icaptures = function(query, tree, file_content, callback)
     end
 end
 
----@return integer namespace id
-M.__insert_namespace = function(db, name)
-    return utils.__insert_unique(db, 'namespaces', { name = name })
-end
-
----@return integer file id
-M.__insert_file = function(db, path)
-    return utils.__insert_unique(db, 'files', { path = path })
-end
-
 return M
