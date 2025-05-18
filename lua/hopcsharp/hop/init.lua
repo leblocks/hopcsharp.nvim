@@ -21,37 +21,60 @@ M.__hop_to_definition = function(callback)
         end
     end
 
-    local rows = nil
-
+    local definitions = nil
     if node_type ~= nil then
-        rows = db:eval(query.get_definition_by_name_and_type, { name = cword, type = node_type })
+        definitions = db:eval(query.get_definition_by_name_and_type, { name = cword, type = node_type })
     else
-        rows = db:eval(query.get_definition_by_name, { name = cword })
+        definitions = db:eval(query.get_definition_by_name, { name = cword })
     end
 
-    if type(rows) ~= 'table' then
-        -- query found nothing
+    -- query found nothing
+    if type(definitions) ~= 'table' then
+        return
+    end
+
+    -- filter out current position
+    local filtered_definitions = {}
+    local current_line = vim.fn.getcurpos()[2] -- 2 for line number
+    local current_file = vim.fs.normalize(vim.fn.expand('%:p'))
+    for _, definition in ipairs(definitions) do
+        if (definition.row + 1) == current_line then
+            local full_path = vim.fs.joinpath(vim.fn.getcwd(), definition.path)
+            if current_file == full_path then
+                goto continue
+            end
+        end
+        table.insert(filtered_definitions, definition)
+        ::continue::
+    end
+
+    if #filtered_definitions == 0 then
         return
     end
 
     if callback ~= nil then
         -- user provided custom logic for navigation
         -- execute and return
-        callback(rows)
+        callback(filtered_definitions)
         return
     end
 
     -- immediate jump if there is only one case
-    if #rows == 1 then
-        utils.__hop(rows[1].path, rows[1].row + 1, rows[1].column)
+    if #filtered_definitions == 1 then
+        utils.__hop(filtered_definitions[1].path, filtered_definitions[1].row + 1, filtered_definitions[1].column)
         return
     end
 
     -- sent to quickfix if there is too much
-    if #rows > 1 then
+    if #filtered_definitions > 1 then
         local qflist = {}
-        for _, row in ipairs(rows) do
-            table.insert(qflist, { filename = row.path, lnum = row.row + 1, col = row.col, text = dbutils.__get_type_name(row.type) .. " " .. row.namespace })
+        for _, definition in ipairs(filtered_definitions) do
+            table.insert(qflist, {
+                filename = definition.path,
+                lnum = definition.row + 1,
+                col = definition.col,
+                text = dbutils.__get_type_name(definition.type) .. " " .. definition.namespace
+            })
         end
 
         vim.fn.setqflist(qflist, 'r')

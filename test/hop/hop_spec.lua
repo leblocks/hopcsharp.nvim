@@ -1,10 +1,11 @@
 local hop = require('hopcsharp.hop')
 local database = require('hopcsharp.database')
+local databaseutils = require('hopcsharp.database.utils')
 local parse = require('hopcsharp.parse')
 local definition = require('hopcsharp.parse.definition')
 
 local function prepare(file_to_parse, file_to_open, row, column)
-    local path_to_parse = vim.fs.joinpath(vim.fn.getcwd(), file_to_parse)
+    local path_to_parse = file_to_parse
 
     database.__drop_db()
     -- parse file
@@ -57,11 +58,27 @@ describe('hop', function()
         hop.__hop_to_definition()
 
         local buf = vim.api.nvim_get_current_buf()
-        local name = vim.api.nvim_buf_get_name(buf)
+        local name = vim.fs.normalize(vim.api.nvim_buf_get_name(buf))
 
         assert(name:find('test/sources/Class1.cs$') ~= nil)
         local position = vim.fn.getcursorcharpos(0)
         assert(position[2] == 18)
         assert(position[3] == 13)
+    end)
+
+    it('__hop_to_definition will not hop to current definition', function()
+        -- parse Class1.cs and stay on a word Class1 in a file Class2.cs
+        prepare('test/sources/Class1.cs', 'test/sources/Class1.cs', 5, 17)
+
+        local called = false
+
+        hop.__hop_to_definition(function(definitions)
+            assert(#definitions == 1)
+            assert(definitions[1].name == 'Class1')
+            assert(definitions[1].type == databaseutils.__types.CONSTRUCTOR)
+            called = true
+        end)
+
+        assert(called)
     end)
 end)
