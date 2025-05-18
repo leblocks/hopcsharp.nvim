@@ -15,10 +15,6 @@ M.__init_db = function()
             id = true,
             path = { type = 'text', unique = true },
         },
-        namespaces = {
-            id = true,
-            name = { type = 'text', unique = true }
-        },
         definitions = {
             path_id = { type = 'integer', reference = 'files.id' },
             type = 'integer',
