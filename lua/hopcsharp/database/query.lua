@@ -56,5 +56,18 @@ M.get_definition_by_type = [[
         f.path ASC
 ]]
 
+M.get_implementations_by_name = [[
+    SELECT
+        d.name,
+        f.path,
+        d.row,
+        d.column,
+        d.type
+    FROM inheritance i
+    JOIN definitions d on d.name = i.name
+    JOIN files f on f.id = d.path_id
+    WHERE i.base = :name
+]]
+
 
 return M

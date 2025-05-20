@@ -26,7 +26,7 @@ documentation
 documentation
 
 #### get_db
-documentatoin
+documentation
 
 
 ### customization examples
@@ -71,27 +71,22 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 
 ### TODOs
 
-#### general
-
-* check 3rd party integration in hop methods
-* checkhealth\requirement function
-* hop tests!!!
-* hop format table
-    * remove current position from the list
-
 #### roadmap
-
-* make it faster (init_database)
-    * profile! mooore
 
 * hop_to_implementation
     * from class to subclass
     * from interface to implementation
     * from method def in a interface to implementation?
+    * tests
+
+* make it faster (init_database)
+    * profile! mooore
+
+* update_database method (re-index changed files only)
 
 * help
 
-* update_database method (re-index changed files only)
+* checkhealth\requirement function
 
 #### Nice to have in the future
 

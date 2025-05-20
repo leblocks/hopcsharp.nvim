@@ -22,6 +22,10 @@ M.__init_db = function()
             row = 'integer',
             column = 'integer',
         },
+        inheritance = {
+            name = 'text',
+            base = 'text',
+        },
         opts = {
             keep_open = true,
         },
@@ -42,6 +46,7 @@ end
 M.__drop_db = function()
     local db = M.__get_db()
     db:eval('delete from definitions')
+    db:eval('delete from inheritance')
     db:eval('delete from files')
     db:eval('vacuum')
 end

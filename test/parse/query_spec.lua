@@ -161,4 +161,75 @@ describe('parse.query', function()
         end)
         assert(visited_count == 2)
     end)
+
+    it('base identifier', function()
+        local content = [[
+            namespace My.Test.Namespace;
+            public class Class1 : BaseClass1, BaseInterface1, BaseInterface2 {
+                public Class1() {}
+            }
+
+            public interface Interface1 : BaseClass2, BaseInterface1, BaseInterface2 {
+                public Class1() {}
+            }
+
+            public record Record1 : BaseClass2, BaseInterface1, BaseInterface2 {
+                public Class1() {}
+            }
+
+            public struct Struct1 : BaseClass2, BaseInterface1, BaseInterface2 {
+                public Class1() {}
+            }
+        ]]
+
+        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local inheritance = {}
+
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, match, _ in query.base_identifier:iter_matches(tree:root(), content, 0, -1)
+                do
+                    local entry = {}
+                    for id, nodes in pairs(match) do
+                        local name = query.base_identifier.captures[id]
+                        for _, node in ipairs(nodes) do
+                            entry[name] = vim.treesitter.get_node_text(node, content, nil)
+                        end
+                    end
+                    table.insert(inheritance, entry)
+                end
+            end)
+        end)
+
+        assert(#inheritance > 0)
+
+        local actual = {}
+        actual['Class1'] = 0
+        actual['Struct1'] = 0
+        actual['Record1'] = 0
+        actual['Interface1'] = 0
+
+        for _, entry in ipairs(inheritance) do
+            for k, v in pairs(entry) do
+                if k == 'name' then
+                    if v == 'Class1' then
+                        actual[v] = actual[v] + 1
+                    elseif v == 'Struct1' then
+                        actual[v] = actual[v] + 1
+                    elseif v == 'Record1' then
+                        actual[v] = actual[v] + 1
+                    elseif v == 'Interface1' then
+                        actual[v] = actual[v] + 1
+                    end
+                end
+            end
+        end
+
+        assert(actual['Class1'] == 3)
+        assert(actual['Struct1'] == 3)
+        assert(actual['Record1'] == 3)
+        assert(actual['Interface1'] == 3)
+    end)
 end)

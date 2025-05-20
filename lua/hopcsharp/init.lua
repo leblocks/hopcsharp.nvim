@@ -1,5 +1,6 @@
 local parse = require('hopcsharp.parse')
 local definition = require('hopcsharp.parse.definition')
+local inheritance = require('hopcsharp.parse.inheritance')
 
 local hop = require('hopcsharp.hop')
 local database = require('hopcsharp.database')
@@ -30,7 +31,9 @@ M.__init_database = function()
     local counter = 0
     scheduled_iteration(1, parse.__get_source_files(), function(i, items)
         parse.__parse_tree(items[i], function(tree, file_path_id, file_content, db)
-            definition.__parse_definitions(tree:root(), file_path_id, file_content, db)
+            local root = tree:root()
+            definition.__parse_definitions(root, file_path_id, file_content, db)
+            inheritance.__parse_inheritance(root, file_path_id, file_content, db)
         end)
 
         counter = counter + 1

@@ -14,4 +14,13 @@ M.declaration_identifier = utils.__get_query([[
     ]
 ]])
 
+M.base_identifier = utils.__get_query([[
+    [
+        (class_declaration name: (identifier) @name (base_list (identifier) @base))
+        (struct_declaration name: (identifier) @name (base_list (identifier) @base))
+        (record_declaration name: (identifier) @name (base_list (identifier) @base))
+        (interface_declaration name: (identifier) @name (base_list (identifier) @base))
+    ]
+]])
+
 return M
