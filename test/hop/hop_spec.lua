@@ -3,6 +3,7 @@ local database = require('hopcsharp.database')
 local databaseutils = require('hopcsharp.database.utils')
 local parse = require('hopcsharp.parse')
 local definition = require('hopcsharp.parse.definition')
+local inheritance = require('hopcsharp.parse.inheritance')
 
 local function prepare(file_to_parse, file_to_open, row, column)
     local path_to_parse = file_to_parse
@@ -11,6 +12,7 @@ local function prepare(file_to_parse, file_to_open, row, column)
     -- parse file
     parse.__parse_tree(path_to_parse, function(tree, path_id, file_content, db)
         definition.__parse_definitions(tree:root(), path_id, file_content, db)
+        inheritance.__parse_inheritance(tree:root(), path_id, file_content, db)
     end)
 
     -- open file and stay on a desired word for hop
@@ -31,6 +33,21 @@ describe('hop', function()
             assert(#rows == 2)
             assert(rows[1].name == 'Class1')
             assert(rows[2].name == 'Class1')
+        end)
+
+        assert(called)
+    end)
+
+    it('__hop_to_implementation calls custom callback', function()
+        -- parse Class1.cs and stay on a word Interface2 in a file Interface2.cs
+        prepare('test/sources/Class1.cs', 'test/sources/Interface2.cs', 4, 18)
+
+        local called = false
+
+        hop.__hop_to_implementation(function(rows)
+            called = true
+            assert(#rows == 1)
+            assert(rows[1].name == 'Class1')
         end)
 
         assert(called)

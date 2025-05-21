@@ -90,6 +90,14 @@ M.hop_to_definition = function(callback)
     hop.__hop_to_definition(callback)
 end
 
+M.hop_to_implementation = function(callback)
+    if vim.g.hopcsharp_processing then
+        vim.notify(PROCESSING_ERROR_MESSAGE)
+        return
+    end
+    hop.__hop_to_implementation(callback)
+end
+
 ---@return sqlite_db
 M.get_db = function()
     if vim.g.hopcsharp_processing then

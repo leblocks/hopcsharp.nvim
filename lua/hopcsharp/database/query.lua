@@ -66,7 +66,10 @@ M.get_implementations_by_name = [[
     FROM inheritance i
     JOIN definitions d on d.name = i.name
     JOIN files f on f.id = d.path_id
-    WHERE i.base = :name
+    WHERE i.base = :name AND d.type <> 7 -- filter constructors
+    ORDER BY
+        d.name ASC,
+        f.path ASC
 ]]
 
 

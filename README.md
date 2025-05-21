@@ -74,10 +74,8 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 #### roadmap
 
 * hop_to_implementation
-    * from class to subclass
-    * from interface to implementation
-    * from method def in a interface to implementation?
     * tests
+    * from method def in a interface to implementation?
 
 * make it faster (init_database)
     * profile! mooore

@@ -83,4 +83,46 @@ M.__hop_to_definition = function(callback)
     end
 end
 
+M.__hop_to_implementation = function(callback)
+    local db = database.__get_db()
+    local cword = vim.fn.expand('<cword>')
+
+    local implementations = db:eval(query.get_implementations_by_name, { name = cword })
+
+    -- query found nothing
+    if type(implementations) ~= 'table' then
+        return
+    end
+
+    if callback ~= nil then
+        -- user provided custom logic for navigation
+        -- execute and return
+        callback(implementations)
+        return
+    end
+
+    -- immediate jump if there is only one case
+    if #implementations == 1 then
+        utils.__hop(implementations[1].path, implementations[1].row + 1, implementations[1].column)
+        return
+    end
+
+    -- sent to quickfix if there is too much
+    if #implementations > 1 then
+        local qflist = {}
+        for _, implementation in ipairs(implementations) do
+            table.insert(qflist, {
+                filename = implementation.path,
+                lnum = implementation.row + 1,
+                col = implementation.col,
+                text = dbutils.__get_type_name(implementation.type)
+            })
+        end
+
+        vim.fn.setqflist(qflist, 'r')
+        vim.cmd([[ :copen ]])
+        return
+    end
+end
+
 return M
