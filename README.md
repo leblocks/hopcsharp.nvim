@@ -73,10 +73,6 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 
 #### roadmap
 
-* hop_to_implementation
-    * tests
-    * from method def in a interface to implementation?
-
 * make it faster (init_database)
     * profile! mooore
 
@@ -88,6 +84,8 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 
 #### Nice to have in the future
 
+* hop_to_implementation
+    * from method def in an interface to implementation?
 * hop_to_reference
 * get_type_hierarchy
 * hop_to_definition - context aware
