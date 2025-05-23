@@ -38,21 +38,6 @@ describe('hop', function()
         assert(called)
     end)
 
-    it('__hop_to_implementation calls custom callback', function()
-        -- parse Class1.cs and stay on a word Interface2 in a file Interface2.cs
-        prepare('test/sources/Class1.cs', 'test/sources/Interface2.cs', 4, 18)
-
-        local called = false
-
-        hop.__hop_to_implementation(function(rows)
-            called = true
-            assert(#rows == 1)
-            assert(rows[1].name == 'Class1')
-        end)
-
-        assert(called)
-    end)
-
     it('__hop_to_definition finds attribute definition correctly', function()
         -- parse Class1.cs and stay on a word Attributed1 in a file Class2.cs
         prepare('test/sources/Class1.cs', 'test/sources/Class2.cs', 4, 11)
@@ -110,6 +95,21 @@ describe('hop', function()
         end)
 
         assert(called == false)
+    end)
+
+    it('__hop_to_implementation hops correctly', function()
+        -- parse Class1.cs and stay on a word Interface2 in a file Interface2.cs
+        prepare('test/sources/Class1.cs', 'test/sources/Interface2.cs', 4, 18)
+
+        hop.__hop_to_implementation()
+
+        local buf = vim.api.nvim_get_current_buf()
+        local name = vim.fs.normalize(vim.api.nvim_buf_get_name(buf))
+
+        assert(name:find('test/sources/Class1.cs$') ~= nil)
+        local position = vim.fn.getcursorcharpos(0)
+        assert(position[2] == 5)
+        assert(position[3] == 14)
     end)
 
 end)
