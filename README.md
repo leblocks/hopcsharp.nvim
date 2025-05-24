@@ -75,6 +75,7 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 
 * make it faster (init_database)
     * profile! mooore
+    * make use of BufferedWriter in parsers
 
 * update_database method (re-index changed files only)
 
