@@ -1,9 +1,10 @@
 
 local M = {}
 
-M.__open_buffer = function(path)
-    -- paths in db are stored relatively to working dir
+M.__open_buffer = function(path, open_command)
+    open_command = open_command or 'edit'
 
+    -- paths in db are stored relatively to working dir
     -- get the list of all buffers
     local buffers = vim.api.nvim_list_bufs()
 
@@ -16,10 +17,11 @@ M.__open_buffer = function(path)
         end
     end
 
-    vim.api.nvim_command('edit ' .. path)
+    vim.api.nvim_command(open_command .. ' ' .. path)
 end
 
-M.__hop = function(path, row, column)
+M.__hop = function(path, row, column, open_command)
+    open_command = open_command or 'edit'
     M.__open_buffer(path)
     vim.fn.setcursorcharpos(row, column + 1)
 end

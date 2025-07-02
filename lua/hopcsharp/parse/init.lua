@@ -17,7 +17,7 @@ M.__get_source_files = function()
     return files
 end
 
-M.__parse_tree = function(file_path, callback)
+M.__parse_tree = function(file_path, callback, writer)
     local db = database.__get_db()
     local file, err = io.open(file_path, 'r')
 
@@ -41,7 +41,7 @@ M.__parse_tree = function(file_path, callback)
         end
 
         parser:for_each_tree(function(tree, _)
-            callback(tree, id, file_content, db)
+            callback(tree, id, file_content, writer)
         end)
     end)
 

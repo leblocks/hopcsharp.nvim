@@ -7,8 +7,8 @@ local M = {}
 ---@param tree TSNode under which the search will occur
 ---@param path_id number file path id
 ---@param file_content string file content
----@param db sqlite_db db object
-M.__parse_definitions = function(tree, path_id, file_content, db)
+---@param writer BufferedWriter buffered database writer
+M.__parse_definitions = function(tree, path_id, file_content, writer)
     local definitions = {}
     pautils.__icaptures(query.declaration_identifier, tree, file_content, function(node, content)
         local parent_node_type = node:parent():type()
@@ -32,7 +32,7 @@ M.__parse_definitions = function(tree, path_id, file_content, db)
 
         local row, column, _, _ = node:range()
 
-        table.insert(definitions, {
+        writer:add_to_buffer('definitions', {
             path_id = path_id,
             type = type,
             name = vim.treesitter.get_node_text(node, content, nil),
@@ -40,10 +40,6 @@ M.__parse_definitions = function(tree, path_id, file_content, db)
             column = column,
         })
     end)
-
-    if #definitions > 0 then
-        db:insert('definitions', definitions)
-    end
 end
 
 

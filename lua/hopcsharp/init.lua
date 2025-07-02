@@ -4,6 +4,7 @@ local inheritance = require('hopcsharp.parse.inheritance')
 
 local hop = require('hopcsharp.hop')
 local database = require('hopcsharp.database')
+local BufferedWriter = require('hopcsharp.database.buffer')
 
 local M = {}
 
@@ -27,19 +28,24 @@ end
 M.__init_database = function()
     -- drop existing schema
     database.__drop_db()
+    local writer = BufferedWriter:new(database.__get_db(), 5000)
 
     local counter = 0
     scheduled_iteration(1, parse.__get_source_files(), function(i, items)
-        parse.__parse_tree(items[i], function(tree, file_path_id, file_content, db)
+        parse.__parse_tree(items[i], function(tree, file_path_id, file_content, wr)
             local root = tree:root()
-            definition.__parse_definitions(root, file_path_id, file_content, db)
-            inheritance.__parse_inheritance(root, file_path_id, file_content, db)
-        end)
+            definition.__parse_definitions(root, file_path_id, file_content, wr)
+            inheritance.__parse_inheritance(root, file_path_id, file_content, wr)
+        end, writer)
 
         counter = counter + 1
 
         if counter % 100 == 0 then
             log(string.format('processed %s/%s of files', counter, #items))
+        end
+
+        if counter == #items then
+            writer:flush()
         end
     end)
 end

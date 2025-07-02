@@ -73,8 +73,12 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 
 #### roadmap
 
+* goto implemenation
+    * check abstract classes generic stuff
+
 * make it faster (init_database)
     * profile! mooore
+    * patch tests
     * make use of BufferedWriter in parsers
 
 * update_database method (re-index changed files only)
@@ -82,6 +86,11 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 * help
 
 * checkhealth\requirement function
+
+* CI
+    * busted testing
+    * style check
+    * ability to run those locally
 
 #### Nice to have in the future
 
