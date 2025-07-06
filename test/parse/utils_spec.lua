@@ -3,8 +3,8 @@ local utils = require('hopcsharp.parse.utils')
 
 describe('parse.utils', function()
     it('get_query can be called', function()
-        local query = utils.__get_query('(class_declaration) @class')
-        assert(query)
+        local _query = utils.__get_query('(class_declaration) @class')
+        assert(_query)
     end)
 
     it('icaptures can be called', function()

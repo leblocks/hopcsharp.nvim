@@ -1,6 +1,5 @@
 local query = require('hopcsharp.parse.query')
 
-
 describe('parse.query', function()
     it('declaration identifier - enum', function()
         local content = [[

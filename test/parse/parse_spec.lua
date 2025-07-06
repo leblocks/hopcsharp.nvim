@@ -1,5 +1,6 @@
 local parse = require('hopcsharp.parse')
 local database = require('hopcsharp.database')
+local BufferedWriter = require('hopcsharp.database.buffer')
 
 describe('parse', function()
     it('__get_sorce_files returns only cs files', function()
@@ -13,11 +14,12 @@ describe('parse', function()
     it('__parse_tree parses file tree', function()
         database.__drop_db();
         local path = vim.fn.getcwd() .. '/test/sources/Class1.cs'
-        parse.__parse_tree(path, function(tree, path_id, file_content, db)
+        local writer = BufferedWriter:new(database.__get_db(), 1)
+        parse.__parse_tree(path, function(tree, path_id, file_content, wr)
             assert(tree ~= nil)
             assert(file_content ~= nil)
             assert(path_id == 1)
-            assert(db ~= nil)
-        end)
+            assert(wr ~= nil)
+        end, writer)
     end)
 end)
