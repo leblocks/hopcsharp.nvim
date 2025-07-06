@@ -8,7 +8,7 @@ todo
 
 ### requirements
 
-- [sqlite.lua](https://github.com/lrangell/sql.nvim)
+- [sqlite.lua](https://github.com/kkharji/sqlite.lua)
 - fd
 * treesitter c_sharp language installed
 * nvim-treesitter?
