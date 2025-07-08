@@ -2,7 +2,7 @@
 namespace This.Is.Namespace.One;
 
 [Attributed2]
-public class Class1 : Interface1, Interface2 {
+public class Class1 : Interface1, Interface2, ImportantBaseClass {
 
     public Class1() {}
 
