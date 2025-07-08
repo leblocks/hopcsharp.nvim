@@ -115,7 +115,7 @@ M.__hop_to_implementation = function(callback)
                 filename = implementation.path,
                 lnum = implementation.row + 1,
                 col = implementation.col,
-                text = dbutils.__get_type_name(implementation.type)
+                text = dbutils.__get_type_name(implementation.type) .. " " .. implementation.name
             })
         end
 
