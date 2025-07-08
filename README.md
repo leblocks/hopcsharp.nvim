@@ -73,16 +73,6 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 
 #### roadmap
 
-* goto implemenation
-    * check abstract classes generic stuff
-
-* make it faster (init_database)
-    * profile! mooore
-    * patch tests
-    * make use of BufferedWriter in parsers
-
-* update_database method (re-index changed files only)
-
 * help
 
 * checkhealth\requirement function
@@ -99,4 +89,6 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 * hop_to_reference
 * get_type_hierarchy
 * hop_to_definition - context aware
+    * don't hop from definition of a method to another definitions with same name
+* update_database method (re-index changed files only)
 
