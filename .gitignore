@@ -1,3 +1,6 @@
+# ci stuff
+.ci/
+
 # Compiled Lua sources
 luac.out
 

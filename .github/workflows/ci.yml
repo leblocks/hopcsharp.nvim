@@ -1,0 +1,38 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  unit_tests:
+    name: unit tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+        rev: [stable]
+        include:
+          - os: ubuntu-22.04
+            install-fd: sudo apt-get update && sudo apt-get install -y fd-find && mkdir -p ~/.local/bin && ln -s $(which fdfind) ~/.local/bin/fd
+          - os: windows-2022
+            install-fd: choco install fd
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.rev }}
+
+      - name: Prepare
+        run: |
+          ${{ matrix.install-fd }}
+          fd --version
+          make prepare
+
+      - name: Run tests
+        run: |
+          nvim --version
+          make test
+

@@ -23,7 +23,7 @@ M.get_definition_by_name_and_type = [[
         d.type
     FROM definitions d
     JOIN files f on f.id = d.path_id
-    WHERE (d.name = :name OR d.name = concat(:name, 'Attribute')) AND d.type = :type
+    WHERE (d.name = :name OR d.name = :name || 'Attribute') AND d.type = :type
 ]]
 
 M.get_all_definitions = [[
