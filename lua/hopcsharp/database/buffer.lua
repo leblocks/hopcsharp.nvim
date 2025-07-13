@@ -9,7 +9,7 @@ function BufferedWriter:new(db, buffer_size)
         db = db,
         buffer = {},
         current_size = 0,
-        buffer_size = buffer_size or 100
+        buffer_size = buffer_size or 100,
     }
 
     setmetatable(obj, self)
@@ -47,4 +47,3 @@ function BufferedWriter:flush()
 end
 
 return BufferedWriter
-

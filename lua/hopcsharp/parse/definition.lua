@@ -9,7 +9,6 @@ local M = {}
 ---@param file_content string file content
 ---@param writer BufferedWriter buffered database writer
 M.__parse_definitions = function(tree, path_id, file_content, writer)
-    local definitions = {}
     pautils.__icaptures(query.declaration_identifier, tree, file_content, function(node, content)
         local parent_node_type = node:parent():type()
         local type
@@ -41,6 +40,5 @@ M.__parse_definitions = function(tree, path_id, file_content, writer)
         })
     end)
 end
-
 
 return M

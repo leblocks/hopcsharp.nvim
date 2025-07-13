@@ -1,4 +1,3 @@
-
 local M = {}
 
 M.__open_buffer = function(path, open_command)
@@ -21,8 +20,7 @@ M.__open_buffer = function(path, open_command)
 end
 
 M.__hop = function(path, row, column, open_command)
-    open_command = open_command or 'edit'
-    M.__open_buffer(path)
+    M.__open_buffer(path, open_command or 'edit')
     vim.fn.setcursorcharpos(row, column + 1)
 end
 

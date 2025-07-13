@@ -1,7 +1,6 @@
 local database = require('hopcsharp.database')
 local query = require('hopcsharp.database.query')
 
-
 describe('query', function()
     it('can invoke get_definition_by_name query', function()
         local db = database.__get_db()

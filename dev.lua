@@ -1,4 +1,3 @@
-
 -- helpful bindings
 
 vim.api.nvim_set_keymap('n', '<F5>', ':so %<CR>', { noremap = true, silent = true })
@@ -13,4 +12,3 @@ end
 package.loaded['hopcsharp'] = nil
 
 local hopcsharp = require('hopcsharp')
-

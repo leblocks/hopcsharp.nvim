@@ -14,7 +14,7 @@ describe('parse.utils', function()
             }
         ]]
 
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         parser:parse(false, function(_, trees)
             assert(trees)
             parser:for_each_tree(function(tree, _)

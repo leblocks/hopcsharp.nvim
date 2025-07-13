@@ -3,13 +3,12 @@ local database = require('hopcsharp.database')
 local M = {}
 
 M.__get_source_files = function()
-    local result = vim.system({ 'fd', '--extension', 'cs' },
-        { text = true, cwd = vim.fn.getcwd(), }):wait()
+    local result = vim.system({ 'fd', '--extension', 'cs' }, { text = true, cwd = vim.fn.getcwd() }):wait()
 
     local files = {}
 
-    for line in result.stdout:gmatch("([^\n]*)\n?") do
-        if line ~= "" then
+    for line in result.stdout:gmatch('([^\n]*)\n?') do
+        if line ~= '' then
             table.insert(files, line)
         end
     end
@@ -29,7 +28,7 @@ M.__parse_tree = function(file_path, callback, writer)
     local _, id = db:insert('files', { path = file_path })
 
     local file_content = file:read('*a')
-    local parser = vim.treesitter.get_string_parser(file_content, "c_sharp", { error = false })
+    local parser = vim.treesitter.get_string_parser(file_content, 'c_sharp', { error = false })
 
     if not parser then
         return

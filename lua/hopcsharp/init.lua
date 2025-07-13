@@ -8,11 +8,13 @@ local BufferedWriter = require('hopcsharp.database.buffer')
 
 local M = {}
 
-local PROCESSING_ERROR_MESSAGE = 'init_database is running, try again later. If init_database failed - restart or manually set vim.g.hopcsharp_processing to false'
+local PROCESSING_ERROR_MESSAGE = 'init_database is running, try again later. '
+    .. 'If init_database failed - restart or manually set vim.g.hopcsharp_processing to false'
+
 vim.g.hopcsharp_processing = false
 
 local function log(message)
-    print(message);
+    print(message)
 end
 
 local function scheduled_iteration(i, iterable, callback)
@@ -22,7 +24,9 @@ local function scheduled_iteration(i, iterable, callback)
 
     callback(i, iterable)
 
-    vim.schedule(function() scheduled_iteration(i + 1, iterable, callback) end)
+    vim.schedule(function()
+        scheduled_iteration(i + 1, iterable, callback)
+    end)
 end
 
 M.__init_database = function()
@@ -61,20 +65,22 @@ M.init_database = function()
     local command = {
         'nvim',
         '--headless',
-        '-c', 'lua require("hopcsharp").__init_database()',
-        '-c', 'qa'
+        '-c',
+        'lua require("hopcsharp").__init_database()',
+        '-c',
+        'qa',
     }
 
-    local start = require('os').clock();
+    local start = require('os').clock()
     local on_stdout = function(_, data)
         if #data > 0 then
-            print("hopcsharp: " .. table.concat(data, ''))
+            print('hopcsharp: ' .. table.concat(data, ''))
         end
     end
 
     local on_exit = function(_)
         vim.g.hopcsharp_processing = false
-        local elapsed  = require('os').clock() - start;
+        local elapsed = require('os').clock() - start
         print('hopcsharp: finished processing files ' .. elapsed .. 's elapsed')
     end
 

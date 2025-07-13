@@ -6,9 +6,7 @@ local M = {}
 ---@param file_content string file content
 ---@param writer BufferedWriter buffered database writer
 M.__parse_inheritance = function(tree, _, file_content, writer)
-    local inheritance = {}
-    for _, match, _ in query.base_identifier:iter_matches(tree, file_content, 0, -1)
-    do
+    for _, match, _ in query.base_identifier:iter_matches(tree, file_content, 0, -1) do
         local entry = {}
         for id, nodes in pairs(match) do
             local name = query.base_identifier.captures[id]
@@ -18,8 +16,6 @@ M.__parse_inheritance = function(tree, _, file_content, writer)
         end
         writer:add_to_buffer('inheritance', entry)
     end
-
 end
-
 
 return M

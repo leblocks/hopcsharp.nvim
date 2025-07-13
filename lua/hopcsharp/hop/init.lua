@@ -21,7 +21,7 @@ M.__hop_to_definition = function(callback)
         end
     end
 
-    local definitions = nil
+    local definitions
     if node_type ~= nil then
         definitions = db:eval(query.get_definition_by_name_and_type, { name = cword, type = node_type })
     else
@@ -73,7 +73,7 @@ M.__hop_to_definition = function(callback)
                 filename = definition.path,
                 lnum = definition.row + 1,
                 col = definition.col,
-                text = dbutils.__get_type_name(definition.type)
+                text = dbutils.__get_type_name(definition.type),
             })
         end
 
@@ -115,7 +115,7 @@ M.__hop_to_implementation = function(callback)
                 filename = implementation.path,
                 lnum = implementation.row + 1,
                 col = implementation.col,
-                text = dbutils.__get_type_name(implementation.type) .. " " .. implementation.name
+                text = dbutils.__get_type_name(implementation.type) .. ' ' .. implementation.name,
             })
         end
 

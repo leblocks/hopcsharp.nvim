@@ -4,7 +4,6 @@ local BufferedWriter = require('hopcsharp.database.buffer')
 local parse = require('hopcsharp.parse')
 local inheritance = require('hopcsharp.parse.inheritance')
 
-
 describe('parse.inheritance', function()
     it('__parse_inheritance populates database correctly', function()
         database.__drop_db()

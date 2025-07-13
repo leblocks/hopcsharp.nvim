@@ -1,5 +1,3 @@
-local utils = require('hopcsharp.database.utils')
-
 local M = {}
 
 ---@param query string

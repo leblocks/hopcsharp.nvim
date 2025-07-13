@@ -6,7 +6,6 @@ local BufferedWriter = require('hopcsharp.database.buffer')
 local parse = require('hopcsharp.parse')
 local definition = require('hopcsharp.parse.definition')
 
-
 describe('parse.definition', function()
     it('__parse_definitions populates database correctly', function()
         database.__drop_db()
@@ -15,7 +14,6 @@ describe('parse.definition', function()
         local db = database.__get_db()
 
         parse.__parse_tree(path, function(tree, path_id, file_content, wr)
-
             definition.__parse_definitions(tree:root(), path_id, file_content, wr)
 
             local rows = db:eval(query.get_definition_by_name_and_type, { name = 'Class1', type = utils.__types.CLASS })
@@ -69,7 +67,9 @@ describe('parse.definition', function()
             assert(rows[1].type == utils.__types.RECORD)
 
             -- interface
-            rows = db:eval(query.get_definition_by_name_and_type, { name = 'IInterface', type = utils.__types.INTERFACE })
+            rows =
+                db:eval(query.get_definition_by_name_and_type, { name = 'IInterface', type = utils.__types.INTERFACE })
+
             assert(#rows == 1)
             assert(rows[1].name == 'IInterface')
             assert(rows[1].path:match('test/sources/Class1.cs$'))

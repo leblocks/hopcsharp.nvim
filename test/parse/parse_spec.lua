@@ -12,7 +12,7 @@ describe('parse', function()
     end)
 
     it('__parse_tree parses file tree', function()
-        database.__drop_db();
+        database.__drop_db()
         local path = vim.fn.getcwd() .. '/test/sources/Class1.cs'
         local writer = BufferedWriter:new(database.__get_db(), 1)
         parse.__parse_tree(path, function(tree, path_id, file_content, wr)

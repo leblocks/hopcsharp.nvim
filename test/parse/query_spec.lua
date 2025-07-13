@@ -8,7 +8,7 @@ describe('parse.query', function()
         ]]
 
         local visited = false
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         parser:parse(false, function(_, trees)
             assert(trees)
             parser:for_each_tree(function(tree, _)
@@ -30,7 +30,7 @@ describe('parse.query', function()
         ]]
 
         local visited = false
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         parser:parse(false, function(_, trees)
             assert(trees)
             parser:for_each_tree(function(tree, _)
@@ -52,7 +52,7 @@ describe('parse.query', function()
         ]]
 
         local visited = false
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         parser:parse(false, function(_, trees)
             assert(trees)
             parser:for_each_tree(function(tree, _)
@@ -74,7 +74,7 @@ describe('parse.query', function()
         ]]
 
         local visited = false
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         parser:parse(false, function(_, trees)
             assert(trees)
             parser:for_each_tree(function(tree, _)
@@ -96,7 +96,7 @@ describe('parse.query', function()
         ]]
 
         local visited = false
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         parser:parse(false, function(_, trees)
             assert(trees)
             parser:for_each_tree(function(tree, _)
@@ -120,7 +120,7 @@ describe('parse.query', function()
         ]]
 
         local visited = false
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         parser:parse(false, function(_, trees)
             assert(trees)
             parser:for_each_tree(function(tree, _)
@@ -146,7 +146,7 @@ describe('parse.query', function()
         ]]
 
         local visited_count = 0
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         parser:parse(false, function(_, trees)
             assert(trees)
             parser:for_each_tree(function(tree, _)
@@ -181,15 +181,14 @@ describe('parse.query', function()
             }
         ]]
 
-        local parser = assert(vim.treesitter.get_string_parser(content, "c_sharp", { error = false }))
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         local inheritance = {}
 
         parser:parse(false, function(_, trees)
             assert(trees)
             parser:for_each_tree(function(tree, _)
                 assert(tree)
-                for _, match, _ in query.base_identifier:iter_matches(tree:root(), content, 0, -1)
-                do
+                for _, match, _ in query.base_identifier:iter_matches(tree:root(), content, 0, -1) do
                     local entry = {}
                     for id, nodes in pairs(match) do
                         local name = query.base_identifier.captures[id]

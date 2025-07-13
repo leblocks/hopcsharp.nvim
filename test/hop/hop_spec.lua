@@ -113,5 +113,4 @@ describe('hop', function()
         assert(position[2] == 5)
         assert(position[3] == 14)
     end)
-
 end)

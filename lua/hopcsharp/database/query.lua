@@ -40,7 +40,6 @@ M.get_all_definitions = [[
         f.path ASC
 ]]
 
-
 M.get_definition_by_type = [[
     SELECT
         d.name,
@@ -71,6 +70,5 @@ M.get_implementations_by_name = [[
         d.name ASC,
         f.path ASC
 ]]
-
 
 return M

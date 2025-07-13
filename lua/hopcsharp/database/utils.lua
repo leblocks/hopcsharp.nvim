@@ -2,9 +2,7 @@ local M = {}
 
 --- @return string
 M.__get_db_file_name = function(work_dir)
-    return vim.fs.normalize(work_dir)
-        :gsub('[:/\\]', '-')
-        :gsub('^-', '') .. '.sql'
+    return vim.fs.normalize(work_dir):gsub('[:/\\]', '-'):gsub('^-', '') .. '.sql'
 end
 
 M.__insert_unique = function(db, table_name, query)

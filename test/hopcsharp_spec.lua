@@ -3,4 +3,3 @@ describe('hopcsharp', function()
         require('hopcsharp')
     end)
 end)
-
