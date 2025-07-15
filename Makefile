@@ -12,4 +12,3 @@ lint:
 	luacheck lua/hopcsharp
 	luacheck test
 
-
