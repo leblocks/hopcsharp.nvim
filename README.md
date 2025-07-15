@@ -4,20 +4,44 @@
 cached treesitter navigation on a big projects, an attempt to make navigation in large c# projects better
 
 ### description
-todo
+
+_hopcsharp_ is a lightweight code navigation tool inspired by [ctags](https://github.com/universal-ctags/ctags), built
+for large C# projects. It uses [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) to quickly (not blazing fast
+but still good) parse code and stores marks in a SQLite database for fast access.
+
+TODO show here example measure of time
+
+||: repository :||: number of source files :||: time to init database :||
+| [dotnet framework reference source](https://github.com/microsoft/referencesource) | 14641 | 760~ |
+
 
 ### requirements
 
-- [sqlite.lua](https://github.com/kkharji/sqlite.lua)
-- fd
-* treesitter c_sharp language installed
-* nvim-treesitter?
+* [sqlite.lua](https://github.com/kkharji/sqlite.lua)
+* [fd](https://github.com/sharkdp/fd)
+* _c_sharp_ grammer installed
+
+### example installation
+
+with packer:
+
+```lua
+```
 
 
 ### api
+This plugin exposes only a small set of functions, allowing you to build various interfaces and workflows on top of them.
 
 #### init_database
-documentation
+
+```lua
+    require('hopcsharp').init_database()
+```
+This function launches the database initialization process in a separate headless Neovim instance to avoid blocking the
+current session.
+
+
+
 
 #### hop_to_definition
 documentation
@@ -74,13 +98,6 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 #### roadmap
 
 * help
-
-* checkhealth\requirement function
-
-* CI
-    * busted testing
-    * style check
-    * ability to run those locally
 
 #### Nice to have in the future
 
