@@ -1,3 +1,5 @@
+local os = require('os')
+
 local parse = require('hopcsharp.parse')
 local definition = require('hopcsharp.parse.definition')
 local inheritance = require('hopcsharp.parse.inheritance')
@@ -32,7 +34,7 @@ end
 M.__init_database = function()
     -- drop existing schema
     database.__drop_db()
-    local writer = BufferedWriter:new(database.__get_db(), 5000)
+    local writer = BufferedWriter:new(database.__get_db(), 1000)
 
     local counter = 0
     scheduled_iteration(1, parse.__get_source_files(), function(i, items)
@@ -71,7 +73,7 @@ M.init_database = function()
         'qa',
     }
 
-    local start = require('os').clock()
+    local start = os.time()
     local on_stdout = function(_, data)
         if #data > 0 then
             print('hopcsharp: ' .. table.concat(data, ''))
@@ -80,7 +82,7 @@ M.init_database = function()
 
     local on_exit = function(_)
         vim.g.hopcsharp_processing = false
-        local elapsed = require('os').clock() - start
+        local elapsed = os.difftime(os.time(), start)
         print('hopcsharp: finished processing files ' .. elapsed .. 's elapsed')
     end
 
