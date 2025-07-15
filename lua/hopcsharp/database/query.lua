@@ -55,6 +55,21 @@ M.get_definition_by_type = [[
         f.path ASC
 ]]
 
+M.get_attributes = [[
+    SELECT
+        d.name,
+        f.path,
+        d.row,
+        d.column,
+        d.type
+    FROM definitions d
+    JOIN files f on f.id = d.path_id
+    WHERE d.type = 1 AND d.name like '%Attribute'
+    ORDER BY
+        d.name ASC,
+        f.path ASC
+]]
+
 M.get_implementations_by_name = [[
     SELECT
         d.name,
