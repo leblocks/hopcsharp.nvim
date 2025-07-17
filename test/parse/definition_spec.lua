@@ -67,8 +67,7 @@ describe('parse.definition', function()
             assert(rows[1].type == utils.types.RECORD)
 
             -- interface
-            rows =
-                db:eval(query.get_definition_by_name_and_type, { name = 'IInterface', type = utils.types.INTERFACE })
+            rows = db:eval(query.get_definition_by_name_and_type, { name = 'IInterface', type = utils.types.INTERFACE })
 
             assert(#rows == 1)
             assert(rows[1].name == 'IInterface')
