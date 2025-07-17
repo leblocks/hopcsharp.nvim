@@ -12,6 +12,8 @@ but still good) parse code and store marks in a SQLite database for fast access.
 takes ~750 seconds, after that you can navigate freely in code base using built in methods or writing queries on your
 own against sqlite database.
 
+__This plugin is in its early stages__ expect lots of bugs :D, I hope that there will be people's interest and
+contributions as well. I myself, don't have much of a free time, but I'll try to improve it little by little.
 
 ## Requirements
 
@@ -19,14 +21,13 @@ own against sqlite database.
 * [fd](https://github.com/sharkdp/fd)
 * _c_sharp_ tree-sitter grammer installed
 
-## example installation
+## Example installation
 
-With packer:
+Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
--- TODO
+use({ 'leblocks/hopcsharp.nvim', requires = { { 'kkharji/sqlite.lua' } } })
 ```
-
 
 ## API
 This plugin exposes only a small set of functions, allowing you to build various interfaces and workflows on top of them.
@@ -65,7 +66,10 @@ implementations in a quickfix list, _callback_ will be invoked.
 require('hopcsharp').get_db()
 ```
 
-Returns opened _sqlite_db_ object, you can create custom flows querying it with SQL queries from lua. See customization
+Returns opened _[sqlite_db](https://github.com/kkharji/sqlite.lua/blob/50092d60feb242602d7578398c6eb53b4a8ffe7b/doc/sqlite.txt#L76)_ object, you can create custom flows querying it with SQL queries from lua. See customization
+
+
+### TODOs
 exapmles.
 
 ### Example customization
@@ -83,7 +87,9 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
             coroutine.wrap(function()
                 local co = coroutine.running()
                 for _, entry in pairs(db:eval(query)) do
+                    -- get human readable type names e.g CLASS, INTERFACE and so on
                     local type = require('hopcsharp.database.utils').get_type_name(entry.type)
+                    -- format whole line to be parsable afterwards in actions callbacks
                     fzf_cb(string.format("%-12s %-50s %-50s %s %s", type, entry.name, entry.path, entry.row, entry.column),
                         function() coroutine.resume(co) end)
                     coroutine.yield()
