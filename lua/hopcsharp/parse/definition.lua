@@ -14,19 +14,19 @@ M.__parse_definitions = function(tree, path_id, file_content, writer)
         local type
 
         if parent_node_type == 'class_declaration' then
-            type = dbutils.__types.CLASS
+            type = dbutils.types.CLASS
         elseif parent_node_type == 'enum_declaration' then
-            type = dbutils.__types.ENUM
+            type = dbutils.types.ENUM
         elseif parent_node_type == 'struct_declaration' then
-            type = dbutils.__types.STRUCT
+            type = dbutils.types.STRUCT
         elseif parent_node_type == 'record_declaration' then
-            type = dbutils.__types.RECORD
+            type = dbutils.types.RECORD
         elseif parent_node_type == 'method_declaration' then
-            type = dbutils.__types.METHOD
+            type = dbutils.types.METHOD
         elseif parent_node_type == 'interface_declaration' then
-            type = dbutils.__types.INTERFACE
+            type = dbutils.types.INTERFACE
         elseif parent_node_type == 'constructor_declaration' then
-            type = dbutils.__types.CONSTRUCTOR
+            type = dbutils.types.CONSTRUCTOR
         end
 
         local row, column, _, _ = node:range()

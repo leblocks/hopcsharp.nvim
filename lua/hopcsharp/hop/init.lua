@@ -17,7 +17,7 @@ M.__hop_to_definition = function(callback)
 
         if parent_type == 'attribute' then
             cword = cword .. 'Attribute'
-            node_type = dbutils.__types.CLASS
+            node_type = dbutils.types.CLASS
         end
     end
 
@@ -73,7 +73,7 @@ M.__hop_to_definition = function(callback)
                 filename = definition.path,
                 lnum = definition.row + 1,
                 col = definition.col,
-                text = dbutils.__get_type_name(definition.type),
+                text = dbutils.get_type_name(definition.type),
             })
         end
 
@@ -115,7 +115,7 @@ M.__hop_to_implementation = function(callback)
                 filename = implementation.path,
                 lnum = implementation.row + 1,
                 col = implementation.col,
-                text = dbutils.__get_type_name(implementation.type) .. ' ' .. implementation.name,
+                text = dbutils.get_type_name(implementation.type) .. ' ' .. implementation.name,
             })
         end
 

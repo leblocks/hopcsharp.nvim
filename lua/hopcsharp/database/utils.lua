@@ -21,7 +21,7 @@ M.__insert_unique = function(db, table_name, query)
     return id
 end
 
-M.__types = {
+M.types = {
     CLASS = 1,
     INTERFACE = 2,
     STRUCT = 3,
@@ -31,32 +31,32 @@ M.__types = {
     CONSTRUCTOR = 7,
 }
 
-M.__get_type_name = function(type)
-    if type == M.__types.CLASS then
+M.get_type_name = function(type)
+    if type == M.types.CLASS then
         return 'class'
     end
 
-    if type == M.__types.INTERFACE then
+    if type == M.types.INTERFACE then
         return 'interface'
     end
 
-    if type == M.__types.STRUCT then
+    if type == M.types.STRUCT then
         return 'struct'
     end
 
-    if type == M.__types.RECORD then
+    if type == M.types.RECORD then
         return 'record'
     end
 
-    if type == M.__types.ENUM then
+    if type == M.types.ENUM then
         return 'enum'
     end
 
-    if type == M.__types.METHOD then
+    if type == M.types.METHOD then
         return 'method'
     end
 
-    if type == M.__types.CONSTRUCTOR then
+    if type == M.types.CONSTRUCTOR then
         return 'constructor'
     end
 end

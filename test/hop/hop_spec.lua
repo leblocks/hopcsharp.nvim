@@ -79,7 +79,7 @@ describe('hop', function()
         hop.__hop_to_definition(function(definitions)
             assert(#definitions == 1)
             assert(definitions[1].name == 'Class1')
-            assert(definitions[1].type == databaseutils.__types.CONSTRUCTOR)
+            assert(definitions[1].type == databaseutils.types.CONSTRUCTOR)
             called = true
         end)
 
