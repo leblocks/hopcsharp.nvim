@@ -1,7 +1,6 @@
 # hopcsharp.nvim
 
-
-cached treesitter navigation on a big projects, an attempt to make navigation in large c# projects better
+Cached treesitter navigation on a big projects, an attempt to make navigation in large c# projects better
 
 ## Description
 
@@ -68,10 +67,6 @@ require('hopcsharp').get_db()
 
 Returns opened _[sqlite_db](https://github.com/kkharji/sqlite.lua/blob/50092d60feb242602d7578398c6eb53b4a8ffe7b/doc/sqlite.txt#L76)_ object, you can create custom flows querying it with SQL queries from lua. See customization
 
-
-### TODOs
-exapmles.
-
 ### Example customization
 
 * Use _get_db()_ to get all definitions and navigate those with fzf-lua
@@ -118,4 +113,5 @@ refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanc
 * make hop_to_definition context aware - do not hop from definition of a method to another definitions with same name
 * get_type_hierarchy - pretty self explanatory
 * improve performance of init_database(), for example do not re-parse files that were not changed.
+* checkhealth method
 

@@ -1,26 +1,56 @@
 local M = {}
 
-M.__open_buffer = function(path, open_command)
-    open_command = open_command or 'edit'
-
-    -- paths in db are stored relatively to working dir
-    -- get the list of all buffers
+local function open_buffer(path, exists_callback, not_exists_callback)
     local buffers = vim.api.nvim_list_bufs()
-
     -- check if the file is already open in any buffer
     for _, buf in ipairs(buffers) do
         if vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_buf_get_name(buf) == path then
-            -- if the buffer is already open, focus it
-            vim.api.nvim_set_current_buf(buf)
+            -- if the buffer is already open - do action
+            exists_callback(buf)
             return
         end
     end
 
-    vim.api.nvim_command(open_command .. ' ' .. path)
+    not_exists_callback(path)
 end
 
-M.__hop = function(path, row, column, open_command)
-    M.__open_buffer(path, open_command or 'edit')
+M.__hop = function(path, row, column)
+    open_buffer(path, function(buf)
+        vim.api.nvim_set_current_buf(buf)
+    end, function(p)
+        vim.api.nvim_command('edit ' .. path)
+    end)
+
+    vim.fn.setcursorcharpos(row, column + 1)
+end
+
+M.__vhop = function(path, row, column)
+    open_buffer(path, function(buf)
+        vim.api.nvim_command('vertical sbuffer ' ..  buf)
+    end, function(p)
+        vim.api.nvim_command('vnew ' .. path)
+    end)
+
+    vim.fn.setcursorcharpos(row, column + 1)
+end
+
+M.__shop = function(path, row, column)
+    open_buffer(path, function(buf)
+        vim.api.nvim_command('sbuffer ' .. buf)
+    end, function(p)
+        vim.api.nvim_command('split ' .. path)
+    end)
+
+    vim.fn.setcursorcharpos(row, column + 1)
+end
+
+M.__thop = function(path, row, column)
+    open_buffer(path, function(buf)
+        vim.api.nvim_command('tab sbuffer ' .. buf)
+    end, function(p)
+        vim.api.nvim_command('tabnew ' .. path)
+    end)
+
     vim.fn.setcursorcharpos(row, column + 1)
 end
 
