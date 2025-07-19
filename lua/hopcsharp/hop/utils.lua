@@ -26,7 +26,7 @@ end
 
 M.__vhop = function(path, row, column)
     open_buffer(path, function(buf)
-        vim.api.nvim_command('vertical sbuffer ' ..  buf)
+        vim.api.nvim_command('vertical sbuffer ' .. buf)
     end, function(p)
         vim.api.nvim_command('vnew ' .. path)
     end)
