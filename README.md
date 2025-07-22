@@ -71,10 +71,14 @@ require('hopcsharp').get_db()
 
 Returns opened _[sqlite_db](https://github.com/kkharji/sqlite.lua/blob/50092d60feb242602d7578398c6eb53b4a8ffe7b/doc/sqlite.txt#L76)_ object, you can create custom flows querying it with SQL queries from lua. See customization
 
-### Example customization
+## Example customizations
 
 * [Here](https://github.com/leblocks/dotfiles/blob/master/packages/neovim/config/lua/plugins/hopcsharp.lua) you can take
 a look at example configuration based on _get_db()_ method nad _[fzf-lua](https://github.com/ibhagwan/fzf-lua)_
+
+![demo](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExODhzM2JnMTc1eGZ0ajB5cjFvNXF5ZDV1aDFkbG5saWhwcGo4a3o2ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HXFp3DblkKtrcOBn8J/giphy.gif)
+
+* Create repository _.cs_ files picker that were previously stored in a db
 
 
 ## Roadmap \ Nice to have in the future
