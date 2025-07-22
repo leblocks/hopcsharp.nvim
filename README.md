@@ -12,15 +12,19 @@ takes ~750 seconds, after that you can navigate freely in code base using built 
 own against sqlite database.
 
 __This plugin is in its early stages__ expect lots of bugs :D, I hope that there will be people's interest and
-contributions as well. I myself, don't have much of a free time, but I'll try to improve it little by little.
+contributions as well. I myself, don't have much of a free time, it took me 3 months to get to the current (22072025)
+state of things, but I'll try to improve it little by little.
 
 ## Requirements
 
 * [sqlite.lua](https://github.com/kkharji/sqlite.lua)
-* [fd](https://github.com/sharkdp/fd)
+    * _windows_ may require you to download sqlite dll and additional configuration, take a look at [installation](https://github.com/kkharji/sqlite.lua?tab=readme-ov-file#-installation)
+    instructions.
+
+* [fd](https://github.com/sharkdp/fd) to be on _PATH_
 * _c_sharp_ tree-sitter grammer installed
 
-## Example installation
+## Installation
 
 Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
@@ -69,44 +73,9 @@ Returns opened _[sqlite_db](https://github.com/kkharji/sqlite.lua/blob/50092d60f
 
 ### Example customization
 
-* Use _get_db()_ to get all definitions and navigate those with fzf-lua
-refer to fzf-lua [documentation](https://github.com/ibhagwan/fzf-lua/wiki/Advanced#fzf-exec-cont-tbl) on custom pickers
+* [Here](https://github.com/leblocks/dotfiles/blob/master/packages/neovim/config/lua/plugins/hopcsharp.lua) you can take
+a look at example configuration based on _get_db()_ method nad _[fzf-lua](https://github.com/ibhagwan/fzf-lua)_
 
-```lua
-    local list_types = function()
-        -- get database (connection is always opened)
-        local db = require('hopcsharp').get_db()
-        -- query to get all definitions
-        local query = require('hopcsharp.database.query').get_all_definitions
-        require('fzf-lua').fzf_exec(function(fzf_cb)
-            coroutine.wrap(function()
-                local co = coroutine.running()
-                for _, entry in pairs(db:eval(query)) do
-                    -- get human readable type names e.g CLASS, INTERFACE and so on
-                    local type = require('hopcsharp.database.utils').get_type_name(entry.type)
-                    -- format whole line to be parsable afterwards in actions callbacks
-                    fzf_cb(string.format("%-12s %-50s %-50s %s %s", type, entry.name, entry.path, entry.row, entry.column),
-                        function() coroutine.resume(co) end)
-                    coroutine.yield()
-                end
-                fzf_cb()
-            end)()
-        end, {
-            actions = {
-                -- on select hop to definition by path row and column
-                ['default'] = function(selected)
-                    local result = {}
-                    for part in string.gmatch(selected[1], "([^ ]+)") do
-                        table.insert(result, part)
-                    end
-                    require('hopcsharp.hop.utils').__hop(result[3], result[4] + 1, result[5])
-                end
-            }
-        })
-    end
-
-    vim.keymap.set({ 'n' }, '<Leader>hl', list_types, { buffer = true })
-```
 
 ## Roadmap \ Nice to have in the future
 * vim helpfile documentation
