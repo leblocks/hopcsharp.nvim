@@ -73,12 +73,45 @@ Returns opened _[sqlite_db](https://github.com/kkharji/sqlite.lua/blob/50092d60f
 
 ## Example customizations
 
-* [Here](https://github.com/leblocks/dotfiles/blob/master/packages/neovim/config/lua/plugins/hopcsharp.lua) you can take
-a look at example configuration based on _get_db()_ method nad _[fzf-lua](https://github.com/ibhagwan/fzf-lua)_
+* [Here](https://github.com/leblocks/dotfiles/blob/master/packages/neovim/config/lua/plugins/hopcsharp.lua) (this is my
+configuration that I use day to day) you can take a look at example configuration based on _get_db()_ method and _[fzf-lua](https://github.com/ibhagwan/fzf-lua)_,
+here is demo usage of it on a [net framework reference source](https://github.com/microsoft/referencesource) repository ![demo](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExODhzM2JnMTc1eGZ0ajB5cjFvNXF5ZDV1aDFkbG5saWhwcGo4a3o2ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HXFp3DblkKtrcOBn8J/giphy.gif)
 
-![demo](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExODhzM2JnMTc1eGZ0ajB5cjFvNXF5ZDV1aDFkbG5saWhwcGo4a3o2ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HXFp3DblkKtrcOBn8J/giphy.gif)
+* Create repository _.cs_ files fzf-lua picker that were previously stored in a db: ![demo](https://media.giphy.com/media/jvaFNuMIKjvHsACiBM/giphy.gif)
+```lua
+local list_files = function()
+    -- get database (connection is always opened)
+    fzf_lua.fzf_exec(function(fzf_cb)
+        coroutine.wrap(function()
+            local db = hopcsharp.get_db()
+            local co = coroutine.running()
+            local items = db:eval([[ SELECT path FROM files ]])
 
-* Create repository _.cs_ files picker that were previously stored in a db
+            if type(items) ~= 'table' then
+                items = {}
+            end
+
+            for _, entry in pairs(items) do
+                fzf_cb(entry.path, function() coroutine.resume(co) end)
+                coroutine.yield()
+            end
+            fzf_cb()
+        end)()
+    end, {
+        actions = {
+            ["enter"]  = actions.file_edit_or_qf,
+            ["ctrl-s"] = actions.file_split,
+            ["ctrl-v"] = actions.file_vsplit,
+            ["ctrl-t"] = actions.file_tabedit,
+            ["alt-q"]  = actions.file_sel_to_qf,
+            ["alt-Q"]  = actions.file_sel_to_ll,
+            ["alt-i"]  = actions.toggle_ignore,
+            ["alt-h"]  = actions.toggle_hidden,
+            ["alt-f"]  = actions.toggle_follow,
+        }
+    })
+end
+```
 
 
 ## Roadmap \ Nice to have in the future
