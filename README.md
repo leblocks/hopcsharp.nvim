@@ -6,10 +6,8 @@ Cached treesitter navigation on a big projects, an attempt to make navigation in
 
 _hopcsharp_ is a lightweight code navigation tool inspired by [ctags](https://github.com/universal-ctags/ctags), built
 for large C# projects. It uses [tree-sitter](https://tree-sitter.github.io/tree-sitter/) to quickly (not blazing fast
-but still good) parse code and store marks in a SQLite database for fast access. For example to parse all files in
-[dotnet framework reference source](https://github.com/microsoft/referencesource) it consists of 14641 _.cs_ files,
-takes ~750 seconds, after that you can navigate freely in code base using built in methods or writing queries on your
-own against sqlite database.
+but still good) parse code and store marks in a SQLite database for fast access, after that you can navigate freely in
+code base using built in methods or writing queries on your own against sqlite database.
 
 __This plugin is in its early stages__ expect lots of bugs :D, I hope that there will be people's interest and
 contributions as well. I myself, don't have much of a free time, it took me 3 months to get to the current (22072025)
