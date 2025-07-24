@@ -1,0 +1,216 @@
+==============================================================================
+INTRODUCTION                                                     *hopcsharp.txt
+
+Author: a.f.gurevich@gmail.com
+
+This plugin is in early development. Expect bugs and breaking changes.
+
+
+==============================================================================
+CONTENTS                                                    *hopcsharp-contents*
+
+    1. Intro ..................... |hopcsharp-intro|
+    2. Requirements .............. |hopcsharp-requirements|
+    3. Installation .............. |hopcsharp-installation|
+    4. Configuration ............. |hopcsharp-configuration|
+    5. API ....................... |hopcsharp-api|
+    6. Commands .................. |hopcsharp-commands|
+    7  Schema .................... |hopcsharp-database|
+    8. Troubleshooting ........... |hopcsharp-troubleshooting|
+
+
+==============================================================================
+INTRO                                                          *hopcsharp-intro*
+
+hopcsharp.nvim is a lightweight code navigation tool inspired by ctags, built
+specifically for large C# projects. It uses tree-sitter to parse code and
+stores navigation marks in a SQLite database for fast access.
+
+Key features:
+- Fast navigation in large C# codebases
+- Go to definition and implementation
+- Tree-sitter based parsing for accuracy
+- SQLite database for quick lookups
+- Extensible API for custom workflows
+
+The plugin was tested on large codebases ~44k source files.
+
+
+==============================================================================
+REQUIREMENTS                                            *hopcsharp-requirements*
+
+hopcsharp.nvim requires the following dependencies:
+
+1. |sqlite.lua| - Lua SQLite bindings for Neovim
+   https://github.com/kkharji/sqlite.lua
+
+   Note: Windows users may need to download sqlite.dll and configure it
+   manually. See the sqlite.lua installation instructions.
+
+2. |fd| - Fast file finder, must be available in PATH
+   https://github.com/sharkdp/fd
+
+3. C# tree-sitter grammar - Install using your preferred method:
+   >
+   :TSInstall c_sharp
+
+
+==============================================================================
+INSTALLATION                                            *hopcsharp-installation*
+
+Using packer.nvim: >
+    use({
+        'leblocks/hopcsharp.nvim',
+        requires = { 'kkharji/sqlite.lua' }
+    })
+
+
+==============================================================================
+CONFIGURATION                                          *hopcsharp-configuration*
+
+hopcsharp.nvim works out of the box with minimal configuration. The plugin
+automatically detects C# projects and creates a database in your project root.
+
+Global Variables:~
+
+*g:hopcsharp_processing*        (boolean, default: false)
+    Internal flag indicating whether database initialization is running.
+    Do not modify this manually unless the plugin gets stuck.
+
+Database Location:~
+
+The SQLite database is created in neovim `vim.fn.stdpath('state')` folder.
+This file is automatically managed by the plugin. It will have name of the
+cwd where all slashes are replaced with `-` like: `C--Users-john-repos-dotfiles.sql`
+
+
+==============================================================================
+API                                                              *hopcsharp-api*
+
+hopcsharp.nvim exposes a minimal API for building custom navigation workflows.
+
+
+------------------------------------------------------------------------------
+                                                       *hopcsharp.init_database*
+hopcsharp.init_database()
+
+Initializes the database by parsing all C# files in the current project.
+This function:
+- Runs in a separate headless Neovim instance to avoid blocking
+- Drops and recreates the existing database schema
+- Parses all .cs files found by fd
+- Stores definitions and inheritance information
+
+Example: >
+    require('hopcsharp').init_database()
+<
+
+Note: This operation can take several minutes for large codebases. Progress
+is displayed in the command line.
+
+
+------------------------------------------------------------------------------
+                                                   *hopcsharp.hop_to_definition*
+hopcsharp.hop_to_definition({callback})
+
+Navigates to the definition of the symbol under the cursor.
+
+Parameters: ~
+    {callback}  (function, optional) Custom callback function to handle
+                multiple definitions instead of using quickfix list
+
+Behavior:
+- Single definition: Opens the file and jumps to the definition
+- Multiple definitions: Opens quickfix list or calls callback
+- No definitions found: Does nothing
+- Smart attribute handling: Automatically appends "Attribute" for attributes
+
+Example: >
+    require('hopcsharp').hop_to_definition()
+
+    -- With custom callback
+    require('hopcsharp').hop_to_definition(function(definitions)
+        -- Custom handling of multiple definitions
+        for _, def in ipairs(definitions) do
+            print(def.name .. " at " .. def.path .. ":" .. def.row)
+        end
+    end)
+
+
+------------------------------------------------------------------------------
+                                               *hopcsharp.hop_to_implementation*
+hopcsharp.hop_to_implementation({callback})
+
+Navigates to implementations of the symbol under the cursor.
+
+Parameters: ~
+    {callback}  (function, optional) Custom callback function to handle
+                multiple implementations instead of using quickfix list
+
+Behavior is similar to |hopcsharp.hop_to_definition| but finds implementations
+instead of definitions.
+
+Example: >
+    require('hopcsharp').hop_to_implementation()
+<
+
+------------------------------------------------------------------------------
+                                                              *hopcsharp.get_db*
+hopcsharp.get_db()
+
+Returns the SQLite database object for custom queries.
+
+Returns: ~
+    sqlite_db object (see sqlite.lua documentation)
+
+This function allows you to build custom navigation flows by querying the
+database directly with SQL.
+
+Example: >
+    local db = require('hopcsharp').get_db()
+    local results = db:eval([[
+        SELECT
+            d.name,
+            f.path,
+            d.row,
+            d.column,
+            d.type
+        FROM definitions d
+        JOIN files f on f.id = d.path_id
+        WHERE d.name = :name
+        ORDER BY
+            f.path ASC
+            ]], { name = 'MyClassName' })
+<
+
+==============================================================================
+DATABASE SCHEMA                                             *hopcsharp-database*
+
+The plugin creates several tables in the SQLite database, you can check those
+here `hopcsharp.nvim/lua/hopcsharp/database/init.lua` This schema is not final
+expect changes.
+
+
+==============================================================================
+TROUBLESHOOTING                                      *hopcsharp-troubleshooting*
+
+Common Issues:~
+
+"init_database is running, try again later" message:~
+This indicates |g:hopcsharp_processing| is stuck at true. Solutions:
+1. Wait for the background process to complete
+2. Restart Neovim
+3. Manually set: >vim.g.hopcsharp_processing = false<
+
+No definitions found:~
+1. Ensure the database is initialized: >require('hopcsharp').init_database()<
+2. Check that C# tree-sitter grammar is installed: >:TSInstall c_sharp<
+3. Verify fd is in your PATH: >:!fd --version<
+
+Database corruption:~
+If the database becomes corrupted, rerun |hopcsharp.init_database| again.
+
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
+

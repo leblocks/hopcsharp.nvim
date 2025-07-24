@@ -6,10 +6,8 @@ Cached treesitter navigation on a big projects, an attempt to make navigation in
 
 _hopcsharp_ is a lightweight code navigation tool inspired by [ctags](https://github.com/universal-ctags/ctags), built
 for large C# projects. It uses [tree-sitter](https://tree-sitter.github.io/tree-sitter/) to quickly (not blazing fast
-but still good) parse code and store marks in a SQLite database for fast access. For example to parse all files in
-[dotnet framework reference source](https://github.com/microsoft/referencesource) it consists of 14641 _.cs_ files,
-takes ~750 seconds, after that you can navigate freely in code base using built in methods or writing queries on your
-own against sqlite database.
+but still good) parse code and store marks in a SQLite database for fast access, after that you can navigate freely in
+code base using built in methods or writing queries on your own against sqlite database.
 
 __This plugin is in its early stages__ expect lots of bugs :D, I hope that there will be people's interest and
 contributions as well. I myself, don't have much of a free time, it took me 3 months to get to the current (22072025)
@@ -73,11 +71,16 @@ Returns opened _[sqlite_db](https://github.com/kkharji/sqlite.lua/blob/50092d60f
 
 ## Example customizations
 
-* [Here](https://github.com/leblocks/dotfiles/blob/master/packages/neovim/config/lua/plugins/hopcsharp.lua) (this is my
+[Here](https://github.com/leblocks/dotfiles/blob/master/packages/neovim/config/lua/plugins/hopcsharp.lua) (this is my
 configuration that I use day to day) you can take a look at example configuration based on _get_db()_ method and _[fzf-lua](https://github.com/ibhagwan/fzf-lua)_,
-here is demo usage of it on a [net framework reference source](https://github.com/microsoft/referencesource) repository ![demo](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExODhzM2JnMTc1eGZ0ajB5cjFvNXF5ZDV1aDFkbG5saWhwcGo4a3o2ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HXFp3DblkKtrcOBn8J/giphy.gif)
+here is demo usage of it on a [net framework reference source](https://github.com/microsoft/referencesource) repository
 
-* Create repository _.cs_ files fzf-lua picker that were previously stored in a db: ![demo](https://media.giphy.com/media/jvaFNuMIKjvHsACiBM/giphy.gif)
+![demo](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExODhzM2JnMTc1eGZ0ajB5cjFvNXF5ZDV1aDFkbG5saWhwcGo4a3o2ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HXFp3DblkKtrcOBn8J/giphy.gif)
+
+Create repository _.cs_ files fzf-lua picker that were previously stored in a db:
+
+![demo](https://media.giphy.com/media/jvaFNuMIKjvHsACiBM/giphy.gif)
+
 ```lua
 local list_files = function()
     -- get database (connection is always opened)
@@ -112,12 +115,4 @@ local list_files = function()
     })
 end
 ```
-
-
-## Roadmap \ Nice to have in the future
-* vim helpfile documentation
-* make hop_to_definition context aware - do not hop from definition of a method to another definitions with same name
-* get_type_hierarchy - pretty self explanatory
-* improve performance of init_database(), for example do not re-parse files that were not changed.
-* checkhealth method
 
