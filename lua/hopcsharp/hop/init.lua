@@ -19,6 +19,10 @@ M.__hop_to_definition = function(callback)
             cword = cword .. 'Attribute'
             node_type = dbutils.types.CLASS
         end
+
+        if parent_type == 'invocation_expression' then
+            node_type = dbutils.types.METHOD
+        end
     end
 
     local definitions
