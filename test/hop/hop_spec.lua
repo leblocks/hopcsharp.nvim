@@ -113,4 +113,21 @@ describe('hop', function()
         assert(position[2] == 5)
         assert(position[3] == 14)
     end)
+
+    it('__hop_to_definition hops to method definition correctly', function()
+        -- parse hop_to_definition.cs and stay on a function call Foo in a file hop_to_definition.cs
+        prepare('test/sources/hop_to_definition.cs', 'test/sources/hop_to_definition.cs', 11, 9)
+
+        local called = false
+        hop.__hop_to_definition(function(definitions)
+            called = true
+            assert(#definitions == 1)
+            assert(definitions[1].name == 'Foo')
+            assert(definitions[1].row == 7)
+            assert(definitions[1].column == 16)
+            assert(definitions[1].type == databaseutils.types.METHOD)
+        end)
+
+        assert(called)
+    end)
 end)
