@@ -130,4 +130,23 @@ describe('hop', function()
 
         assert(called)
     end)
+
+
+    it('__hop_to_implementation hops from interface method definition to implementation class definition', function()
+        -- parse hop_to_definition.cs and stay on a function call Foo in a file hop_to_definition.cs
+        prepare('test/sources/hop_to_implementation.cs', 'test/sources/hop_to_implementation.cs', 11, 9)
+
+        local called = false
+        hop.__hop_to_implementation(function(implementations)
+            called = true
+            assert(#implementations == 1)
+            assert(implementations[1].name == 'GetString')
+            assert(implementations[1].row == 14)
+            assert(implementations[1].column == 19)
+            assert(implementations[1].type == databaseutils.types.METHOD)
+        end)
+
+        assert(called)
+    end)
+
 end)
