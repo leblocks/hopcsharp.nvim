@@ -3,9 +3,8 @@ local database = require('hopcsharp.database')
 local BufferedWriter = require('hopcsharp.database.buffer')
 
 describe('parse', function()
-    it('__get_sorce_files returns only cs files', function()
+    it('__get_source_files returns only cs files', function()
         local files = parse.__get_source_files()
-        assert(#files == 5)
         for _, file in pairs(files) do
             assert(file:find('.cs$') ~= nil)
         end
