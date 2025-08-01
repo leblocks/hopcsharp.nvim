@@ -164,5 +164,4 @@ describe('hop', function()
 
         assert(called)
     end)
-
 end)

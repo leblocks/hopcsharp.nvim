@@ -29,7 +29,11 @@ describe('query', function()
 
     it('can invoke get_method_implementation_by_parent_name_and_method_name', function()
         local db = database.__get_db()
-        assert(db:eval(query.get_method_implementation_by_parent_name_and_method_name,
-            { parent_type_name = 'Bar', method_name = 'Foo' }))
+        assert(
+            db:eval(
+                query.get_method_implementation_by_parent_name_and_method_name,
+                { parent_type_name = 'Bar', method_name = 'Foo' }
+            )
+        )
     end)
 end)

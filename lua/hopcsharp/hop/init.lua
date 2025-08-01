@@ -115,8 +115,10 @@ M.__hop_to_implementation = function(callback)
     local implementations
 
     if parent_name then
-        implementations = db:eval(query.get_method_implementation_by_parent_name_and_method_name,
-            { parent_type_name = parent_name, method_name = cword })
+        implementations = db:eval(
+            query.get_method_implementation_by_parent_name_and_method_name,
+            { parent_type_name = parent_name, method_name = cword }
+        )
     else
         implementations = db:eval(query.get_implementations_by_name, { name = cword })
     end
@@ -150,8 +152,11 @@ M.__hop_to_implementation = function(callback)
 
     -- immediate jump if there is only one case
     if #filtered_implementations == 1 then
-        utils.__hop(filtered_implementations[1].path, filtered_implementations[1].row + 1,
-            filtered_implementations[1].column)
+        utils.__hop(
+            filtered_implementations[1].path,
+            filtered_implementations[1].row + 1,
+            filtered_implementations[1].column
+        )
         return
     end
 
