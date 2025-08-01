@@ -80,9 +80,38 @@ M.get_implementations_by_name = [[
     FROM inheritance i
     JOIN definitions d on d.name = i.name
     JOIN files f on f.id = d.path_id
-    WHERE i.base = :name AND d.type <> 7 -- filter constructors
+    WHERE i.base = :name
+        AND d.type <> 7 -- filter constructors
+        AND d.type <> 6 -- filter methods
     ORDER BY
         d.name ASC,
+        f.path ASC
+]]
+
+-- this is kind of a hack here
+-- we get implementaiton defentions from defeinitions table
+-- and after thath self join on itself by file id to get
+-- method definitions in those types, assumption here is that
+-- method with the same name as defined in a base class
+-- most certainly will be in the same file as class implementations
+-- I hope it is somewhat clear
+M.get_method_implementation_by_parent_name_and_method_name = [[
+    SELECT
+        md.name,
+        f.path,
+        md.row,
+        md.column,
+        md.type
+    FROM inheritance i
+    JOIN definitions d on d.name = i.name
+    JOIN files f on f.id = d.path_id
+    JOIN definitions md on md.path_id = d.path_id
+    WHERE md.name = :method_name
+        AND i.base = :parent_type_name
+        AND d.type <> 7 -- filter constructors
+        AND md.type = 6 -- keep only methods
+    ORDER BY
+        md.name ASC,
         f.path ASC
 ]]
 
