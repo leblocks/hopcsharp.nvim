@@ -112,7 +112,7 @@ M.__hop_to_implementation = function(callback)
     local node = vim.treesitter.get_node()
     local parent_name = M.__get_method_definition_parent_name(node)
 
-    local implementations = nil
+    local implementations
 
     if parent_name then
         implementations = db:eval(query.get_method_implementation_by_parent_name_and_method_name,
@@ -126,23 +126,39 @@ M.__hop_to_implementation = function(callback)
         return
     end
 
+    -- filter out current position
+    local filtered_implementations = {}
+    local current_line = vim.fn.getcurpos()[2] -- 2 for line number
+    local current_file = vim.fs.normalize(vim.fn.expand('%:p'))
+    for _, implementation in ipairs(implementations) do
+        if (implementation.row + 1) == current_line then
+            local full_path = vim.fs.joinpath(vim.fn.getcwd(), implementation.path)
+            if current_file == full_path then
+                goto continue
+            end
+        end
+        table.insert(filtered_implementations, implementation)
+        ::continue::
+    end
+
     if callback ~= nil then
         -- user provided custom logic for navigation
         -- execute and return
-        callback(implementations)
+        callback(filtered_implementations)
         return
     end
 
     -- immediate jump if there is only one case
-    if #implementations == 1 then
-        utils.__hop(implementations[1].path, implementations[1].row + 1, implementations[1].column)
+    if #filtered_implementations == 1 then
+        utils.__hop(filtered_implementations[1].path, filtered_implementations[1].row + 1,
+            filtered_implementations[1].column)
         return
     end
 
     -- sent to quickfix if there is too much
-    if #implementations > 1 then
+    if #filtered_implementations > 1 then
         local qflist = {}
-        for _, implementation in ipairs(implementations) do
+        for _, implementation in ipairs(filtered_implementations) do
             table.insert(qflist, {
                 filename = implementation.path,
                 lnum = implementation.row + 1,
