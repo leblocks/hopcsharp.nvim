@@ -70,8 +70,11 @@ M.get_attributes = [[
         f.path ASC
 ]]
 
+-- have to add distinct here to avoid listing
+-- classes that has the same name as :name but are not
+-- implemention anything
 M.get_implementations_by_name = [[
-    SELECT
+    SELECT DISTINCT
         d.name,
         f.path,
         d.row,
