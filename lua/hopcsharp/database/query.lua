@@ -72,7 +72,7 @@ M.get_attributes = [[
 
 -- have to add distinct here to avoid listing
 -- classes that has the same name as :name but are not
--- implemention anything
+-- implementing anything
 M.get_implementations_by_name = [[
     SELECT DISTINCT
         d.name,
@@ -99,7 +99,7 @@ M.get_implementations_by_name = [[
 -- most certainly will be in the same file as class implementations
 -- I hope it is somewhat clear
 M.get_method_implementation_by_parent_name_and_method_name = [[
-    SELECT
+    SELECT DISTINCT
         md.name,
         f.path,
         md.row,
