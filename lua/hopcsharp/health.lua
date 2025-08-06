@@ -12,7 +12,26 @@ local function check_fd()
     end
 end
 
-local function check_sqlite_installation() end
+local function check_sqlite_installation()
+    vim.health.start('sqlite')
+    local ok, _ = pcall(require, 'sqlite')
+    if ok then
+        vim.health.ok('sqlite plugin is installed')
+    else
+        vim.health.error('sqlite plugin is not found')
+    end
+
+    -- check windows specific config for sqlite
+    if vim.loop.os_uname().sysname == 'Windows_NT' then
+        local dll = io.open(vim.g.sqlite_clib_path, 'r')
+        if dll ~= nil then
+            vim.health.ok('sqlite_clib_path is set and points to a file: ' .. vim.g.sqlite_clib_path)
+        else
+            vim.health.error('sqlite_clib_path is not set')
+        end
+        io.close(dll)
+    end
+end
 
 local function check_treesitter_c_sharp_grammar_installation()
     vim.health.start('treesitter')
