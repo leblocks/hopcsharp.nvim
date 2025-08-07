@@ -26,10 +26,10 @@ local function check_sqlite_installation()
         local dll = io.open(vim.g.sqlite_clib_path, 'r')
         if dll ~= nil then
             vim.health.ok('sqlite_clib_path is set and points to a file: ' .. vim.g.sqlite_clib_path)
+            io.close(dll)
         else
             vim.health.error('sqlite_clib_path is not set')
         end
-        io.close(dll)
     end
 end
 
