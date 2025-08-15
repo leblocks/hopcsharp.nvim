@@ -111,13 +111,21 @@ is displayed in the command line.
 
 ------------------------------------------------------------------------------
                                                    *hopcsharp.hop_to_definition*
-hopcsharp.hop_to_definition({callback})
+hopcsharp.hop_to_definition({callback}, {config})
 
 Navigates to the definition of the symbol under the cursor.
 
 Parameters: ~
     {callback}  (function, optional) Custom callback function to handle
                 multiple definitions instead of using quickfix list
+
+    {config}    (table, optional) configuration object
+    >lua
+                {
+                    jump_on_quickfix = false -- immediately jump to first entry when qf
+                                             -- list is opened during navigation
+                }
+
 
 Behavior:
 - Single definition: Opens the file and jumps to the definition
@@ -139,13 +147,21 @@ Example: >
 
 ------------------------------------------------------------------------------
                                                *hopcsharp.hop_to_implementation*
-hopcsharp.hop_to_implementation({callback})
+hopcsharp.hop_to_implementation({callback}, {config})
 
 Navigates to implementations of the symbol under the cursor.
 
 Parameters: ~
     {callback}  (function, optional) Custom callback function to handle
                 multiple implementations instead of using quickfix list
+
+    {config}    (table, optional) configuration object
+    >lua
+                {
+                    jump_on_quickfix = false -- immediately jump to first entry when qf
+                                             -- list is opened during navigation
+                }
+
 
 Behavior is similar to |hopcsharp.hop_to_definition| but finds implementations
 instead of definitions.

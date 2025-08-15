@@ -96,20 +96,20 @@ M.init_database = function()
     })
 end
 
-M.hop_to_definition = function(callback)
+M.hop_to_definition = function(callback, config)
     if vim.g.hopcsharp_processing then
         vim.notify(PROCESSING_ERROR_MESSAGE)
         return
     end
-    hop.__hop_to_definition(callback)
+    hop.__hop_to_definition(callback, config)
 end
 
-M.hop_to_implementation = function(callback)
+M.hop_to_implementation = function(callback, config)
     if vim.g.hopcsharp_processing then
         vim.notify(PROCESSING_ERROR_MESSAGE)
         return
     end
-    hop.__hop_to_implementation(callback)
+    hop.__hop_to_implementation(callback, config)
 end
 
 ---@return sqlite_db
