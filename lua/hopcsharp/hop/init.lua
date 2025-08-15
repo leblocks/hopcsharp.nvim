@@ -6,6 +6,43 @@ local qutils = require('hopcsharp.parse.utils')
 
 local M = {}
 
+local function populate_quickfix(entries, jump_on_quickfix)
+    local qflist = {}
+    for _, entry in ipairs(entries) do
+        table.insert(qflist, {
+            filename = entry.path,
+            lnum = entry.row + 1,
+            col = entry.col,
+            text = dbutils.get_type_name(entry.type),
+        })
+    end
+
+    vim.fn.setqflist(qflist, 'r')
+    vim.cmd([[ :copen ]])
+
+    if jump_on_quickfix then
+        vim.cmd([[ :cc! ]])
+    end
+end
+
+local function filter_entry_under_cursor(entries)
+    local filtered_entries = {}
+    local current_line = vim.fn.getcurpos()[2] -- 2 for line number
+    local current_file = vim.fs.normalize(vim.fn.expand('%:p'))
+    for _, entry in ipairs(entries) do
+        if (entry.row + 1) == current_line then
+            local full_path = vim.fs.joinpath(vim.fn.getcwd(), entry.path)
+            if current_file == full_path then
+                goto continue
+            end
+        end
+        table.insert(filtered_entries, entry)
+        ::continue::
+    end
+
+    return filtered_entries
+end
+
 local function find_node_parent_in_tree(node, parent_node, parent_node_type)
     if not node then
         return nil
@@ -22,9 +59,12 @@ local function find_node_parent_in_tree(node, parent_node, parent_node_type)
     return find_node_parent_in_tree(node, parent_node:child_with_descendant(node), parent_node_type)
 end
 
-M.__hop_to_definition = function(callback)
+M.__hop_to_definition = function(callback, config)
     local db = database.__get_db()
     local cword = vim.fn.expand('<cword>')
+
+    config = config or {}
+    local jump_on_quickfix = config.jump_on_quickfix or false
 
     local node = vim.treesitter.get_node()
     local node_type = nil
@@ -55,19 +95,7 @@ M.__hop_to_definition = function(callback)
     end
 
     -- filter out current position
-    local filtered_definitions = {}
-    local current_line = vim.fn.getcurpos()[2] -- 2 for line number
-    local current_file = vim.fs.normalize(vim.fn.expand('%:p'))
-    for _, definition in ipairs(definitions) do
-        if (definition.row + 1) == current_line then
-            local full_path = vim.fs.joinpath(vim.fn.getcwd(), definition.path)
-            if current_file == full_path then
-                goto continue
-            end
-        end
-        table.insert(filtered_definitions, definition)
-        ::continue::
-    end
+    local filtered_definitions = filter_entry_under_cursor(definitions)
 
     if #filtered_definitions == 0 then
         return
@@ -88,25 +116,16 @@ M.__hop_to_definition = function(callback)
 
     -- sent to quickfix if there is too much
     if #filtered_definitions > 1 then
-        local qflist = {}
-        for _, definition in ipairs(filtered_definitions) do
-            table.insert(qflist, {
-                filename = definition.path,
-                lnum = definition.row + 1,
-                col = definition.col,
-                text = dbutils.get_type_name(definition.type),
-            })
-        end
-
-        vim.fn.setqflist(qflist, 'r')
-        vim.cmd([[ :copen ]])
-        return
+        populate_quickfix(filtered_definitions, jump_on_quickfix)
     end
 end
 
-M.__hop_to_implementation = function(callback)
+M.__hop_to_implementation = function(callback, config)
     local db = database.__get_db()
     local cword = vim.fn.expand('<cword>')
+
+    config = config or {}
+    local jump_on_quickfix = config.jump_on_quickfix or false
 
     -- handle case when current node is method defintion
     local node = vim.treesitter.get_node()
@@ -129,19 +148,7 @@ M.__hop_to_implementation = function(callback)
     end
 
     -- filter out current position
-    local filtered_implementations = {}
-    local current_line = vim.fn.getcurpos()[2] -- 2 for line number
-    local current_file = vim.fs.normalize(vim.fn.expand('%:p'))
-    for _, implementation in ipairs(implementations) do
-        if (implementation.row + 1) == current_line then
-            local full_path = vim.fs.joinpath(vim.fn.getcwd(), implementation.path)
-            if current_file == full_path then
-                goto continue
-            end
-        end
-        table.insert(filtered_implementations, implementation)
-        ::continue::
-    end
+    local filtered_implementations = filter_entry_under_cursor(implementations)
 
     if callback ~= nil then
         -- user provided custom logic for navigation
@@ -162,19 +169,7 @@ M.__hop_to_implementation = function(callback)
 
     -- sent to quickfix if there is too much
     if #filtered_implementations > 1 then
-        local qflist = {}
-        for _, implementation in ipairs(filtered_implementations) do
-            table.insert(qflist, {
-                filename = implementation.path,
-                lnum = implementation.row + 1,
-                col = implementation.col,
-                text = dbutils.get_type_name(implementation.type) .. ' ' .. implementation.name,
-            })
-        end
-
-        vim.fn.setqflist(qflist, 'r')
-        vim.cmd([[ :copen ]])
-        return
+        populate_quickfix(filtered_implementations, jump_on_quickfix)
     end
 end
 
