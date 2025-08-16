@@ -118,4 +118,12 @@ M.get_method_implementation_by_parent_name_and_method_name = [[
         f.path ASC
 ]]
 
+-- TODO
+M.get_all_parent_types = [[
+]]
+
+-- TODO
+M.get_all_child_types = [[
+]]
+
 return M
