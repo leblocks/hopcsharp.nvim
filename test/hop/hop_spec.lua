@@ -164,4 +164,10 @@ describe('hop', function()
 
         assert(called)
     end)
+
+    it('__get_type_parents ', function()
+        -- parse hop_to_definition.cs and stay on a function call Foo in a file hop_to_definition.cs
+        prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 1, 1)
+        hop.__get_type_parents('Class1Generation4')
+    end)
 end)

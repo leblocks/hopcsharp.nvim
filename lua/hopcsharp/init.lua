@@ -112,6 +112,14 @@ M.hop_to_implementation = function(callback, config)
     hop.__hop_to_implementation(callback, config)
 end
 
+M.get_type_hierarchy = function()
+    if vim.g.hopcsharp_processing then
+        vim.notify(PROCESSING_ERROR_MESSAGE)
+        return
+    end
+    -- TODO
+end
+
 ---@return sqlite_db
 M.get_db = function()
     if vim.g.hopcsharp_processing then

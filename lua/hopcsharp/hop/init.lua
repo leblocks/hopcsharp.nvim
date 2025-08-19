@@ -59,6 +59,15 @@ local function find_node_parent_in_tree(node, parent_node, parent_node_type)
     return find_node_parent_in_tree(node, parent_node:child_with_descendant(node), parent_node_type)
 end
 
+local function find(entries, key, value)
+    for _, entry in ipairs(entries) do
+        if entry[key] == value then
+            return entry
+        end
+    end
+    return nil
+end
+
 M.__hop_to_definition = function(callback, config)
     local db = database.__get_db()
     local cword = vim.fn.expand('<cword>')
@@ -204,6 +213,33 @@ M.__get_method_definition_parent_name = function(node)
     end
 
     return parent_name
+end
+
+
+
+-- { {
+--     base = "Class1Generation3",
+--     name = "Class1Generation4"
+--   }, {
+--     base = "Class1Generation2",
+--     name = "Class1Generation3"
+--   }, {
+--     base = "Class1Generation1",
+--     name = "Class1Generation2"
+--   } }
+-- TODO docs
+-- must return recursive table
+-- { type = "type_name", children = { { type = "type_name", ... }, .. }
+M.__get_type_parents = function(type_name)
+    local db = database.__get_db()
+    local parents = db:eval(query.get_all_parent_types, { type = type_name })
+    print(vim.inspect(parents))
+
+    local type = find(parents, "name", type_name)
+    print(vim.inspect(type))
+end
+
+M.__get_type_children = function(type_name)
 end
 
 return M
