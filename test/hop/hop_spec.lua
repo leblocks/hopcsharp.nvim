@@ -165,9 +165,22 @@ describe('hop', function()
         assert(called)
     end)
 
-    it('__get_type_parents ', function()
-        -- parse hop_to_definition.cs and stay on a function call Foo in a file hop_to_definition.cs
+    it('__get_type_parents parses tree from type to parent type correctly - 1', function()
         prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 1, 1)
-        hop.__get_type_parents('Class1Generation4')
+
+        local root = hop.__get_type_parents('Class1Generation4')
+
+        assert(root ~= nil)
+        assert(root.name == 'Class1Generation1')
+        assert(#root.children == 1)
+
+        assert(root.children[1].name == 'Class1Generation2')
+        assert(#root.children[1].children == 1)
+
+        assert(root.children[1].children[1].name == 'Class1Generation3')
+        assert(#root.children[1].children[1].children == 1)
+
+        assert(root.children[1].children[1].children[1].name == 'Class1Generation4')
+        assert(#root.children[1].children[1].children[1].children == 0)
     end)
 end)

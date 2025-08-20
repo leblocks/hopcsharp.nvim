@@ -59,13 +59,19 @@ local function find_node_parent_in_tree(node, parent_node, parent_node_type)
     return find_node_parent_in_tree(node, parent_node:child_with_descendant(node), parent_node_type)
 end
 
-local function find(entries, key, value)
+local function find_all(entries, key, value)
+    local result = {}
     for _, entry in ipairs(entries) do
         if entry[key] == value then
-            return entry
+            table.insert(result, entry)
         end
     end
-    return nil
+    return result
+end
+
+local function find_single(entries, key, value)
+    local result = find_all(entries, key, value)
+    return result[1] or nil
 end
 
 M.__hop_to_definition = function(callback, config)
@@ -215,31 +221,46 @@ M.__get_method_definition_parent_name = function(node)
     return parent_name
 end
 
+local function populate_type_hierarchy_down(node, types)
+    local children = find_all(types, 'base', node.name)
 
+    node.children = {}
+    for _, child in ipairs(children) do
+        table.insert(node.children, { name = child.name })
+    end
 
--- { {
---     base = "Class1Generation3",
---     name = "Class1Generation4"
---   }, {
---     base = "Class1Generation2",
---     name = "Class1Generation3"
---   }, {
---     base = "Class1Generation1",
---     name = "Class1Generation2"
---   } }
--- TODO docs
--- must return recursive table
--- { type = "type_name", children = { { type = "type_name", ... }, .. }
+    for _, child in ipairs(node.children) do
+        populate_type_hierarchy_down(child, types)
+    end
+end
+
 M.__get_type_parents = function(type_name)
     local db = database.__get_db()
     local parents = db:eval(query.get_all_parent_types, { type = type_name })
-    print(vim.inspect(parents))
 
-    local type = find(parents, "name", type_name)
-    print(vim.inspect(type))
+    local current = find_single(parents, 'name', type_name)
+
+    if current == nil then
+        return {}
+    end
+
+    local next = current
+
+    -- go to the head of the hierarchy
+    while next ~= nil do
+        current = next
+        next = find_single(parents, 'name', current.base)
+    end
+
+    -- now head of hierarchy is in current.base
+    -- prepare tree root
+    local root = { name = current.base, children = {} }
+
+    populate_type_hierarchy_down(root, parents)
+
+    return root
 end
 
-M.__get_type_children = function(type_name)
-end
+M.__get_type_children = function(type_name) end
 
 return M
