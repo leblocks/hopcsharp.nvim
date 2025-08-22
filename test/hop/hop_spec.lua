@@ -165,7 +165,7 @@ describe('hop', function()
         assert(called)
     end)
 
-    it('__get_type_parents parses tree from type to parent type correctly - 1', function()
+    it('__get_type_parents parses tree from type to parent type correctly - from a leaf', function()
         prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 1, 1)
 
         local root = hop.__get_type_parents('Class1Generation4')
@@ -182,5 +182,31 @@ describe('hop', function()
 
         assert(root.children[1].children[1].children[1].name == 'Class1Generation4')
         assert(#root.children[1].children[1].children[1].children == 0)
+    end)
+
+    it('__get_type_parents parses tree from type to parent type correctly - from a middle node', function()
+        prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 1, 1)
+
+        local root = hop.__get_type_parents('Class1Generation3')
+
+        assert(root ~= nil)
+        assert(root.name == 'Class1Generation1')
+        assert(#root.children == 1)
+
+        assert(root.children[1].name == 'Class1Generation2')
+        assert(#root.children[1].children == 1)
+
+        assert(root.children[1].children[1].name == 'Class1Generation3')
+        assert(#root.children[1].children[1].children == 0)
+    end)
+
+    it('__get_type_parents parses tree from type to parent type correctly - from root node', function()
+        prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 1, 1)
+
+        local root = hop.__get_type_parents('Class1Generation1')
+
+        assert(root ~= nil)
+        assert(root.name == 'Class1Generation1')
+        assert(#root.children == 0)
     end)
 end)

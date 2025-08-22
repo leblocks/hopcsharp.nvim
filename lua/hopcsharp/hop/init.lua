@@ -238,6 +238,10 @@ M.__get_type_parents = function(type_name)
     local db = database.__get_db()
     local parents = db:eval(query.get_all_parent_types, { type = type_name })
 
+    if type(parents) ~= 'table' then
+        return { name = type_name, children = {} }
+    end
+
     local current = find_single(parents, 'name', type_name)
 
     if current == nil then
@@ -255,7 +259,6 @@ M.__get_type_parents = function(type_name)
     -- now head of hierarchy is in current.base
     -- prepare tree root
     local root = { name = current.base, children = {} }
-
     populate_type_hierarchy_down(root, parents)
 
     return root
