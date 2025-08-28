@@ -61,30 +61,16 @@ M.__get_type_parents = function(type_name)
     return root
 end
 
-
--- { {
---     base = "Class1Generation1",
---     name = "Class1Generation2"
---   }, {
---     base = "Class1Generation1",
---     name = "Class2Generation2"
---   }, {
---     base = "Class1Generation2",
---     name = "Class1Generation3"
---   }, {
---     base = "Class1Generation3",
---     name = "Class1Generation4"
---   }, {
---     base = "Class1Generation3",
---     name = "Class2Generation4"
---   } }
-
-
 M.__get_type_children = function(type_name)
     local db = database.__get_db()
     local children = db:eval(query.get_all_child_types, { type = type_name })
 
+    if type(children) ~= 'table' then
+        return { name = type_name, children = {} }
+    end
+
     local root = { name = type_name, children = {} }
+
     populate_type_hierarchy_down(root, children)
 
     return root
