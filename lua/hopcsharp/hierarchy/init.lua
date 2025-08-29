@@ -1,5 +1,6 @@
 local database = require('hopcsharp.database')
 local query = require('hopcsharp.database.query')
+local buffer = require('hopcsharp.hierarchy.buffer')
 
 local M = {}
 
@@ -14,8 +15,7 @@ local function find_all(entries, key, value)
 end
 
 local function find_single(entries, key, value)
-    local result = find_all(entries, key, value)
-    return result[1] or nil
+    return find_all(entries, key, value)[1] or nil
 end
 
 local function populate_type_hierarchy_down(node, types)
@@ -64,16 +64,25 @@ end
 M.__get_type_children = function(type_name)
     local db = database.__get_db()
     local children = db:eval(query.get_all_child_types, { type = type_name })
+    local root = { name = type_name, children = {} }
 
     if type(children) ~= 'table' then
-        return { name = type_name, children = {} }
+        return root
     end
-
-    local root = { name = type_name, children = {} }
 
     populate_type_hierarchy_down(root, children)
 
     return root
+end
+
+M.__get_type_hierarchy = function()
+    local cword = vim.fn.expand('<cword>')
+    local parents = M.__get_type_parents(cword)
+
+    -- TODO connect here children and parents
+    local children = M.__get_type_children(cword)
+
+    buffer.__create_hierarchy_buffer(cword, parents)
 end
 
 return M

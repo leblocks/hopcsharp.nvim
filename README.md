@@ -43,6 +43,7 @@ current session.
 
 ### hop_to_definition
 
+TODO update signature
 ```lua
 require('hopcsharp').hop_to_definition(callback)
 ```
@@ -53,6 +54,7 @@ defintions in a quickfix list, _callback_ will be invoked.
 
 ### hop_to_implementation
 
+TODO update signature
 ```lua
 require('hopcsharp').hop_to_implementation(callback)
 ```

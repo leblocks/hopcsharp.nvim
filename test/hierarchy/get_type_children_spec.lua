@@ -17,7 +17,6 @@ describe('get_type_children', function()
         assert(root.children[2].name == 'Class2Generation2')
         assert(#root.children[2].children == 0)
 
-        -- TODO finish assertions here
         assert(root.children[1].children[1].name == 'Class1Generation3')
         assert(#root.children[1].children[1].children == 2)
 

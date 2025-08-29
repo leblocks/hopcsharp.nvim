@@ -171,6 +171,14 @@ Example: >
 <
 
 ------------------------------------------------------------------------------
+                                               *hopcsharp.get_type_hierarchy*
+
+TODO
+
+Example: >
+    require('hopcsharp').get_type_hierarchy()
+
+------------------------------------------------------------------------------
                                                               *hopcsharp.get_db*
 hopcsharp.get_db()
 
