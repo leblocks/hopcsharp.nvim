@@ -34,7 +34,6 @@ M.__create_hierarchy_buffer = function(type_name, tree_root)
         vim.api.nvim_buf_set_name(buf, path)
         vim.api.nvim_buf_set_lines(buf, 0, -1, true, buffer_content)
         vim.api.nvim_set_option_value('modifiable', false, { buf = buf })
-        -- TODO implement highlights?
         vim.api.nvim_set_option_value('filetype', 'hopcsharp-hierarchy', { buf = buf })
         vim.api.nvim_set_current_buf(buf)
     end

@@ -1,5 +1,5 @@
 local hierarchy = require('hopcsharp.hierarchy.utils')
-local utils = require('hopcsharp.__test_utils')
+local utils = require('test.utils')
 
 describe('get_type_parents', function()
     it('__get_type_parents parses tree from type to parent type correctly - from a leaf', function()

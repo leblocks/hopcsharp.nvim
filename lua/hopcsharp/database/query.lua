@@ -126,7 +126,7 @@ M.get_all_parent_types = [[
         JOIN inheritance i ON p.base = i.name
         LIMIT 1000 -- limit stuff in case something goes wrong
     )
-    SELECT name, base FROM parents;
+    SELECT DISTINCT name, base FROM parents;
 ]]
 
 M.get_all_child_types = [[
@@ -137,7 +137,7 @@ M.get_all_child_types = [[
         JOIN inheritance i ON c.name = i.base
         LIMIT 1000 -- limit stuff in case something goes wrong
     )
-    SELECT name, base FROM children;
+    SELECT DISTINCT name, base FROM children;
 ]]
 
 return M
