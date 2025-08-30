@@ -1,4 +1,4 @@
-local hierarchy = require('hopcsharp.hierarchy')
+local hierarchy = require('hopcsharp.hierarchy.utils')
 local utils = require('hopcsharp.__test_utils')
 
 describe('get_type_parents', function()
