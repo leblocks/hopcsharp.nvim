@@ -1,6 +1,5 @@
 local utils = require('hopcsharp.hop.utils')
 
-
 local M = {}
 
 local function tree_to_lines(node, lines, level)
@@ -8,7 +7,7 @@ local function tree_to_lines(node, lines, level)
         return
     end
 
-    table.insert(lines, string.rep("   ", level, "") .. node.name)
+    table.insert(lines, string.rep('   ', level, '') .. node.name)
 
     if node.children ~= nil then
         for _, child in ipairs(node.children) do
@@ -18,7 +17,7 @@ local function tree_to_lines(node, lines, level)
 end
 
 M.__get_hierarchy_buffer_name = function(type_name)
-    return "hopcsharp://hierarchy/" .. type_name
+    return 'hopcsharp://hierarchy/' .. type_name
 end
 
 M.__create_hierarchy_buffer = function(type_name, tree_root)
@@ -40,6 +39,5 @@ M.__create_hierarchy_buffer = function(type_name, tree_root)
 
     utils.__open_buffer(buffer_name, vim.api.nvim_set_current_buf, not_exists)
 end
-
 
 return M

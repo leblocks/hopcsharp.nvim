@@ -92,6 +92,10 @@ M.__connect_parent_and_child_hierarchies = function(parents, children)
 
     local parent = get_parents_leaf_node(parents)
 
+    if parent and parent.name ~= children.name then
+        error('hierarchies does not match')
+    end
+
     -- connect nodes
     parent.children = children.children
 end
