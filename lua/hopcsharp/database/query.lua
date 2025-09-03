@@ -121,7 +121,7 @@ M.get_method_implementation_by_parent_name_and_method_name = [[
 M.get_all_parent_types = [[
     WITH RECURSIVE parents(name, base) AS (
         SELECT i.name, i.base FROM inheritance i WHERE i.name = :type
-        UNION ALL
+        UNION
         SELECT i.name, i.base FROM parents p
         JOIN inheritance i ON p.base = i.name
         LIMIT 1000 -- limit stuff in case something goes wrong
@@ -132,7 +132,7 @@ M.get_all_parent_types = [[
 M.get_all_child_types = [[
     WITH RECURSIVE children(name, base) AS (
         SELECT i.name, i.base FROM inheritance i WHERE i.base = :type
-        UNION ALL
+        UNION
         SELECT i.name, i.base FROM children c
         JOIN inheritance i ON c.name = i.base
         LIMIT 1000 -- limit stuff in case something goes wrong

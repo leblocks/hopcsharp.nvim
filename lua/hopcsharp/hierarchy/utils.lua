@@ -17,17 +17,40 @@ local function find_single(entries, key, value)
     return find_all(entries, key, value)[1] or nil
 end
 
-local function build_type_hierarchy_down(node, types)
-    local children = find_all(types, 'base', node.name)
-
-    node.children = {}
-    for _, child in ipairs(children) do
-        table.insert(node.children, { name = child.name })
+local function contains(entries, item)
+    for _, entry in ipairs(entries) do
+        if entry == item then
+            return true
+        end
     end
 
-    for _, child in ipairs(node.children) do
-        build_type_hierarchy_down(child, types)
+    return false
+end
+
+-- TODO move to tree utils
+local function build_type_hierarchy_down(root, types)
+    local visited_nodes = {}
+
+    local function walk(node)
+        if contains(visited_nodes, node.name) then
+            return
+        else
+            table.insert(visited_nodes, node.name)
+        end
+
+        local children = find_all(types, 'base', node.name)
+
+        node.children = {}
+        for _, child in ipairs(children) do
+            table.insert(node.children, { name = child.name })
+        end
+
+        for _, child in ipairs(node.children) do
+            walk(child)
+        end
     end
+
+    walk(root)
 end
 
 M.__get_type_parents = function(type_name)
@@ -83,7 +106,7 @@ M.__connect_parent_and_child_hierarchies = function(parents, children)
             return nil
         end
 
-        if #node.children == 0 then
+        if node.children == nil or #node.children == 0 then
             return node
         end
 
