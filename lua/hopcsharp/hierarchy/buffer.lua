@@ -1,23 +1,10 @@
 local utils = require('hopcsharp.hop.utils')
+local tree = require('hopcsharp.hierarchy.tree')
 
 local M = {}
 
 local prefix = '   '
 
--- TODO move to tree utils
-local function tree_to_buffer_lines(node, lines, level)
-    if node == nil then
-        return
-    end
-
-    table.insert(lines, string.rep(prefix, level, '') .. node.name)
-
-    if node.children ~= nil then
-        for _, child in ipairs(node.children) do
-            tree_to_buffer_lines(child, lines, level + 1)
-        end
-    end
-end
 
 M.__get_hierarchy_buffer_name = function(type_name)
     return 'hopcsharp://hierarchy/' .. type_name
@@ -25,16 +12,14 @@ end
 
 M.__create_hierarchy_buffer = function(type_name, tree_root)
     local buffer_name = M.__get_hierarchy_buffer_name(type_name)
-    local buffer_lines = {
-        'Use hop_to_defintion and hop_to_implementation here to navigate further',
-        '',
-    }
 
     local not_exists = function(path)
         local buf = vim.api.nvim_create_buf(true, true)
 
-        -- populate hierarchy buffer content
-        tree_to_buffer_lines(tree_root, buffer_lines, 0)
+        local buffer_lines = tree.__tree_to_lines(tree_root, prefix) or {}
+        table.insert(buffer_lines, 1, '')
+        table.insert(buffer_lines, 1, 'Use hop_to_defintion and hop_to_implementation here to navigate further')
+        table.insert(buffer_lines, 1, 'Hierarchy for ' .. type_name)
 
         vim.api.nvim_create_autocmd('BufWinEnter', {
             callback = function()
