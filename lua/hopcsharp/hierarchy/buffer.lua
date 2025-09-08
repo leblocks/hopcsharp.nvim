@@ -5,7 +5,6 @@ local M = {}
 
 local prefix = '   '
 
-
 M.__get_hierarchy_buffer_name = function(type_name)
     return 'hopcsharp://hierarchy/' .. type_name
 end

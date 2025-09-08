@@ -27,10 +27,6 @@ local function contains(entries, item)
     return false
 end
 
-local function init_hierarchy_tree(name)
-    -- TODO
-end
-
 -- TODO move to tree utils
 local function build_type_hierarchy_down(root, types)
     local visited_nodes = {}

@@ -38,8 +38,37 @@ end
 ---@param root HierarchyTreeNode Root node of the hierarchy tree
 ---@return string[] Table with string representation of a tree
 M.__get_leaf_nodes = function(root)
-    -- TODO
-    return {}
+    local nodes = {}
+
+    ---@param node HierarchyTreeNode Node of the hierarchy tree
+    local function walk(node)
+        if node == nil then
+            return
+        end
+
+        if node.name == nil then
+            return
+        end
+
+        if node.children == nil or #node.children == 0 then
+            table.insert(nodes, node.name)
+        else
+            for _, child in ipairs(node.children) do
+                walk(child)
+            end
+        end
+    end
+
+    walk(root)
+
+    return nodes
+end
+
+---@param name string Name of the node
+---@param children HierarchyTreeNode[] Children of the current node
+---@return HierarchyTreeNode A node with name and children
+M.__create_node = function(name, children)
+    return { name = name, children = children or {} }
 end
 
 return M
