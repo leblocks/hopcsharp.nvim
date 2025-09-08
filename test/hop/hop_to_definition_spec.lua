@@ -1,6 +1,6 @@
 local hop = require('hopcsharp.hop')
 local databaseutils = require('hopcsharp.database.utils')
-local utils = require('hopcsharp.__test_utils')
+local utils = require('test.utils')
 
 describe('hop_to_definition', function()
     it('__hop_to_definition calls custom callback', function()
