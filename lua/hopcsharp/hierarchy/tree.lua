@@ -4,6 +4,32 @@ local M = {}
 ---@field name string Name of the node
 ---@field children HierarchyTreeNode[] Children of the current node
 
+---@class TypeRelation
+---@field base string Name of the base type
+---@field name string Name of the type
+
+-- TODO move to general utils + test
+local function contains(entries, item)
+    for _, entry in ipairs(entries) do
+        if entry == item then
+            return true
+        end
+    end
+
+    return false
+end
+
+-- TODO move to general utils + test
+local function find_all(entries, key, value)
+    local result = {}
+    for _, entry in ipairs(entries) do
+        if entry[key] == value then
+            table.insert(result, entry)
+        end
+    end
+    return result
+end
+
 ---@param root HierarchyTreeNode Root node of the hierarchy tree
 ---@param prefix string Prefix that will be used to indent tree nodes
 ---@return string[] Table with string representation of a tree
@@ -71,4 +97,43 @@ M.__create_node = function(name, children)
     return { name = name, children = children or {} }
 end
 
+-- TODO add tests
+--- Builds hierarchy tree from top to bottom
+---@param name string Name of the root node
+---@param relations TypeRelation[] Table with type relations
+---@return HierarchyTreeNode
+M.__build_hierarchy_tree = function(name, relations)
+    local visited_nodes = {}
+    local root = M.__create_node(name, {})
+
+    if relations == nil then
+        return root
+    end
+
+    ---@param node HierarchyTreeNode Node of the hierarchy tree
+    local function build(node)
+        if contains(visited_nodes, node.name) then
+            return
+        else
+            table.insert(visited_nodes, node.name)
+        end
+
+        local children = find_all(relations, 'base', node.name)
+
+        node.children = {}
+        for _, child in ipairs(children) do
+            table.insert(node.children, { name = child.name })
+        end
+
+        for _, child in ipairs(node.children) do
+            build(child)
+        end
+    end
+
+    build(root)
+
+    return root
+end
+
 return M
+

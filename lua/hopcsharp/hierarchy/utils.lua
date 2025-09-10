@@ -1,8 +1,10 @@
-local database = require('hopcsharp.database')
 local query = require('hopcsharp.database.query')
+local tree = require('hopcsharp.hierarchy.tree')
+local database = require('hopcsharp.database')
 
 local M = {}
 
+-- TODO move to general utils + test
 local function find_all(entries, key, value)
     local result = {}
     for _, entry in ipairs(entries) do
@@ -13,55 +15,20 @@ local function find_all(entries, key, value)
     return result
 end
 
+-- TODO move to general utils + test
 local function find_single(entries, key, value)
     return find_all(entries, key, value)[1] or nil
 end
 
-local function contains(entries, item)
-    for _, entry in ipairs(entries) do
-        if entry == item then
-            return true
-        end
-    end
-
-    return false
-end
-
--- TODO move to tree utils
-local function build_type_hierarchy_down(root, types)
-    local visited_nodes = {}
-
-    local function walk(node)
-        if contains(visited_nodes, node.name) then
-            return
-        else
-            table.insert(visited_nodes, node.name)
-        end
-
-        local children = find_all(types, 'base', node.name)
-
-        node.children = {}
-        for _, child in ipairs(children) do
-            table.insert(node.children, { name = child.name })
-        end
-
-        for _, child in ipairs(node.children) do
-            walk(child)
-        end
-    end
-
-    walk(root)
-end
-
 M.__get_type_parents = function(type_name)
     local db = database.__get_db()
-    local parents = db:eval(query.get_all_parent_types, { type = type_name })
+    local type_relations = db:eval(query.get_all_parent_types, { type = type_name })
 
-    if type(parents) ~= 'table' then
-        return { name = type_name, children = {} }
+    if type(type_relations) ~= 'table' then
+        return tree.__create_node(type_name, {})
     end
 
-    local current = find_single(parents, 'name', type_name)
+    local current = find_single(type_relations, 'name', type_name)
 
     if current == nil then
         return {}
@@ -72,30 +39,21 @@ M.__get_type_parents = function(type_name)
     -- go to the head of the hierarchy
     while next ~= nil do
         current = next
-        next = find_single(parents, 'name', current.base)
+        next = find_single(type_relations, 'name', current.base)
     end
 
-    -- now head of hierarchy is in current.base
-    -- prepare tree root
-    local root = { name = current.base, children = {} }
-
-    build_type_hierarchy_down(root, parents)
-
-    return root
+    return tree.__build_hierarchy_tree(current.base, type_relations)
 end
 
 M.__get_type_children = function(type_name)
     local db = database.__get_db()
-    local children = db:eval(query.get_all_child_types, { type = type_name })
-    local root = { name = type_name, children = {} }
+    local type_relations = db:eval(query.get_all_child_types, { type = type_name })
 
-    if type(children) ~= 'table' then
-        return root
+    if type(type_relations) ~= 'table' then
+        return tree.__create_node(type_name, {})
     end
 
-    build_type_hierarchy_down(root, children)
-
-    return root
+    return tree.__build_hierarchy_tree(type_name, type_relations)
 end
 
 M.__connect_parent_and_child_hierarchies = function(parents, children)
@@ -124,3 +82,4 @@ M.__connect_parent_and_child_hierarchies = function(parents, children)
 end
 
 return M
+
