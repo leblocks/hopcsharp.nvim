@@ -97,7 +97,6 @@ M.__create_node = function(name, children)
     return { name = name, children = children or {} }
 end
 
--- TODO add tests
 --- Builds hierarchy tree from top to bottom
 ---@param name string Name of the root node
 ---@param relations TypeRelation[] Table with type relations

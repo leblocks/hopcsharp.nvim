@@ -120,4 +120,93 @@ describe('tree hiearchy tests', function()
         assert(leafs[1] == 'leaf1')
         assert(leafs[2] == 'leaf2')
     end)
+
+    it('__build_hierarchy_tree - happy path', function()
+        local relations = {
+            { base = "Class1Generation1", name = "Class1Generation2" },
+            { base = "Class1Generation1", name = "Class2Generation2" },
+            { base = "Class1Generation2", name = "Class1Generation3" },
+            { base = "Class1Generation3", name = "Class1Generation4" },
+            { base = "Class1Generation3", name = "Class2Generation4" },
+        }
+
+        local root = tree.__build_hierarchy_tree('Class1Generation1', relations)
+        assert(root ~= nil)
+        assert(root.name == 'Class1Generation1')
+        assert(#root.children == 2)
+
+        assert(root.children[1].name == 'Class1Generation2')
+        assert(#root.children[1].children == 1)
+
+        assert(root.children[2].name == 'Class2Generation2')
+        assert(#root.children[2].children == 0)
+
+        assert(root.children[1].children[1].name == 'Class1Generation3')
+        assert(#root.children[1].children[1].children == 2)
+
+        assert(root.children[1].children[1].children[1].name == 'Class1Generation4')
+        assert(#root.children[1].children[1].children[1].children == 0)
+
+        assert(root.children[1].children[1].children[2].name == 'Class2Generation4')
+        assert(#root.children[1].children[1].children[2].children == 0)
+    end)
+
+    it('__build_hierarchy_tree - cycled relations in base', function()
+        local relations = {
+            { base = "Class1Generation1", name = "Class1Generation2" },
+            { base = "Class1Generation2", name = "Class1Generation1" },
+        }
+
+        local root = tree.__build_hierarchy_tree('Class1Generation2', relations)
+        print(vim.inspect(root))
+        assert(root ~= nil)
+        assert(root.name == 'Class1Generation2')
+        assert(#root.children == 1)
+        assert(root.children[1].name == 'Class1Generation1')
+        assert(#root.children[1].children == 0) -- TODO fix this
+    end)
+
+    it('__build_hierarchy_tree - cycled relations in name', function()
+        local relations = {
+            { base = "Class1Generation1", name = "Class1Generation2" },
+            { base = "Class1Generation2", name = "Class1Generation1" },
+        }
+
+        local root = tree.__build_hierarchy_tree('Class1Generation1', relations)
+        print(vim.inspect(root))
+        assert(root ~= nil)
+        assert(root.name == 'Class1Generation1')
+        assert(#root.children == 1)
+        assert(root.children[1].name == 'Class1Generation2')
+        assert(#root.children[1].children == 0) -- TODO fix this
+    end)
+
+    it('__build_hierarchy_tree - name does not match types in relations', function()
+        local relations = {
+            { base = "Class1Generation1", name = "Class1Generation2" },
+            { base = "Class1Generation1", name = "Class2Generation2" },
+            { base = "Class1Generation2", name = "Class1Generation3" },
+            { base = "Class1Generation3", name = "Class1Generation4" },
+            { base = "Class1Generation3", name = "Class2Generation4" },
+        }
+
+        local root = tree.__build_hierarchy_tree('test', relations)
+        assert(root ~= nil)
+        assert(root.name == 'test')
+        assert(#root.children == 0)
+    end)
+
+    it('__build_hierarchy_tree - null relations', function()
+        local root = tree.__build_hierarchy_tree('test', nil)
+        assert(root ~= nil)
+        assert(root.name == 'test')
+        assert(#root.children == 0)
+    end)
+
+    it('__build_hierarchy_tree - empty relations', function()
+        local root = tree.__build_hierarchy_tree('test', {})
+        assert(root ~= nil)
+        assert(root.name == 'test')
+        assert(#root.children == 0)
+    end)
 end)
