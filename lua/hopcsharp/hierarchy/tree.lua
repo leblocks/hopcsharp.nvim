@@ -1,3 +1,5 @@
+local utils = require('hopcsharp.utils')
+
 local M = {}
 
 ---@class HierarchyTreeNode
@@ -7,28 +9,6 @@ local M = {}
 ---@class TypeRelation
 ---@field base string Name of the base type
 ---@field name string Name of the type
-
--- TODO move to general utils + test
-local function contains(entries, item)
-    for _, entry in ipairs(entries) do
-        if entry == item then
-            return true
-        end
-    end
-
-    return false
-end
-
--- TODO move to general utils + test
-local function find_all(entries, key, value)
-    local result = {}
-    for _, entry in ipairs(entries) do
-        if entry[key] == value then
-            table.insert(result, entry)
-        end
-    end
-    return result
-end
 
 ---@param root HierarchyTreeNode Root node of the hierarchy tree
 ---@param prefix string Prefix that will be used to indent tree nodes
@@ -111,18 +91,18 @@ M.__build_hierarchy_tree = function(name, relations)
 
     ---@param node HierarchyTreeNode Node of the hierarchy tree
     local function build(node)
-        if contains(visited_nodes, node.name) then
+        if utils.__contains(visited_nodes, node.name) then
             return
         else
             table.insert(visited_nodes, node.name)
         end
 
-        local children = find_all(relations, 'base', node.name)
+        local children = utils.__find_table(relations, 'base', node.name)
 
         node.children = {}
         for _, child in ipairs(children) do
             -- recheck here if we visited already such node
-            if not contains(visited_nodes, child.name) then
+            if not utils.__contains(visited_nodes, child.name) then
                 table.insert(node.children, { name = child.name })
             end
         end

@@ -1,24 +1,9 @@
-local query = require('hopcsharp.database.query')
-local tree = require('hopcsharp.hierarchy.tree')
+local utils = require('hopcsharp.utils')
 local database = require('hopcsharp.database')
+local tree = require('hopcsharp.hierarchy.tree')
+local query = require('hopcsharp.database.query')
 
 local M = {}
-
--- TODO move to general utils + test
-local function find_all(entries, key, value)
-    local result = {}
-    for _, entry in ipairs(entries) do
-        if entry[key] == value then
-            table.insert(result, entry)
-        end
-    end
-    return result
-end
-
--- TODO move to general utils + test
-local function find_single(entries, key, value)
-    return find_all(entries, key, value)[1] or nil
-end
 
 M.__get_type_parents = function(type_name)
     local db = database.__get_db()
@@ -28,7 +13,7 @@ M.__get_type_parents = function(type_name)
         return tree.__create_node(type_name, {})
     end
 
-    local current = find_single(type_relations, 'name', type_name)
+    local current = utils.__find_table(type_relations, 'name', type_name)
 
     if current == nil then
         return {}
@@ -39,7 +24,7 @@ M.__get_type_parents = function(type_name)
     -- go to the head of the hierarchy
     while next ~= nil do
         current = next
-        next = find_single(type_relations, 'name', current.base)
+        next = utils.__find_first(type_relations, 'name', current.base)
     end
 
     return tree.__build_hierarchy_tree(current.base, type_relations)
