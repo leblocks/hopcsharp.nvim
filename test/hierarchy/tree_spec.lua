@@ -123,11 +123,11 @@ describe('tree hiearchy tests', function()
 
     it('__build_hierarchy_tree - happy path', function()
         local relations = {
-            { base = "Class1Generation1", name = "Class1Generation2" },
-            { base = "Class1Generation1", name = "Class2Generation2" },
-            { base = "Class1Generation2", name = "Class1Generation3" },
-            { base = "Class1Generation3", name = "Class1Generation4" },
-            { base = "Class1Generation3", name = "Class2Generation4" },
+            { base = 'Class1Generation1', name = 'Class1Generation2' },
+            { base = 'Class1Generation1', name = 'Class2Generation2' },
+            { base = 'Class1Generation2', name = 'Class1Generation3' },
+            { base = 'Class1Generation3', name = 'Class1Generation4' },
+            { base = 'Class1Generation3', name = 'Class2Generation4' },
         }
 
         local root = tree.__build_hierarchy_tree('Class1Generation1', relations)
@@ -153,8 +153,8 @@ describe('tree hiearchy tests', function()
 
     it('__build_hierarchy_tree - cycled relations in base', function()
         local relations = {
-            { base = "Class1Generation1", name = "Class1Generation2" },
-            { base = "Class1Generation2", name = "Class1Generation1" },
+            { base = 'Class1Generation1', name = 'Class1Generation2' },
+            { base = 'Class1Generation2', name = 'Class1Generation1' },
         }
 
         local root = tree.__build_hierarchy_tree('Class1Generation2', relations)
@@ -167,8 +167,8 @@ describe('tree hiearchy tests', function()
 
     it('__build_hierarchy_tree - cycled relations in name', function()
         local relations = {
-            { base = "Class1Generation1", name = "Class1Generation2" },
-            { base = "Class1Generation2", name = "Class1Generation1" },
+            { base = 'Class1Generation1', name = 'Class1Generation2' },
+            { base = 'Class1Generation2', name = 'Class1Generation1' },
         }
 
         local root = tree.__build_hierarchy_tree('Class1Generation1', relations)
@@ -181,7 +181,7 @@ describe('tree hiearchy tests', function()
 
     it('__build_hierarchy_tree - cycled relations on itself', function()
         local relations = {
-            { base = "Class1Generation1", name = "Class1Generation1" },
+            { base = 'Class1Generation1', name = 'Class1Generation1' },
         }
 
         local root = tree.__build_hierarchy_tree('Class1Generation1', relations)
@@ -192,11 +192,11 @@ describe('tree hiearchy tests', function()
 
     it('__build_hierarchy_tree - name does not match types in relations', function()
         local relations = {
-            { base = "Class1Generation1", name = "Class1Generation2" },
-            { base = "Class1Generation1", name = "Class2Generation2" },
-            { base = "Class1Generation2", name = "Class1Generation3" },
-            { base = "Class1Generation3", name = "Class1Generation4" },
-            { base = "Class1Generation3", name = "Class2Generation4" },
+            { base = 'Class1Generation1', name = 'Class1Generation2' },
+            { base = 'Class1Generation1', name = 'Class2Generation2' },
+            { base = 'Class1Generation2', name = 'Class1Generation3' },
+            { base = 'Class1Generation3', name = 'Class1Generation4' },
+            { base = 'Class1Generation3', name = 'Class2Generation4' },
         }
 
         local root = tree.__build_hierarchy_tree('test', relations)

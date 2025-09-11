@@ -13,7 +13,7 @@ M.__get_type_parents = function(type_name)
         return tree.__create_node(type_name, {})
     end
 
-    local current = utils.__find_table(type_relations, 'name', type_name)
+    local current = utils.__find_first(type_relations, 'name', type_name)
 
     if current == nil then
         return {}
@@ -67,4 +67,3 @@ M.__connect_parent_and_child_hierarchies = function(parents, children)
 end
 
 return M
-
