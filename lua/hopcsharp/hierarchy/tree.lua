@@ -121,7 +121,10 @@ M.__build_hierarchy_tree = function(name, relations)
 
         node.children = {}
         for _, child in ipairs(children) do
-            table.insert(node.children, { name = child.name })
+            -- recheck here if we visited already such node
+            if not contains(visited_nodes, child.name) then
+                table.insert(node.children, { name = child.name })
+            end
         end
 
         for _, child in ipairs(node.children) do
@@ -135,4 +138,3 @@ M.__build_hierarchy_tree = function(name, relations)
 end
 
 return M
-
