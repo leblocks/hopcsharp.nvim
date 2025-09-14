@@ -172,8 +172,9 @@ Example: >
 
 ------------------------------------------------------------------------------
                                                *hopcsharp.get_type_hierarchy*
+hopcsharp.get_type_hierarchy()
 
-TODO
+Opens read-only buffer with type hierarchy.
 
 Example: >
     require('hopcsharp').get_type_hierarchy()
