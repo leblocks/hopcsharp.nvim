@@ -116,15 +116,15 @@ hopcsharp.hop_to_definition({callback}, {config})
 Navigates to the definition of the symbol under the cursor.
 
 Parameters: ~
-    {callback}  (function, optional) Custom callback function to handle
-                multiple definitions instead of using quickfix list
 
     {config}    (table, optional) configuration object
     >lua
                 {
-                    jump_on_quickfix = false -- immediately jump to first entry when qf
-                                             -- list is opened during navigation
-                }
+                    jump_on_quickfix = false,              -- immediately jump to first entry when qf
+                                                           -- list is opened during navigation
+
+                    callback = function(definitions) end   -- (function, optional) Custom callback function to handle
+                }                                          --  multiple definitions instead of using quickfix list
 
 
 Behavior:
@@ -137,12 +137,12 @@ Example: >
     require('hopcsharp').hop_to_definition()
 
     -- With custom callback
-    require('hopcsharp').hop_to_definition(function(definitions)
+    require('hopcsharp').hop_to_definition({ callback = function(definitions)
         -- Custom handling of multiple definitions
         for _, def in ipairs(definitions) do
             print(def.name .. " at " .. def.path .. ":" .. def.row)
         end
-    end)
+    end })
 
 
 ------------------------------------------------------------------------------
@@ -152,15 +152,14 @@ hopcsharp.hop_to_implementation({callback}, {config})
 Navigates to implementations of the symbol under the cursor.
 
 Parameters: ~
-    {callback}  (function, optional) Custom callback function to handle
-                multiple implementations instead of using quickfix list
-
     {config}    (table, optional) configuration object
     >lua
                 {
-                    jump_on_quickfix = false -- immediately jump to first entry when qf
-                                             -- list is opened during navigation
-                }
+                    jump_on_quickfix = false,              -- immediately jump to first entry when qf
+                                                           -- list is opened during navigation
+
+                    callback = function(definitions) end   -- (function, optional) Custom callback function to handle
+                }                                          --  multiple implementation instead of using quickfix list
 
 
 Behavior is similar to |hopcsharp.hop_to_definition| but finds implementations

@@ -97,20 +97,20 @@ M.init_database = function()
     })
 end
 
-M.hop_to_definition = function(callback, config)
+M.hop_to_definition = function(config)
     if vim.g.hopcsharp_processing then
         vim.notify(PROCESSING_ERROR_MESSAGE)
         return
     end
-    hop.__hop_to_definition(callback, config)
+    hop.__hop_to_definition(config)
 end
 
-M.hop_to_implementation = function(callback, config)
+M.hop_to_implementation = function(config)
     if vim.g.hopcsharp_processing then
         vim.notify(PROCESSING_ERROR_MESSAGE)
         return
     end
-    hop.__hop_to_implementation(callback, config)
+    hop.__hop_to_implementation(config)
 end
 
 M.get_type_hierarchy = function()

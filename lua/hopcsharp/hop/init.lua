@@ -59,11 +59,12 @@ local function find_node_parent_in_tree(node, parent_node, parent_node_type)
     return find_node_parent_in_tree(node, parent_node:child_with_descendant(node), parent_node_type)
 end
 
-M.__hop_to_definition = function(callback, config)
+M.__hop_to_definition = function(config)
     local db = database.__get_db()
     local cword = vim.fn.expand('<cword>')
 
     config = config or {}
+    local callback = config.callback or nil
     local jump_on_quickfix = config.jump_on_quickfix or false
 
     local node = vim.treesitter.get_node()
@@ -120,11 +121,12 @@ M.__hop_to_definition = function(callback, config)
     end
 end
 
-M.__hop_to_implementation = function(callback, config)
+M.__hop_to_implementation = function(config)
     local db = database.__get_db()
     local cword = vim.fn.expand('<cword>')
 
     config = config or {}
+    local callback = config.callback or nil
     local jump_on_quickfix = config.jump_on_quickfix or false
 
     -- handle case when current node is method defintion
