@@ -79,7 +79,7 @@ M.init_database = function()
     local line_buffer = {}
     -- using table here, for quirks of different OS's
     -- to add different line separators
-    local line_separators = { '\r\r' }
+    local line_separators = { '\r\r', '\r' }
 
     local function flush_line_buffer()
         if #line_buffer > 0 then
