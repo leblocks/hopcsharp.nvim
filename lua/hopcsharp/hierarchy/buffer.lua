@@ -11,6 +11,7 @@ end
 
 M.__create_hierarchy_buffer = function(type_name, tree_root)
     local buffer_name = M.__get_hierarchy_buffer_name(type_name)
+    local leaf_nodes = tree.__get_leaf_nodes(tree_root)
 
     local not_exists = function(path)
         local buf = vim.api.nvim_create_buf(true, true)
@@ -22,11 +23,16 @@ M.__create_hierarchy_buffer = function(type_name, tree_root)
 
         vim.api.nvim_create_autocmd('BufWinEnter', {
             callback = function()
-                vim.fn.matchadd('@type', type_name)
+                vim.fn.matchadd('@lsp.type.enum', type_name)
+                for _, leaf_node in ipairs(leaf_nodes) do
+                    vim.fn.matchadd('@lsp.type.enumMember', leaf_node)
+                end
             end,
             buffer = buf,
         })
 
+        -- clear all highlights when leaving buffer
+        -- so code won't get unexpected highlights
         vim.api.nvim_create_autocmd('BufWinLeave', {
             callback = function()
                 vim.fn.clearmatches()
