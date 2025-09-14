@@ -21,8 +21,17 @@ M.__get_type_parents = function(type_name)
 
     local next = current
 
+    local iterations_count = 0
+
     -- go to the head of the hierarchy
     while next ~= nil do
+        -- break from cycles
+        if iterations_count > 1000 then
+            error('cycle detected for type hierarchy: ' .. type_name)
+        else
+            iterations_count = iterations_count + 1
+        end
+
         current = next
         next = utils.__find_first(type_relations, 'name', current.base)
     end
