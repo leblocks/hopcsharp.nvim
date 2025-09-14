@@ -23,14 +23,16 @@ describe('hop_to_implementation', function()
         utils.prepare('test/sources/hop_to_implementation.cs', 'test/sources/hop_to_implementation.cs', 15, 26)
 
         local called = false
-        hop.__hop_to_implementation({ callback = function(implementations)
-            called = true
-            assert(#implementations == 1)
-            assert(implementations[1].name == 'GetString')
-            assert(implementations[1].row == 4)
-            assert(implementations[1].column == 18)
-            assert(implementations[1].type == databaseutils.types.METHOD)
-        end })
+        hop.__hop_to_implementation({
+            callback = function(implementations)
+                called = true
+                assert(#implementations == 1)
+                assert(implementations[1].name == 'GetString')
+                assert(implementations[1].row == 4)
+                assert(implementations[1].column == 18)
+                assert(implementations[1].type == databaseutils.types.METHOD)
+            end,
+        })
 
         assert(called)
     end)
@@ -40,14 +42,16 @@ describe('hop_to_implementation', function()
         utils.prepare('test/sources/hop_to_implementation.cs', 'test/sources/hop_to_implementation.cs', 19, 27)
 
         local called = false
-        hop.__hop_to_implementation({ callback = function(implementations)
-            called = true
-            assert(#implementations == 1)
-            assert(implementations[1].name == 'DoSomething')
-            assert(implementations[1].row == 8)
-            assert(implementations[1].column == 16)
-            assert(implementations[1].type == databaseutils.types.METHOD)
-        end })
+        hop.__hop_to_implementation({
+            callback = function(implementations)
+                called = true
+                assert(#implementations == 1)
+                assert(implementations[1].name == 'DoSomething')
+                assert(implementations[1].row == 8)
+                assert(implementations[1].column == 16)
+                assert(implementations[1].type == databaseutils.types.METHOD)
+            end,
+        })
 
         assert(called)
     end)
