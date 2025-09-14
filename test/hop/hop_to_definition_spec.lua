@@ -9,12 +9,12 @@ describe('hop_to_definition', function()
 
         local called = false
 
-        hop.__hop_to_definition(function(rows)
+        hop.__hop_to_definition({ callback = function(rows)
             called = true
             assert(#rows == 2)
             assert(rows[1].name == 'Class1')
             assert(rows[2].name == 'Class1')
-        end)
+        end })
 
         assert(called)
     end)
@@ -25,11 +25,11 @@ describe('hop_to_definition', function()
 
         local called = false
 
-        hop.__hop_to_definition(function(rows)
+        hop.__hop_to_definition({ callback = function(rows)
             called = true
             assert(#rows == 1)
             assert(rows[1].name == 'Attributed1Attribute')
-        end)
+        end })
 
         assert(called)
     end)
@@ -55,12 +55,12 @@ describe('hop_to_definition', function()
 
         local called = false
 
-        hop.__hop_to_definition(function(definitions)
+        hop.__hop_to_definition({ callback = function(definitions)
             assert(#definitions == 1)
             assert(definitions[1].name == 'Class1')
             assert(definitions[1].type == databaseutils.types.CONSTRUCTOR)
             called = true
-        end)
+        end })
 
         assert(called)
     end)
@@ -71,9 +71,9 @@ describe('hop_to_definition', function()
 
         local called = false
 
-        hop.__hop_to_definition(function(_)
+        hop.__hop_to_definition({ callback = function(_)
             called = true
-        end)
+        end })
 
         assert(called == false)
     end)
@@ -83,14 +83,14 @@ describe('hop_to_definition', function()
         utils.prepare('test/sources/hop_to_definition.cs', 'test/sources/hop_to_definition.cs', 11, 9)
 
         local called = false
-        hop.__hop_to_definition(function(definitions)
+        hop.__hop_to_definition({ callback = function(definitions)
             called = true
             assert(#definitions == 1)
             assert(definitions[1].name == 'Foo')
             assert(definitions[1].row == 7)
             assert(definitions[1].column == 16)
             assert(definitions[1].type == databaseutils.types.METHOD)
-        end)
+        end })
 
         assert(called)
     end)

@@ -50,22 +50,20 @@ current session.
 ### hop_to_definition
 
 ```lua
-require('hopcsharp').hop_to_definition(callback, config)
+require('hopcsharp').hop_to_definition(config)
 ```
 
 Opens new buffer or switches to existing one on a line and column where definition is defined. If it finds more than
-one definition it will add those to quickfix list and will open it. If _callback_ is provided, instead of opening
-defintions in a quickfix list, _callback_ will be invoked. See `:h hopcsharp.hop_to_definition` for more details.
+one definition it will add those to quickfix list and will open it. See `:h hopcsharp.hop_to_definition` for more details.
 
 ### hop_to_implementation
 
 ```lua
-require('hopcsharp').hop_to_implementation(callback, config)
+require('hopcsharp').hop_to_implementation(config)
 ```
 
 Opens new buffer or switches to existing one on a line and column where implementation is defined. If it finds more than
-one implementation it will add those to quickfix list and will open it. If _callback_ is provided, instead of opening
-implementations in a quickfix list, _callback_ will be invoked. See `:h hopcsharp.hop_to_definition` for more details.
+one implementation it will add those to quickfix list and will open it. See `:h hopcsharp.hop_to_definition` for more details.
 
 ### get_type_hierarchy
 
