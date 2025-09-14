@@ -118,4 +118,26 @@ M.get_method_implementation_by_parent_name_and_method_name = [[
         f.path ASC
 ]]
 
+M.get_all_parent_types = [[
+    WITH RECURSIVE parents(name, base) AS (
+        SELECT i.name, i.base FROM inheritance i WHERE i.name = :type
+        UNION
+        SELECT i.name, i.base FROM parents p
+        JOIN inheritance i ON p.base = i.name
+        LIMIT 1000 -- limit stuff in case something goes wrong
+    )
+    SELECT DISTINCT name, base FROM parents WHERE base <> name;
+]]
+
+M.get_all_child_types = [[
+    WITH RECURSIVE children(name, base) AS (
+        SELECT i.name, i.base FROM inheritance i WHERE i.base = :type
+        UNION
+        SELECT i.name, i.base FROM children c
+        JOIN inheritance i ON c.name = i.base
+        LIMIT 1000 -- limit stuff in case something goes wrong
+    )
+    SELECT DISTINCT name, base FROM children WHERE base <> name;
+]]
+
 return M

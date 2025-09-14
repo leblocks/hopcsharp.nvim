@@ -5,6 +5,7 @@ local definition = require('hopcsharp.parse.definition')
 local inheritance = require('hopcsharp.parse.inheritance')
 
 local hop = require('hopcsharp.hop')
+local hierarchy = require('hopcsharp.hierarchy')
 local database = require('hopcsharp.database')
 local BufferedWriter = require('hopcsharp.database.buffer')
 
@@ -110,6 +111,14 @@ M.hop_to_implementation = function(callback, config)
         return
     end
     hop.__hop_to_implementation(callback, config)
+end
+
+M.get_type_hierarchy = function()
+    if vim.g.hopcsharp_processing then
+        vim.notify(PROCESSING_ERROR_MESSAGE)
+        return
+    end
+    hierarchy.__get_type_hierarchy()
 end
 
 ---@return sqlite_db
