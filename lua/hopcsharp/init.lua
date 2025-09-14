@@ -1,6 +1,7 @@
 local os = require('os')
 
 local parse = require('hopcsharp.parse')
+local utils = require('hopcsharp.utils')
 local definition = require('hopcsharp.parse.definition')
 local inheritance = require('hopcsharp.parse.inheritance')
 
@@ -16,8 +17,9 @@ local PROCESSING_ERROR_MESSAGE = 'init_database is running, try again later. '
 
 vim.g.hopcsharp_processing = false
 
-local function log(message)
-    print(message)
+local function log(message, prefix)
+    prefix = prefix or 'hopcsharp: '
+    print(prefix .. message)
 end
 
 local function scheduled_iteration(i, iterable, callback)
@@ -48,7 +50,7 @@ M.__init_database = function()
         counter = counter + 1
 
         if counter % 100 == 0 then
-            log(string.format('processed %s/%s of files', counter, #items))
+            log(string.format('processed %s/%s of files', counter, #items), '')
         end
 
         if counter == #items then
@@ -74,17 +76,34 @@ M.init_database = function()
         'qa',
     }
 
+    local line_buffer = {}
+    -- using table here, for quirks of different OS's
+    -- to add different line separators
+    local line_separators = { '\r\r' }
+
+    local function flush_line_buffer()
+        if #line_buffer > 0 then
+            log(table.concat(line_buffer, ''))
+            line_buffer = {}
+        end
+    end
+
     local start = os.time()
     local on_stdout = function(_, data)
-        if #data > 0 then
-            print('hopcsharp: ' .. table.concat(data, ''))
+        for _, entry in ipairs(data) do
+            if utils.__contains(line_separators, entry) then
+                flush_line_buffer()
+            else
+                table.insert(line_buffer, entry)
+            end
         end
     end
 
     local on_exit = function(_)
+        flush_line_buffer()
         vim.g.hopcsharp_processing = false
         local elapsed = os.difftime(os.time(), start)
-        print('hopcsharp: finished processing files ' .. elapsed .. 's elapsed')
+        log('finished processing files ' .. elapsed .. 's elapsed')
     end
 
     -- spawn actual parsing in a separate instance of neovim
