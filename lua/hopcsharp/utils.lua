@@ -24,4 +24,8 @@ M.__contains = function(entries, entry)
     return false
 end
 
+M.__trim_spaces = function(word)
+    return string.gsub(word, '%s+', '')
+end
+
 return M

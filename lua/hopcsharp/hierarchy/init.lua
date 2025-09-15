@@ -4,7 +4,7 @@ local buffer = require('hopcsharp.hierarchy.buffer')
 local M = {}
 
 M.__get_type_hierarchy = function()
-    local cword = vim.fn.expand('<cword>')
+    local cword = vim.fn.expand('<cWORD>')
     local parents = utils.__get_type_parents(cword)
     local children = utils.__get_type_children(cword)
 

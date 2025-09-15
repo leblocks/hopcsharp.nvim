@@ -23,3 +23,19 @@ public class Class2Generation4 : Class1Generation3
 {
 }
 
+public class Parent
+{
+}
+
+public class GenericParent<T> : Parent
+{
+}
+
+public class Child<T> : GenericParent<T>
+{
+}
+
+public class Child<T,V> : GenericParent<T>
+{
+}
+
