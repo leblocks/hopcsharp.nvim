@@ -25,6 +25,9 @@ M.__contains = function(entries, entry)
 end
 
 M.__trim_spaces = function(word)
+    if word == nil then
+        return nil
+    end
     return string.gsub(word, '%s+', '')
 end
 

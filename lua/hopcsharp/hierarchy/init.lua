@@ -1,10 +1,12 @@
+local lua_utils = require('hopcsharp.utils')
 local utils = require('hopcsharp.hierarchy.utils')
 local buffer = require('hopcsharp.hierarchy.buffer')
 
 local M = {}
 
-M.__get_type_hierarchy = function()
-    local cword = vim.fn.expand('<cWORD>')
+M.__get_type_hierarchy = function(config)
+    config = config or {}
+    local cword = lua_utils.__trim_spaces(config.cword) or vim.fn.expand('<cWORD>')
     local parents = utils.__get_type_parents(cword)
     local children = utils.__get_type_children(cword)
 

@@ -39,3 +39,8 @@ public class Child<T,V> : GenericParent<T>
 {
 }
 
+// spaces here are intentionally for testing purposes
+public class Child<T, V, Z> : GenericParent<T>
+{
+}
+

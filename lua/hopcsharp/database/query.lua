@@ -23,7 +23,8 @@ M.get_definition_by_name_and_type = [[
         d.type
     FROM definitions d
     JOIN files f on f.id = d.path_id
-    WHERE (d.name = :name OR d.name = :name || 'Attribute' OR d.name LIKE :name || '<%>') AND d.type = :type
+    WHERE (d.name = :name OR d.name = :name || 'Attribute' OR d.name LIKE :name || '<%>')
+        AND d.type = :type
 ]]
 
 M.get_all_definitions = [[
@@ -83,7 +84,7 @@ M.get_implementations_by_name = [[
     FROM inheritance i
     JOIN definitions d on d.name = i.name
     JOIN files f on f.id = d.path_id
-    WHERE i.base = :name OR i.base LIKE :name || '<%>'
+    WHERE (i.base = :name OR i.base LIKE :name || '<%>')
         AND d.type <> 7 -- filter constructors
         AND d.type <> 6 -- filter methods
     ORDER BY
