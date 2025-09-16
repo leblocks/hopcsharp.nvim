@@ -13,7 +13,6 @@ M.__parse_inheritance = function(tree, _, file_content, writer)
         for id, nodes in pairs(match) do
             local name = query.base_identifier.captures[id]
             for _, node in ipairs(nodes) do
-
                 local type_parameter = ''
                 pautils.__icaptures(query.type_parameter_list, node:parent(), file_content, function(n, c)
                     -- remove spaces, so <T, V> will be treated the same as <T,V>

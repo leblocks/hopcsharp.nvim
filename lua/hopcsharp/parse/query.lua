@@ -25,6 +25,6 @@ M.base_identifier = utils.__get_query([[
     ]
 ]])
 
-M.type_parameter_list = utils.__get_query("[[ (type_parameter_list) @name ]]")
+M.type_parameter_list = utils.__get_query('[[ (type_parameter_list) @name ]]')
 
 return M
