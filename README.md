@@ -10,8 +10,11 @@ but still good) parse code and store marks in a SQLite database for fast access,
 code base using built in methods or writing queries on your own against sqlite database.
 
 __This plugin is in its early stages__ expect lots of bugs :D, I hope that there will be people's interest and
-contributions as well. I myself, don't have much of a free time, it took me 3 months to get to the current (22072025)
-state of things, but I'll try to improve it little by little.
+contributions as well. I'll try to improve it little by little.
+
+<p align="center">
+   <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3Q0YTdkNWkxb2Z0d216eW5rcHB0N2dxd2htYXZiZGphbTZkNGRxdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HBGku9Wu9y0CtgXuCF/giphy.gif" />
+</p>
 
 ## How does it work?
 
@@ -87,11 +90,15 @@ Returns opened _[sqlite_db](https://github.com/kkharji/sqlite.lua/blob/50092d60f
 configuration that I use day to day) you can take a look at example configuration based on _get_db()_ method and _[fzf-lua](https://github.com/ibhagwan/fzf-lua)_,
 here is demo usage of it on a [net framework reference source](https://github.com/microsoft/referencesource) repository
 
-![demo](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExODhzM2JnMTc1eGZ0ajB5cjFvNXF5ZDV1aDFkbG5saWhwcGo4a3o2ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HXFp3DblkKtrcOBn8J/giphy.gif)
+<p align="center">
+   <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExODhzM2JnMTc1eGZ0ajB5cjFvNXF5ZDV1aDFkbG5saWhwcGo4a3o2ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HXFp3DblkKtrcOBn8J/giphy.gif" />
+</p>
 
 Create repository _.cs_ files fzf-lua picker that were previously stored in a db:
 
-![demo](https://media.giphy.com/media/jvaFNuMIKjvHsACiBM/giphy.gif)
+<p align="center">
+   <img src="https://media.giphy.com/media/jvaFNuMIKjvHsACiBM/giphy.gif" />
+</p>
 
 ```lua
 local list_files = function()
