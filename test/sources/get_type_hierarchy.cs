@@ -33,6 +33,15 @@ public class GenericParent<T> : Parent
 
 public class Child<T> : GenericParent<T>
 {
+    // test case, query for type arguments
+    // must be precies and not confuse T with K, P
+    class Meow<K, P>
+    {
+    }
+
+    class Bark<T> : Meow<K, P>
+    {
+    }
 }
 
 public class Child<T,V> : GenericParent<T>

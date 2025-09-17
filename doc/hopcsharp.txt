@@ -175,15 +175,6 @@ hopcsharp.get_type_hierarchy()
 
 Opens read-only buffer with type hierarchy.
 
-Parameters: ~
-    {config}    (table, optional) configuration object
-    >lua
-                {
-                    cword = 'SomeInterface' -- name of the type to build hierarchy
-                                        -- <cWORD> is being used by default.
-                                        -- See h: expand for details about <cWORD>
-                }
-
 
 Example: >
     require('hopcsharp').get_type_hierarchy()

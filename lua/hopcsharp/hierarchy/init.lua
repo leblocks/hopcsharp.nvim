@@ -4,9 +4,20 @@ local buffer = require('hopcsharp.hierarchy.buffer')
 
 local M = {}
 
-M.__get_type_hierarchy = function(config)
-    config = config or {}
-    local cword = lua_utils.__trim_spaces(config.cword) or vim.fn.expand('<cWORD>')
+M.__get_type_hierarchy = function()
+    local cword = vim.fn.expand('<cword>')
+    local type_parameter = ''
+
+    local node = vim.treesitter.get_node()
+    if node ~= nil then
+        local sibling = node:next_sibling()
+        if sibling ~= nil and (sibling:type() == 'type_parameter_list' or sibling:type() == 'type_argument_list') then
+            type_parameter = lua_utils.__trim_spaces(vim.treesitter.get_node_text(sibling, 0))
+        end
+    end
+
+    cword = cword .. type_parameter
+
     local parents = utils.__get_type_parents(cword)
     local children = utils.__get_type_children(cword)
 

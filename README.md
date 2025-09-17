@@ -68,10 +68,10 @@ one implementation it will add those to quickfix list and will open it. See `:h 
 ### get_type_hierarchy
 
 ```lua
-require('hopcsharp').get_type_hierarchy(config)
+require('hopcsharp').get_type_hierarchy()
 ```
 
-Opens read-only buffer with type hierarchy. See `:h hopcsharp.get_type_hierarchy` for more details.
+Opens read-only buffer with type hierarchy.
 
 ### get_db
 

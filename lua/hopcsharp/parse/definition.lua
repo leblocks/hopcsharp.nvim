@@ -15,10 +15,11 @@ M.__parse_definitions = function(tree, path_id, file_content, writer)
         local type
 
         local type_parameter = ''
-        pautils.__icaptures(query.type_parameter_list, node:parent(), file_content, function(n, c)
-            -- remove spaces, so <T, V> will be treated the same as <T,V>
-            type_parameter = utils.__trim_spaces(vim.treesitter.get_node_text(n, c, nil))
-        end)
+
+        local sibling = node:next_sibling()
+        if sibling ~= nil and sibling:type() == 'type_parameter_list' then
+            type_parameter = utils.__trim_spaces(vim.treesitter.get_node_text(sibling, content))
+        end
 
         if parent_node_type == 'class_declaration' then
             type = dbutils.types.CLASS
