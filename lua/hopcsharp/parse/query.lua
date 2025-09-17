@@ -2,6 +2,8 @@ local utils = require('hopcsharp.parse.utils')
 
 local M = {}
 
+-- type_parameter_list
+
 M.declaration_identifier = utils.__get_query([[
     [
         (enum_declaration name: (identifier) @name)
@@ -16,10 +18,10 @@ M.declaration_identifier = utils.__get_query([[
 
 M.base_identifier = utils.__get_query([[
     [
-        (class_declaration name: (identifier) @name (base_list (identifier) @base))
-        (struct_declaration name: (identifier) @name (base_list (identifier) @base))
-        (record_declaration name: (identifier) @name (base_list (identifier) @base))
-        (interface_declaration name: (identifier) @name (base_list (identifier) @base))
+        (class_declaration name: (identifier) @name (base_list [(identifier)(generic_name)] @base))
+        (struct_declaration name: (identifier) @name (base_list [(identifier)(generic_name)] @base))
+        (record_declaration name: (identifier) @name (base_list [(identifier)(generic_name)] @base))
+        (interface_declaration name: (identifier) @name (base_list [(identifier)(generic_name)] @base))
     ]
 ]])
 

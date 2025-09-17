@@ -104,4 +104,45 @@ describe('hop_to_definition', function()
 
         assert(called)
     end)
+
+    it('__hop_to_definition hops from nested generic class correctly', function()
+        -- parse get_type_hierarchy.cs and stay on a Meow<K, P> in a baseclass list
+        utils.prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 42, 22)
+        local called = false
+        hop.__hop_to_definition({
+            callback = function(definitions)
+                called = true
+                assert(#definitions == 1)
+                assert(definitions[1].name == 'Meow<K,P>')
+                assert(definitions[1].row == 37)
+                assert(definitions[1].column == 10)
+                assert(definitions[1].type == databaseutils.types.CLASS)
+            end,
+        })
+
+        assert(called)
+    end)
+
+    it('__hop_to_definition hops from generic class correctly', function()
+        -- parse get_type_hierarchy.cs and stay on a Child<T, V> in a baseclass list
+        utils.prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 47, 16)
+        local called = false
+        hop.__hop_to_definition({
+            callback = function(definitions)
+                called = true
+                assert(#definitions == 2)
+                assert(definitions[1].name == 'Child<T>')
+                assert(definitions[1].row == 33)
+                assert(definitions[1].column == 13)
+                assert(definitions[1].type == databaseutils.types.CLASS)
+
+                assert(definitions[2].name == 'Child<T,V,Z>')
+                assert(definitions[2].row == 51)
+                assert(definitions[2].column == 13)
+                assert(definitions[2].type == databaseutils.types.CLASS)
+            end,
+        })
+
+        assert(called)
+    end)
 end)

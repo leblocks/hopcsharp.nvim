@@ -56,4 +56,36 @@ describe('get_type_parents', function()
         assert(root.name == 'DummyNonExistingNode')
         assert(#root.children == 0)
     end)
+
+    it(
+        '__get_type_parents parses tree from type to children type correctly - generic nodes - from root node',
+        function()
+            utils.prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 1, 1)
+
+            local root = hierarchy.__get_type_parents('Parent')
+
+            assert(root ~= nil)
+            assert(root.name == 'Parent')
+            assert(#root.children == 0)
+        end
+    )
+
+    it(
+        '__get_type_parents parses tree from type to children type correctly - generic nodes - from leaf node',
+        function()
+            utils.prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 1, 1)
+
+            local root = hierarchy.__get_type_parents('Child<T,V,Z>')
+
+            assert(root ~= nil)
+            assert(root.name == 'Parent')
+            assert(#root.children == 1)
+
+            assert(root.children[1].name == 'GenericParent<T>')
+            assert(#root.children[1].children == 1)
+
+            assert(root.children[1].children[1].name == 'Child<T,V,Z>')
+            assert(#root.children[1].children[1].children == 0)
+        end
+    )
 end)

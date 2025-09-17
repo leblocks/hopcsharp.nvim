@@ -1,3 +1,4 @@
+local utils = require('hopcsharp.utils')
 local query = require('hopcsharp.parse.query')
 
 local M = {}
@@ -11,7 +12,14 @@ M.__parse_inheritance = function(tree, _, file_content, writer)
         for id, nodes in pairs(match) do
             local name = query.base_identifier.captures[id]
             for _, node in ipairs(nodes) do
-                entry[name] = vim.treesitter.get_node_text(node, file_content, nil)
+                local type_parameter = ''
+
+                local sibling = node:next_sibling()
+                if sibling ~= nil and sibling:type() == 'type_parameter_list' then
+                    type_parameter = utils.__trim_spaces(vim.treesitter.get_node_text(sibling, file_content))
+                end
+
+                entry[name] = vim.treesitter.get_node_text(node, file_content, nil) .. type_parameter
             end
         end
         writer:add_to_buffer('inheritance', entry)

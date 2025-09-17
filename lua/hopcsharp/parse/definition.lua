@@ -1,6 +1,7 @@
-local pautils = require('hopcsharp.parse.utils')
 local dbutils = require('hopcsharp.database.utils')
+local pautils = require('hopcsharp.parse.utils')
 local query = require('hopcsharp.parse.query')
+local utils = require('hopcsharp.utils')
 
 local M = {}
 
@@ -12,6 +13,13 @@ M.__parse_definitions = function(tree, path_id, file_content, writer)
     pautils.__icaptures(query.declaration_identifier, tree, file_content, function(node, content)
         local parent_node_type = node:parent():type()
         local type
+
+        local type_parameter = ''
+
+        local sibling = node:next_sibling()
+        if sibling ~= nil and sibling:type() == 'type_parameter_list' then
+            type_parameter = utils.__trim_spaces(vim.treesitter.get_node_text(sibling, content))
+        end
 
         if parent_node_type == 'class_declaration' then
             type = dbutils.types.CLASS
@@ -34,7 +42,7 @@ M.__parse_definitions = function(tree, path_id, file_content, writer)
         writer:add_to_buffer('definitions', {
             path_id = path_id,
             type = type,
-            name = vim.treesitter.get_node_text(node, content, nil),
+            name = vim.treesitter.get_node_text(node, content, nil) .. type_parameter,
             row = row,
             column = column,
         })
