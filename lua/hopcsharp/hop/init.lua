@@ -13,7 +13,7 @@ local function populate_quickfix(entries, jump_on_quickfix)
             filename = entry.path,
             lnum = entry.row + 1,
             col = entry.col,
-            text = dbutils.get_type_name(entry.type),
+            text = dbutils.get_type_name(entry.type) .. ' ' .. entry.name,
         })
     end
 
