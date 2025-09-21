@@ -17,11 +17,13 @@ local PROCESSING_ERROR_MESSAGE = 'init_database is running, try again later. '
 
 vim.g.hopcsharp_processing = false
 
+-- TODO move to hopcsharp.utils
 local function log(message, prefix)
     prefix = prefix or 'hopcsharp: '
     print(prefix .. message)
 end
 
+-- TODO move to hopcsharp.utils
 local function scheduled_iteration(i, iterable, callback)
     if i > #iterable then
         return
@@ -34,6 +36,7 @@ local function scheduled_iteration(i, iterable, callback)
     end)
 end
 
+-- TODO move to hopcsharp.init?
 M.__init_database = function()
     -- drop existing schema
     database.__drop_db()
@@ -60,6 +63,7 @@ M.__init_database = function()
 end
 
 M.init_database = function()
+    -- TODO pull out check somehow?
     if vim.g.hopcsharp_processing then
         vim.notify(PROCESSING_ERROR_MESSAGE)
         return
