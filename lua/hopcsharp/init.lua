@@ -12,39 +12,26 @@ local BufferedWriter = require('hopcsharp.database.buffer')
 
 local M = {}
 
-local PROCESSING_ERROR_MESSAGE = 'init_database is running, try again later. '
-    .. 'If init_database failed - restart or manually set vim.g.hopcsharp_processing to false'
-
 vim.g.hopcsharp_processing = false
 
--- TODO move to hopcsharp.utils
-local function log(message, prefix)
-    prefix = prefix or 'hopcsharp: '
-    print(prefix .. message)
-end
 
--- TODO move to hopcsharp.utils
-local function scheduled_iteration(i, iterable, callback)
-    if i > #iterable then
-        return
-    end
-
-    callback(i, iterable)
-
-    vim.schedule(function()
-        scheduled_iteration(i + 1, iterable, callback)
-    end)
-end
-
--- TODO move to hopcsharp.init?
-M.__init_database = function()
+---@param commit_hash string If provided, will parse only files that were changed since this commit_hash
+M.__init_database = function(commit_hash)
     -- drop existing schema
     database.__drop_db()
     local writer = BufferedWriter:new(database.__get_db(), 1000)
 
+    local files = {}
+    if commit_hash ~= nil then
+        files = parse.__get_changed_files(commit_hash)
+    else
+        files = parse.__get_source_files()
+    end
+
     local counter = 0
-    scheduled_iteration(1, parse.__get_source_files(), function(i, items)
-        parse.__parse_tree(items[i], function(tree, file_path_id, file_content, wr)
+
+    utils.__scheduled_iteration(files, function(i, item, items)
+        parse.__parse_tree(item, function(tree, file_path_id, file_content, wr)
             local root = tree:root()
             definition.__parse_definitions(root, file_path_id, file_content, wr)
             inheritance.__parse_inheritance(root, file_path_id, file_content, wr)
@@ -53,7 +40,7 @@ M.__init_database = function()
         counter = counter + 1
 
         if counter % 100 == 0 then
-            log(string.format('processed %s/%s of files', counter, #items), '')
+            utils.__log(string.format('processed %s/%s of files', counter, #items), '')
         end
 
         if counter == #items then
@@ -63,94 +50,82 @@ M.__init_database = function()
 end
 
 M.init_database = function()
-    -- TODO pull out check somehow?
-    if vim.g.hopcsharp_processing then
-        vim.notify(PROCESSING_ERROR_MESSAGE)
-        return
-    end
+    utils.__block_on_processing(function()
+        vim.g.hopcsharp_processing = true
 
-    vim.g.hopcsharp_processing = true
+        local command = {
+            'nvim',
+            '--headless',
+            '-c',
+            'lua require("hopcsharp").__init_database()',
+            '-c',
+            'qa',
+        }
 
-    local command = {
-        'nvim',
-        '--headless',
-        '-c',
-        'lua require("hopcsharp").__init_database()',
-        '-c',
-        'qa',
-    }
+        local line_buffer = {}
+        -- using table here, for quirks of different OS's
+        -- to add different line separators
+        local line_separators = { '\r\r', '\r' }
 
-    local line_buffer = {}
-    -- using table here, for quirks of different OS's
-    -- to add different line separators
-    local line_separators = { '\r\r', '\r' }
-
-    local function flush_line_buffer()
-        if #line_buffer > 0 then
-            log(table.concat(line_buffer, ''))
-            line_buffer = {}
-        end
-    end
-
-    local start = os.time()
-    local on_stdout = function(_, data)
-        for _, entry in ipairs(data) do
-            if utils.__contains(line_separators, entry) then
-                flush_line_buffer()
-            else
-                table.insert(line_buffer, entry)
+        local function flush_line_buffer()
+            if #line_buffer > 0 then
+                utils.__log(table.concat(line_buffer, ''))
+                line_buffer = {}
             end
         end
-    end
 
-    local on_exit = function(_)
-        flush_line_buffer()
-        vim.g.hopcsharp_processing = false
-        local elapsed = os.difftime(os.time(), start)
-        log('finished processing files ' .. elapsed .. 's elapsed')
-    end
+        local start = os.time()
+        local on_stdout = function(_, data)
+            for _, entry in ipairs(data) do
+                if utils.__contains(line_separators, entry) then
+                    flush_line_buffer()
+                else
+                    table.insert(line_buffer, entry)
+                end
+            end
+        end
 
-    -- spawn actual parsing in a separate instance of neovim
-    vim.fn.jobstart(command, {
-        cwd = vim.fn.getcwd(),
-        on_stdout = on_stdout,
-        on_exit = on_exit,
-        pty = true,
-        stdin = nil,
-    })
+        local on_exit = function(_)
+            flush_line_buffer()
+            vim.g.hopcsharp_processing = false
+            local elapsed = os.difftime(os.time(), start)
+            utils.__log('finished processing files ' .. elapsed .. 's elapsed')
+        end
+
+        -- spawn actual parsing in a separate instance of neovim
+        vim.fn.jobstart(command, {
+            cwd = vim.fn.getcwd(),
+            on_stdout = on_stdout,
+            on_exit = on_exit,
+            pty = true,
+            stdin = nil,
+        })
+    end)
 end
 
 M.hop_to_definition = function(config)
-    if vim.g.hopcsharp_processing then
-        vim.notify(PROCESSING_ERROR_MESSAGE)
-        return
-    end
-    hop.__hop_to_definition(config)
+    utils.__block_on_processing(function()
+        hop.__hop_to_definition(config)
+    end)
 end
 
 M.hop_to_implementation = function(config)
-    if vim.g.hopcsharp_processing then
-        vim.notify(PROCESSING_ERROR_MESSAGE)
-        return
-    end
-    hop.__hop_to_implementation(config)
+    utils.__block_on_processing(function()
+        hop.__hop_to_implementation(config)
+    end)
 end
 
 M.get_type_hierarchy = function()
-    if vim.g.hopcsharp_processing then
-        vim.notify(PROCESSING_ERROR_MESSAGE)
-        return
-    end
-    hierarchy.__get_type_hierarchy()
+    utils.__block_on_processing(function()
+        hierarchy.__get_type_hierarchy()
+    end)
 end
 
 ---@return sqlite_db
 M.get_db = function()
-    if vim.g.hopcsharp_processing then
-        vim.notify(PROCESSING_ERROR_MESSAGE)
-        return
-    end
-    return database.__get_db()
+    return utils.__block_on_processing(function()
+        return database.__get_db()
+    end);
 end
 
 return M
