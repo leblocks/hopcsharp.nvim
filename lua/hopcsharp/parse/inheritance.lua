@@ -4,11 +4,16 @@ local query = require('hopcsharp.parse.query')
 local M = {}
 
 ---@param tree TSNode under which the search will occur
+---@param path_id number file path id
 ---@param file_content string file content
 ---@param writer BufferedWriter buffered database writer
-M.__parse_inheritance = function(tree, _, file_content, writer)
+M.__parse_inheritance = function(tree, path_id, file_content, writer)
     for _, match, _ in query.base_identifier:iter_matches(tree, file_content, 0, -1) do
-        local entry = {}
+
+        local entry = {
+            path_id = path_id,
+        }
+
         for id, nodes in pairs(match) do
             local name = query.base_identifier.captures[id]
             for _, node in ipairs(nodes) do

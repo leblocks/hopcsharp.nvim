@@ -23,6 +23,7 @@ M.__init_db = function()
             column = 'integer',
         },
         inheritance = {
+            path_id = { type = 'integer', reference = 'files.id' },
             name = 'text',
             base = 'text',
         },
