@@ -14,14 +14,13 @@ local M = {}
 
 vim.g.hopcsharp_processing = false
 
-
 ---@param commit_hash string If provided, will parse only files that were changed since this commit_hash
 M.__init_database = function(commit_hash)
     -- drop existing schema
     database.__drop_db()
     local writer = BufferedWriter:new(database.__get_db(), 1000)
 
-    local files = {}
+    local files
     if commit_hash ~= nil then
         files = parse.__get_changed_files(commit_hash)
     else
@@ -125,7 +124,7 @@ end
 M.get_db = function()
     return utils.__block_on_processing(function()
         return database.__get_db()
-    end);
+    end)
 end
 
 return M

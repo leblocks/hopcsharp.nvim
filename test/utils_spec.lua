@@ -84,7 +84,7 @@ describe('utils', function()
         local called = false
         utils.__block_on_processing(function()
             called = true
-        end);
+        end)
 
         assert(not called)
     end)
@@ -95,7 +95,7 @@ describe('utils', function()
         local result = utils.__block_on_processing(function()
             called = true
             return 42
-        end);
+        end)
 
         assert(called)
         assert(result == 42)
@@ -117,15 +117,14 @@ describe('utils', function()
         assert(not called)
     end)
 
-    it('__scheduled_iteration - dictionary', function()
-    end)
+    it('__scheduled_iteration - dictionary', function() end)
 
     it('__scheduled_iteration - happy path', function()
         local entries = {
-            "test",
-            "test1",
-            "test2",
-            "test3",
+            'test',
+            'test1',
+            'test2',
+            'test3',
         }
 
         utils.__scheduled_iteration(entries, function(i, item, items)

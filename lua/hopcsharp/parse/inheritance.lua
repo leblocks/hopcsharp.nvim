@@ -9,7 +9,6 @@ local M = {}
 ---@param writer BufferedWriter buffered database writer
 M.__parse_inheritance = function(tree, path_id, file_content, writer)
     for _, match, _ in query.base_identifier:iter_matches(tree, file_content, 0, -1) do
-
         local entry = {
             path_id = path_id,
         }

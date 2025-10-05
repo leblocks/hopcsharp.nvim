@@ -11,7 +11,6 @@ describe('database', function()
         database.__drop_db()
     end)
 
-
     it('__drop_by_path - empty path', function()
         utils.init_test_database()
         database.__drop_by_path({})
@@ -25,8 +24,8 @@ describe('database', function()
     it('__drop_by_path - non existing paths', function()
         utils.init_test_database()
         database.__drop_by_path({
-            vim.fs.normalize("meow//woof"),
-            vim.fs.normalize("woofs//meow"),
+            vim.fs.normalize('meow//woof'),
+            vim.fs.normalize('woofs//meow'),
         })
     end)
 
@@ -44,13 +43,13 @@ describe('database', function()
         database.__drop_by_path(paths)
         for _, file in ipairs(files) do
             local count = db:eval([[SELECT COUNT(1) FROM files WHERE id = :id ]], { id = file.id })
-            assert(count[1]["COUNT(1)"] == 0)
+            assert(count[1]['COUNT(1)'] == 0)
 
             count = db:eval([[SELECT COUNT(1) FROM inheritance WHERE path_id = :id ]], { id = file.id })
-            assert(count[1]["COUNT(1)"] == 0)
+            assert(count[1]['COUNT(1)'] == 0)
 
             count = db:eval([[SELECT COUNT(1) FROM definitions WHERE path_id = :id ]], { id = file.id })
-            assert(count[1]["COUNT(1)"] == 0)
+            assert(count[1]['COUNT(1)'] == 0)
         end
     end)
 end)

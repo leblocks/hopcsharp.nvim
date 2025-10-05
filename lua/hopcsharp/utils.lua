@@ -63,7 +63,9 @@ M.__scheduled_iteration = function(entries, callback)
 
         callback(i, entries[i], entries)
 
-        vim.schedule(function() iterate(i + 1) end)
+        vim.schedule(function()
+            iterate(i + 1)
+        end)
     end
 
     iterate(1)
