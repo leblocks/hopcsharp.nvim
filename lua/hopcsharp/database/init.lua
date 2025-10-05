@@ -52,4 +52,26 @@ M.__drop_db = function()
     db:eval('vacuum')
 end
 
+M.__drop_by_path = function(paths)
+    if paths == nil or #paths == 0 then
+        return
+    end
+
+    local db = M.__get_db()
+    local files = db:select('files', { where = { path = paths } })
+
+    if #files == 0 then
+        return
+    end
+
+    local ids = {}
+    for _, file in ipairs(files) do
+        table.insert(ids, file.id)
+    end
+
+    db:delete('files', { where = { id = ids } })
+    db:delete('inheritance', { where = { path_id = ids } })
+    db:delete('definitions', { where = { path_id = ids } })
+end
+
 return M

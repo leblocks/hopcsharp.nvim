@@ -23,4 +23,17 @@ M.prepare = function(file_to_parse, file_to_open, row, column)
     vim.api.nvim_win_set_cursor(0, { row, column })
 end
 
+M.init_test_database = function()
+    database.__drop_db()
+    local writer = BufferedWriter:new(database.__get_db(), 1)
+    local files = parse.__get_source_files()
+
+    for _, file in ipairs(files) do
+        parse.__parse_tree(file, function(tree, path_id, file_content, wr)
+            definition.__parse_definitions(tree:root(), path_id, file_content, wr)
+            inheritance.__parse_inheritance(tree:root(), path_id, file_content, wr)
+        end, writer)
+    end
+end
+
 return M
