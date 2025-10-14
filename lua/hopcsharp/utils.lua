@@ -31,4 +31,44 @@ M.__trim_spaces = function(word)
     return string.gsub(word, '%s+', '')
 end
 
+M.__block_on_processing = function(callback)
+    local message = 'init_database is running, try again later. '
+        .. 'If init_database failed - restart or manually set vim.g.hopcsharp_processing to false'
+
+    if vim.g.hopcsharp_processing then
+        vim.notify(message)
+        return
+    end
+
+    return callback()
+end
+
+M.__log = function(message, prefix)
+    prefix = prefix or 'hopcsharp: '
+    print(prefix .. message)
+end
+
+---@param entries table to iterate on
+---@param callback function will be called on each entry in entries via vim.schedule
+M.__scheduled_iteration = function(entries, callback)
+    if not entries then
+        return
+    end
+
+    local function iterate(i)
+        if i > #entries then
+            -- finished iteration
+            return
+        end
+
+        callback(i, entries[i], entries)
+
+        vim.schedule(function()
+            iterate(i + 1)
+        end)
+    end
+
+    iterate(1)
+end
+
 return M

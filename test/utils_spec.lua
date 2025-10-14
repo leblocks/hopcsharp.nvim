@@ -77,4 +77,58 @@ describe('utils', function()
         assert('test1' == utils.__trim_spaces(' t est    1     '))
         assert('test1' == utils.__trim_spaces(' t e s t  1     '))
     end)
+
+    it('__block_on_processing - stops on processing', function()
+        vim.g.hopcsharp_processing = true
+
+        local called = false
+        utils.__block_on_processing(function()
+            called = true
+        end)
+
+        assert(not called)
+    end)
+
+    it('__block_on_processing - returns result', function()
+        vim.g.hopcsharp_processing = false
+        local called = false
+        local result = utils.__block_on_processing(function()
+            called = true
+            return 42
+        end)
+
+        assert(called)
+        assert(result == 42)
+    end)
+
+    it('__scheduled_iteration - empty table', function()
+        local called = false
+        utils.__scheduled_iteration({}, function(i, item, items)
+            called = true
+        end)
+        assert(not called)
+    end)
+
+    it('__scheduled_iteration - nil', function()
+        local called = false
+        utils.__scheduled_iteration(nil, function(i, item, items)
+            called = true
+        end)
+        assert(not called)
+    end)
+
+    it('__scheduled_iteration - dictionary', function() end)
+
+    it('__scheduled_iteration - happy path', function()
+        local entries = {
+            'test',
+            'test1',
+            'test2',
+            'test3',
+        }
+
+        utils.__scheduled_iteration(entries, function(i, item, items)
+            assert(items[i] == item)
+        end)
+    end)
 end)
