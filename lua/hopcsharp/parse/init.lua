@@ -16,11 +16,6 @@ M.__get_source_files = function()
     return files
 end
 
----@param commit_hash string commit to get files changed since
-M.__get_changed_files = function(commit_hash)
-    return {}
-end
-
 M.__parse_tree = function(file_path, callback, writer)
     local db = database.__get_db()
     local file, err = io.open(file_path, 'r')
