@@ -25,4 +25,18 @@ M.base_identifier = utils.__get_query([[
     ]
 ]])
 
+M.reference = utils.__get_query([[
+    [
+        (invocation_expression function: (identifier) @name)
+        (invocation_expression function: (generic_name (identifier) @name))
+        (invocation_expression function: (member_access_expression name: (identifier) @name))
+        (invocation_expression function: (member_access_expression name: (generic_name (identifier) @name)))
+        (variable_declaration type: (identifier) @name)
+        (variable_declaration type: (generic_name (identifier) @name))
+        (object_creation_expression type: (identifier) @name)
+        (object_creation_expression type: (generic_name (identifier) @name))
+        (attribute name: (identifier) @name)
+    ]
+]])
+
 return M

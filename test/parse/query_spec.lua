@@ -230,4 +230,355 @@ describe('parse.query', function()
         assert(actual['Record1'] == 3)
         assert(actual['Interface1'] == 3)
     end)
+
+    it('reference - method invocation', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    Method1();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Method1')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - generic method invocation', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    Method1<Wow>();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Method1')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - method invocation inside lambda', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    var test = () => Method1());
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Method1')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - method invocation inside member access expression', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    Class2.Method1();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Method1')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - generic method invocation inside member access expression', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    Class2.Method1<Test>();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Method1')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - generic method invocation inside generic member access expression', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    Class2<Sploof>.Method1<Test>();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Method1')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - variable declaration explicit type name', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    Class314 myClass = new();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Class314')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - generic variable declaration explicit type name', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    Class314<GenA, GenB> myClass = new();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Class314')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - object creation', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    var test = new VerySpecialClass();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'VerySpecialClass')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - generic object creation', function()
+        local content = [[
+            public class Test
+            {
+                public Test()
+                {
+                    var test = new VerySpecialClass<GenA, GenB, GenZ>();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'VerySpecialClass')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - attribute on a class', function()
+        local content = [[
+            [MyAttr]
+            public class Test
+            {
+                public Test()
+                {
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'MyAttr')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('reference - attribute on a method', function()
+        local content = [[
+            public class Test
+            {
+                [MyAttr]
+                void Method()
+                {
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'MyAttr')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+
+    it('reference - attribute on an argument', function()
+        local content = [[
+            public class Test
+            {
+                void Method([MyAttr] int argument)
+                {
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'MyAttr')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
 end)
