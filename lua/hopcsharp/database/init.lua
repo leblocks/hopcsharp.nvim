@@ -27,6 +27,13 @@ M.__init_db = function()
             name = 'text',
             base = 'text',
         },
+        reference = {
+            path_id = { type = 'integer', reference = 'files.id' },
+            type = 'integer',
+            name = 'text',
+            row = 'integer',
+            column = 'integer',
+        },
         opts = {
             keep_open = true,
         },
@@ -48,6 +55,7 @@ M.__drop_db = function()
     local db = M.__get_db()
     db:eval('delete from definitions')
     db:eval('delete from inheritance')
+    db:eval('delete from reference')
     db:eval('delete from files')
     db:eval('vacuum')
 end
@@ -70,6 +78,7 @@ M.__drop_by_path = function(paths)
     end
 
     db:delete('files', { where = { id = ids } })
+    db:delete('reference', { where = { path_id = ids } })
     db:delete('inheritance', { where = { path_id = ids } })
     db:delete('definitions', { where = { path_id = ids } })
 end

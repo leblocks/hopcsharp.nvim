@@ -11,18 +11,40 @@ local M = {}
 M.__parse_reference = function(tree, path_id, file_content, writer)
     pautils.__icaptures(query.reference, tree, file_content, function(node, content)
         local parent_node_type = node:parent():type()
+
+        -- attribute
+        -- invocation_expression
+        -- invocation_expression
+        -- object_creation_expression
+        -- variable_declaration
+        -- variable_declaration
+        -- invocation_expression
+        -- invocation_expression
+        -- member_access_expression
+        -- invocation_expression
+
+        -- should not be a problem with nulls
+        -- those nodes are always inside other nodes
+        if parent_node_type == 'generic_name' or parent_node_type == 'member_access_expression' then
+            parent_node_type = node:parent():parent():type()
+        end
+
         local type
 
         local row, column, _, _ = node:range()
 
-        if parent_node_type == 'TODO' then
+        if parent_node_type == 'object_creation_expression' then
             type = dbutils.reference_types.OBJECT_CREATION
         elseif parent_node_type == 'invocation_expression' then
             type = dbutils.reference_types.METHOD_INVOCATION
-        elseif parent_node_type == 'TODO' then
-            type = dbutils.types.ATTRIBUTE
-        elseif parent_node_type == 'TODO' then
-            type = dbutils.types.VARIABLE_DECLARATION
+        elseif parent_node_type == 'member_access_expression' then
+            -- in context of a query that is being used,
+            -- it must be a method invocation
+            type = dbutils.reference_types.METHOD_INVOCATION
+        elseif parent_node_type == 'attribute' then
+            type = dbutils.reference_types.ATTRIBUTE
+        elseif parent_node_type == 'variable_declaration' then
+            type = dbutils.reference_types.VARIABLE_DECLARATION
         end
 
         writer:add_to_buffer('reference', {

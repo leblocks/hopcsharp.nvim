@@ -555,7 +555,6 @@ describe('parse.query', function()
         assert(visited)
     end)
 
-
     it('reference - attribute on an argument', function()
         local content = [[
             public class Test

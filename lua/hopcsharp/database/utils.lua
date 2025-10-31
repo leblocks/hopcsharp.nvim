@@ -31,6 +31,13 @@ M.types = {
     CONSTRUCTOR = 7,
 }
 
+M.reference_types = {
+    METHOD_INVOCATION = 1,
+    OBJECT_CREATION = 2,
+    ATTRIBUTE = 3,
+    VARIABLE_DECLARATION = 4,
+}
+
 M.get_type_name = function(type)
     if type == M.types.CLASS then
         return 'class'
