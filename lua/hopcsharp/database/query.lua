@@ -141,6 +141,21 @@ M.get_all_child_types = [[
     SELECT DISTINCT name, base FROM children WHERE base <> name;
 ]]
 
+M.get_reference_by_name = [[
+    SELECT
+        r.name,
+        f.path,
+        r.row,
+        r.column,
+        r.type
+    FROM reference r
+    JOIN files f on f.id = r.path_id
+    WHERE (r.name = :name OR r.name LIKE :name || '<%>')
+    ORDER BY
+        r.name ASC,
+        f.path ASC
+]]
+
 M.get_reference_by_name_and_type = [[
     SELECT
         r.name,
@@ -152,6 +167,9 @@ M.get_reference_by_name_and_type = [[
     JOIN files f on f.id = r.path_id
     WHERE (r.name = :name OR r.name LIKE :name || '<%>')
         AND r.type = :type
+    ORDER BY
+        r.name ASC,
+        f.path ASC
 ]]
 
 return M

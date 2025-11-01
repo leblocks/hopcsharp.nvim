@@ -47,6 +47,11 @@ describe('query', function()
         assert(db:eval(query.get_all_child_types, { type = 'test' }))
     end)
 
+    it('can invoke get_reference_by_name', function()
+        local db = database.__get_db()
+        assert(db:eval(query.get_reference_by_name, { name = 'test' }))
+    end)
+
     it('can invoke get_reference_by_name_and_type', function()
         local db = database.__get_db()
         assert(db:eval(query.get_reference_by_name_and_type, { name = 'test', type = 23 }))

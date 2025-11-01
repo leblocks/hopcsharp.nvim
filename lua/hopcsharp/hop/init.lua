@@ -6,14 +6,25 @@ local qutils = require('hopcsharp.parse.utils')
 
 local M = {}
 
-local function populate_quickfix(entries, jump_on_quickfix)
+local function populate_quickfix(entries, jump_on_quickfix, hide_type)
     local qflist = {}
+
+
+    hide_type = hide_type or false
+
     for _, entry in ipairs(entries) do
+
+        local text = entry.name
+
+        if not hide_type then
+            text = dbutils.get_type_name(entry.type) .. ' ' .. entry.name
+        end
+
         table.insert(qflist, {
             filename = entry.path,
             lnum = entry.row + 1,
             col = entry.col,
-            text = dbutils.get_type_name(entry.type) .. ' ' .. entry.name,
+            text = text,
         })
     end
 
@@ -172,6 +183,52 @@ M.__hop_to_implementation = function(config)
     -- sent to quickfix if there is too much
     if #filtered_implementations > 1 then
         populate_quickfix(filtered_implementations, jump_on_quickfix)
+    end
+end
+
+-- TODO test this extensively
+M.__hop_to_reference = function(config)
+    local db = database.__get_db()
+    local cword = vim.fn.expand('<cword>')
+
+    config = config or {}
+    local callback = config.callback or nil
+    local jump_on_quickfix = config.jump_on_quickfix or false
+
+    -- handle case when current node is method defintion
+    -- local node = vim.treesitter.get_node()
+    -- TODO handle special cases?
+
+    local references = db:eval(query.get_reference_by_name, { name = cword })
+
+    -- query found nothing
+    if type(references) ~= 'table' then
+        return
+    end
+
+    -- filter out current position
+    local filtered_references = filter_entry_under_cursor(references)
+
+    if callback ~= nil then
+        -- user provided custom logic for navigation
+        -- execute and return
+        callback(filtered_references)
+        return
+    end
+
+    -- immediate jump if there is only one case
+    if #filtered_references == 1 then
+        utils.__hop(
+            filtered_references[1].path,
+            filtered_references[1].row + 1,
+            filtered_references[1].column
+        )
+        return
+    end
+
+    -- sent to quickfix if there is too much
+    if #filtered_references > 1 then
+        populate_quickfix(filtered_references, jump_on_quickfix, true)
     end
 end
 
