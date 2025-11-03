@@ -6,25 +6,15 @@ local qutils = require('hopcsharp.parse.utils')
 
 local M = {}
 
-local function populate_quickfix(entries, jump_on_quickfix, hide_type)
+local function populate_quickfix(entries, jump_on_quickfix, type_converter)
     local qflist = {}
 
-
-    hide_type = hide_type or false
-
     for _, entry in ipairs(entries) do
-
-        local text = entry.name
-
-        if not hide_type then
-            text = dbutils.get_type_name(entry.type) .. ' ' .. entry.name
-        end
-
         table.insert(qflist, {
             filename = entry.path,
             lnum = entry.row + 1,
             col = entry.col,
-            text = text,
+            text = type_converter(entry.type) .. ' ' .. entry.name,
         })
     end
 
@@ -128,7 +118,7 @@ M.__hop_to_definition = function(config)
 
     -- sent to quickfix if there is too much
     if #filtered_definitions > 1 then
-        populate_quickfix(filtered_definitions, jump_on_quickfix)
+        populate_quickfix(filtered_definitions, jump_on_quickfix, dbutils.get_type_name)
     end
 end
 
@@ -182,7 +172,7 @@ M.__hop_to_implementation = function(config)
 
     -- sent to quickfix if there is too much
     if #filtered_implementations > 1 then
-        populate_quickfix(filtered_implementations, jump_on_quickfix)
+        populate_quickfix(filtered_implementations, jump_on_quickfix, dbutils.get_type_name)
     end
 end
 
@@ -228,7 +218,7 @@ M.__hop_to_reference = function(config)
 
     -- sent to quickfix if there is too much
     if #filtered_references > 1 then
-        populate_quickfix(filtered_references, jump_on_quickfix, true)
+        populate_quickfix(filtered_references, jump_on_quickfix, dbutils.get_reference_type_name)
     end
 end
 
