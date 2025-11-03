@@ -176,7 +176,6 @@ M.__hop_to_implementation = function(config)
     end
 end
 
--- TODO test this extensively
 M.__hop_to_reference = function(config)
     local db = database.__get_db()
     local cword = vim.fn.expand('<cword>')
@@ -184,10 +183,6 @@ M.__hop_to_reference = function(config)
     config = config or {}
     local callback = config.callback or nil
     local jump_on_quickfix = config.jump_on_quickfix or false
-
-    -- handle case when current node is method defintion
-    -- local node = vim.treesitter.get_node()
-    -- TODO handle special cases?
 
     local references = db:eval(query.get_reference_by_name, { name = cword })
 
@@ -208,11 +203,7 @@ M.__hop_to_reference = function(config)
 
     -- immediate jump if there is only one case
     if #filtered_references == 1 then
-        utils.__hop(
-            filtered_references[1].path,
-            filtered_references[1].row + 1,
-            filtered_references[1].column
-        )
+        utils.__hop(filtered_references[1].path, filtered_references[1].row + 1, filtered_references[1].column)
         return
     end
 

@@ -153,7 +153,7 @@ M.get_reference_by_name = [[
         r.type
     FROM reference r
     JOIN files f on f.id = r.path_id
-    WHERE (r.name = :name OR r.name LIKE :name || '<%>')
+    WHERE (r.name = :name OR r.name LIKE :name || '<%>' OR r.name || 'Attribute' = :name)
     ORDER BY
         r.name ASC,
         f.path ASC
