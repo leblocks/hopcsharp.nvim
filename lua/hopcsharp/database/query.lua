@@ -25,6 +25,9 @@ M.get_definition_by_name_and_type = [[
     JOIN files f on f.id = d.path_id
     WHERE (d.name = :name OR d.name = :name || 'Attribute' OR d.name LIKE :name || '<%>')
         AND d.type = :type
+    ORDER BY
+        d.name ASC,
+        f.path ASC
 ]]
 
 M.get_all_definitions = [[
