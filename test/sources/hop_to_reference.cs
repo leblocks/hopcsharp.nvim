@@ -1,11 +1,13 @@
 
 public class HopToReference
 {
+    [Alfa]
     private void Method1([TestAttr] int argument)
     {
     }
 
     [AttributeWow]
+    [AlfaAttribute]
     public HopToReference()
     {
         Method1();
@@ -20,4 +22,8 @@ public class HopToReference
         Task.Run(() => Method1());
         Task.Run<Meow>(() => Method1());
     }
+}
+
+private class AlfaAttribute : Attribute
+{
 }
