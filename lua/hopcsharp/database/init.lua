@@ -48,6 +48,11 @@ M.__get_db = function()
 
     _db = M.__init_db()
 
+    -- some dumb performance optimizations
+    _db:execute('pragma synchronous = OFF')
+    _db:execute('pragma cache_size = -32768')
+    _db:execute('pragma journal_mode = OFF')
+
     return _db
 end
 
