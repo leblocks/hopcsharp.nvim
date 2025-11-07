@@ -35,7 +35,7 @@ describe('hop_to_reference', function()
                 assert(references[2].path == 'test/sources/hop_to_reference.cs')
                 assert(references[2].row == 9)
                 assert(references[2].column == 5)
-            end
+            end,
         })
 
         assert(called)
@@ -54,7 +54,6 @@ describe('hop_to_reference', function()
         assert(position[2] == 4)
         assert(position[3] == 6)
     end)
-
 
     it('__hop_to_reference hops from class definition to references', function()
         utils.prepare('test/sources/hop_to_reference.cs', 'test/sources/Class2.cs', 5, 14)

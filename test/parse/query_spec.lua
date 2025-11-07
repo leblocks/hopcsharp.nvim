@@ -580,4 +580,31 @@ describe('parse.query', function()
         end)
         assert(visited)
     end)
+
+    it('reference - types from ignore list are not captured', function()
+        local content = [[
+            public class Test
+            {
+                void Method([MyAttr] int argument)
+                {
+                    Task meow = GetNewTask();
+                }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name ~= 'Task')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
 end)
