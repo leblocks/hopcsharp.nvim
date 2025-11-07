@@ -73,6 +73,7 @@ M.reference = utils.__get_query([[
             "TimeSpan"
             "Tuple"
             "Type"
+            "UInt32"
           )
       )
 
