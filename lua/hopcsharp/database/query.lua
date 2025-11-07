@@ -25,6 +25,9 @@ M.get_definition_by_name_and_type = [[
     JOIN files f on f.id = d.path_id
     WHERE (d.name = :name OR d.name = :name || 'Attribute' OR d.name LIKE :name || '<%>')
         AND d.type = :type
+    ORDER BY
+        d.name ASC,
+        f.path ASC
 ]]
 
 M.get_all_definitions = [[
@@ -139,6 +142,37 @@ M.get_all_child_types = [[
         LIMIT 1000 -- limit stuff in case something goes wrong
     )
     SELECT DISTINCT name, base FROM children WHERE base <> name;
+]]
+
+M.get_reference_by_name = [[
+    SELECT
+        r.name,
+        f.path,
+        r.row,
+        r.column,
+        r.type
+    FROM reference r
+    JOIN files f on f.id = r.path_id
+    WHERE (r.name = :name OR r.name LIKE :name || '<%>' OR r.name || 'Attribute' = :name)
+    ORDER BY
+        r.name ASC,
+        f.path ASC
+]]
+
+M.get_reference_by_name_and_type = [[
+    SELECT
+        r.name,
+        f.path,
+        r.row,
+        r.column,
+        r.type
+    FROM reference r
+    JOIN files f on f.id = r.path_id
+    WHERE (r.name = :name OR r.name LIKE :name || '<%>')
+        AND r.type = :type
+    ORDER BY
+        r.name ASC,
+        f.path ASC
 ]]
 
 return M

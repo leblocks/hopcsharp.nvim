@@ -2,6 +2,7 @@ local parse = require('hopcsharp.parse')
 local database = require('hopcsharp.database')
 local definition = require('hopcsharp.parse.definition')
 local inheritance = require('hopcsharp.parse.inheritance')
+local reference = require('hopcsharp.parse.reference')
 local BufferedWriter = require('hopcsharp.database.buffer')
 
 local M = {}
@@ -15,6 +16,7 @@ M.prepare = function(file_to_parse, file_to_open, row, column)
     parse.__parse_tree(path_to_parse, function(tree, path_id, file_content, wr)
         definition.__parse_definitions(tree:root(), path_id, file_content, wr)
         inheritance.__parse_inheritance(tree:root(), path_id, file_content, wr)
+        reference.__parse_reference(tree:root(), path_id, file_content, wr)
     end, writer)
 
     -- open file and stay on a desired word for hop

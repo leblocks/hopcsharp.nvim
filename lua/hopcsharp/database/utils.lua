@@ -31,6 +31,13 @@ M.types = {
     CONSTRUCTOR = 7,
 }
 
+M.reference_types = {
+    METHOD_INVOCATION = 1,
+    OBJECT_CREATION = 2,
+    ATTRIBUTE = 3,
+    VARIABLE_DECLARATION = 4,
+}
+
 M.get_type_name = function(type)
     if type == M.types.CLASS then
         return 'class'
@@ -58,6 +65,24 @@ M.get_type_name = function(type)
 
     if type == M.types.CONSTRUCTOR then
         return 'constructor'
+    end
+end
+
+M.get_reference_type_name = function(type)
+    if type == M.reference_types.ATTRIBUTE then
+        return 'attribute'
+    end
+
+    if type == M.reference_types.METHOD_INVOCATION then
+        return 'method invocation'
+    end
+
+    if type == M.reference_types.OBJECT_CREATION then
+        return 'object creation'
+    end
+
+    if type == M.reference_types.VARIABLE_DECLARATION then
+        return 'variable declaration'
     end
 end
 
