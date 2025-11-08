@@ -53,6 +53,7 @@ M.reference = utils.__get_query([[
             "Exception"
             "Func"
             "Guid"
+            "HashSet"
             "Hashtable"
             "ICollection"
             "IDictionary"
