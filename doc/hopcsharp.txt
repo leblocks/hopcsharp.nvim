@@ -111,7 +111,7 @@ is displayed in the command line.
 
 ------------------------------------------------------------------------------
                                                    *hopcsharp.hop_to_definition*
-hopcsharp.hop_to_definition({callback}, {config})
+hopcsharp.hop_to_definition({config})
 
 Navigates to the definition of the symbol under the cursor.
 
@@ -147,7 +147,7 @@ Example: >
 
 ------------------------------------------------------------------------------
                                                *hopcsharp.hop_to_implementation*
-hopcsharp.hop_to_implementation({callback}, {config})
+hopcsharp.hop_to_implementation({config})
 
 Navigates to implementations of the symbol under the cursor.
 
@@ -167,6 +167,30 @@ instead of definitions.
 
 Example: >
     require('hopcsharp').hop_to_implementation()
+<
+
+------------------------------------------------------------------------------
+                                               *hopcsharp.hop_to_reference*
+hopcsharp.hop_to_reference({config})
+
+Navigates to references of the symbol under the cursor.
+
+Parameters: ~
+    {config}    (table, optional) configuration object
+    >lua
+                {
+                    jump_on_quickfix = false,              -- immediately jump to first entry when qf
+                                                           -- list is opened during navigation
+
+                    callback = function(definitions) end   -- (function, optional) Custom callback function to handle
+                }                                          --  multiple reference instead of using quickfix list
+
+
+Behavior is similar to |hopcsharp.hop_to_definition| but finds references
+instead of definitions.
+
+Example: >
+    require('hopcsharp').hop_to_reference()
 <
 
 ------------------------------------------------------------------------------

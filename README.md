@@ -68,6 +68,15 @@ require('hopcsharp').hop_to_implementation(config)
 Opens new buffer or switches to existing one on a line and column where implementation is defined. If it finds more than
 one implementation it will add those to quickfix list and will open it. See `:h hopcsharp.hop_to_definition` for more details.
 
+### hop_to_reference
+
+```lua
+require('hopcsharp').hop_to_reference(config)
+```
+
+Opens new buffer or switches to existing one on a line and column where reference is defined. If it finds more than
+one reference it will add those to quickfix list and will open it. See `:h hopcsharp.hop_to_reference` for more details.
+
 ### get_type_hierarchy
 
 ```lua
