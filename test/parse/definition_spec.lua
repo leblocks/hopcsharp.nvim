@@ -5,6 +5,7 @@ local BufferedWriter = require('hopcsharp.database.buffer')
 
 local parse = require('hopcsharp.parse')
 local definition = require('hopcsharp.parse.definition')
+local namespace = require('hopcsharp.parse.namespace')
 
 describe('parse.definition', function()
     it('__parse_definitions populates database correctly', function()
@@ -14,7 +15,8 @@ describe('parse.definition', function()
         local db = database.__get_db()
 
         parse.__parse_tree(path, function(tree, path_id, file_content, wr)
-            definition.__parse_definitions(tree:root(), path_id, file_content, wr)
+            local namespace_id = namespace.__parse_namespaces(tree:root(), file_content)
+            definition.__parse_definitions(tree:root(), path_id, namespace_id, file_content, wr)
 
             local rows = db:eval(query.get_definition_by_name_and_type, { name = 'Class1', type = utils.types.CLASS })
 

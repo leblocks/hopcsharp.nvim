@@ -5,6 +5,7 @@ local BufferedWriter = require('hopcsharp.database.buffer')
 
 local parse = require('hopcsharp.parse')
 local definition = require('hopcsharp.parse.reference')
+local namespace = require('hopcsharp.parse.namespace')
 
 describe('parse.reference', function()
     it('__parse_reference populates database correctly', function()
@@ -14,7 +15,8 @@ describe('parse.reference', function()
         local db = database.__get_db()
 
         parse.__parse_tree(path, function(tree, path_id, file_content, wr)
-            definition.__parse_reference(tree:root(), path_id, file_content, wr)
+            local namespace_id = namespace.__parse_namespaces(tree:root(), file_content)
+            definition.__parse_reference(tree:root(), path_id, namespace_id, file_content, wr)
 
             -- attribute TestAttr
             local rows = db:eval(
