@@ -87,4 +87,11 @@ M.reference = utils.__get_query([[
     ]
 ]])
 
+M.namespace_identifier = utils.__get_query([[
+    [
+        (file_scoped_namespace_declaration name: (qualified_name) @name)
+        (namespace_declaration name: (qualified_name) @name)
+    ]
+]])
+
 return M

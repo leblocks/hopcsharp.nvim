@@ -6,22 +6,12 @@ local M = {}
 
 ---@param tree TSNode under which the search will occur
 ---@param path_id number file path id
+---@param namespace_id number namespace id
 ---@param file_content string file content
 ---@param writer BufferedWriter buffered database writer
-M.__parse_reference = function(tree, path_id, file_content, writer)
+M.__parse_reference = function(tree, path_id, namespace_id, file_content, writer)
     pautils.__icaptures(query.reference, tree, file_content, function(node, content)
         local parent_node_type = node:parent():type()
-
-        -- attribute
-        -- invocation_expression
-        -- invocation_expression
-        -- object_creation_expression
-        -- variable_declaration
-        -- variable_declaration
-        -- invocation_expression
-        -- invocation_expression
-        -- member_access_expression
-        -- invocation_expression
 
         -- should not be a problem with nulls
         -- those nodes are always inside other nodes
@@ -49,6 +39,7 @@ M.__parse_reference = function(tree, path_id, file_content, writer)
 
         writer:add_to_buffer('reference', {
             path_id = path_id,
+            namespace_id = namespace_id,
             type = type,
             name = vim.treesitter.get_node_text(node, content, nil),
             row = row,

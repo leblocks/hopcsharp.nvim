@@ -15,8 +15,13 @@ M.__init_db = function()
             id = true,
             path = { type = 'text', unique = true },
         },
+        namespaces = {
+            id = true,
+            name = { type = 'text', unqiue = true },
+        },
         definitions = {
             path_id = { type = 'integer', reference = 'files.id' },
+            namespace_id = { type = 'integer', reference = 'namespaces.id' },
             type = 'integer',
             name = 'text',
             row = 'integer',
@@ -24,11 +29,13 @@ M.__init_db = function()
         },
         inheritance = {
             path_id = { type = 'integer', reference = 'files.id' },
+            namespace_id = { type = 'integer', reference = 'namespaces.id' },
             name = 'text',
             base = 'text',
         },
         reference = {
             path_id = { type = 'integer', reference = 'files.id' },
+            namespace_id = { type = 'integer', reference = 'namespaces.id' },
             type = 'integer',
             name = 'text',
             row = 'integer',
@@ -61,6 +68,7 @@ M.__drop_db = function()
     db:eval('delete from definitions')
     db:eval('delete from inheritance')
     db:eval('delete from reference')
+    db:eval('delete from namespaces')
     db:eval('delete from files')
     db:eval('vacuum')
 end
@@ -82,10 +90,13 @@ M.__drop_by_path = function(paths)
         table.insert(ids, file.id)
     end
 
+    -- TODO how to remove properly
+    -- namespaces by id?
     db:delete('files', { where = { id = ids } })
     db:delete('reference', { where = { path_id = ids } })
     db:delete('inheritance', { where = { path_id = ids } })
     db:delete('definitions', { where = { path_id = ids } })
+    db:eval('vacuum')
 end
 
 return M
