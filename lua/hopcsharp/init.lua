@@ -32,7 +32,7 @@ M.__init_database = function()
             local namespace_id = namespace.__parse_namespaces(root, file_content)
 
             definition.__parse_definitions(root, file_path_id, namespace_id, file_content, wr)
-            inheritance.__parse_inheritance(root, file_path_id, namespace_id. file_content, wr)
+            inheritance.__parse_inheritance(root, file_path_id, namespace_id.file_content, wr)
             reference.__parse_reference(root, file_path_id, namespace_id, file_content, wr)
         end, writer)
 

@@ -8,7 +8,6 @@ local M = {}
 ---@param file_content string file content
 M.__parse_namespaces = function(tree, file_content)
     pautils.__icaptures(query.namespace_identifier, tree, file_content, function(node, content)
-
         local db = database.__get_db()
         local namespace = vim.treesitter.get_node_text(node, content, nil)
 
@@ -19,6 +18,8 @@ M.__parse_namespaces = function(tree, file_content)
             local _, id = db:insert('namespaces', { name = namespace })
             return id
         end
+
+        return entries[1].id
     end)
 end
 
