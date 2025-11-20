@@ -3,7 +3,7 @@ local utils = require('test.utils')
 
 describe('hop_to_reference', function()
     it('__hop_to_reference hops correctly', function()
-        utils.prepare('test/sources/hop_to_reference.cs', 'test/sources/hop_to_reference.cs', 5, 21)
+        utils.prepare('test/sources/hop_to_reference.cs', 'test/sources/hop_to_reference.cs', 6, 21)
 
         hop.__hop_to_reference({ jump_on_quickfix = true })
 
@@ -12,13 +12,13 @@ describe('hop_to_reference', function()
 
         assert(name:find('test/sources/hop_to_reference.cs$') ~= nil)
         local position = vim.fn.getcursorcharpos(0)
-        assert(position[2] == 13)
-        assert(position[3] == 9)
+        assert(position[2] == 14)
+        assert(position[3] == 13)
     end)
 
     it('__hop_to_reference hops from attribute defention to references', function()
         -- standing on AlfaAttribute defenition
-        utils.prepare('test/sources/hop_to_reference.cs', 'test/sources/hop_to_reference.cs', 27, 26)
+        utils.prepare('test/sources/hop_to_reference.cs', 'test/sources/hop_to_reference.cs', 28, 26)
 
         local called = false
         hop.__hop_to_reference({
@@ -28,13 +28,13 @@ describe('hop_to_reference', function()
                 assert(#references == 2)
                 assert(references[1].name == 'Alfa')
                 assert(references[1].path == 'test/sources/hop_to_reference.cs')
-                assert(references[1].row == 3)
-                assert(references[1].column == 5)
+                assert(references[1].row == 4)
+                assert(references[1].column == 9)
 
                 assert(references[2].name == 'AlfaAttribute')
                 assert(references[2].path == 'test/sources/hop_to_reference.cs')
-                assert(references[2].row == 9)
-                assert(references[2].column == 5)
+                assert(references[2].row == 10)
+                assert(references[2].column == 9)
             end,
         })
 
@@ -42,7 +42,7 @@ describe('hop_to_reference', function()
     end)
 
     it('__hop_to_reference hops from attribute usage to references', function()
-        utils.prepare('test/sources/hop_to_reference.cs', 'test/sources/hop_to_reference.cs', 10, 13)
+        utils.prepare('test/sources/hop_to_reference.cs', 'test/sources/hop_to_reference.cs', 11, 13)
 
         hop.__hop_to_reference({ jump_on_quickfix = true })
 
@@ -51,8 +51,8 @@ describe('hop_to_reference', function()
 
         assert(name:find('test/sources/hop_to_reference.cs$') ~= nil)
         local position = vim.fn.getcursorcharpos(0)
-        assert(position[2] == 4)
-        assert(position[3] == 6)
+        assert(position[2] == 5)
+        assert(position[3] == 10)
     end)
 
     it('__hop_to_reference hops from class definition to references', function()
@@ -65,7 +65,7 @@ describe('hop_to_reference', function()
 
         assert(name:find('test/sources/hop_to_reference.cs$') ~= nil)
         local position = vim.fn.getcursorcharpos(0)
-        assert(position[2] == 17)
-        assert(position[3] == 9)
+        assert(position[2] == 18)
+        assert(position[3] == 13)
     end)
 end)

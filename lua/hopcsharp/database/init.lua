@@ -55,6 +55,9 @@ M.__get_db = function()
 
     _db = M.__init_db()
 
+    -- add empty namespace
+    _db:insert('namespaces', { name = 'n\\a' })
+
     -- some dumb performance optimizations
     _db:execute('pragma synchronous = OFF')
     _db:execute('pragma cache_size = -32768')

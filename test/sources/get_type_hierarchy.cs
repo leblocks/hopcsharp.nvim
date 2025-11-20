@@ -1,3 +1,4 @@
+namespace Test.Namespace;
 
 public class Class1Generation1
 {

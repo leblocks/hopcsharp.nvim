@@ -14,7 +14,7 @@ local function populate_quickfix(entries, jump_on_quickfix, type_converter)
             filename = entry.path,
             lnum = entry.row + 1,
             col = entry.col,
-            text = '(' .. type_converter(entry.type) .. ') ' .. entry.name,
+            text = entry.namespace .. ' | ' .. type_converter(entry.type) .. ' | ' .. entry.name,
         })
     end
 

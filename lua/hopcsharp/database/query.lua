@@ -6,11 +6,14 @@ M.get_definition_by_name = [[
         f.path,
         d.row,
         d.column,
-        d.type
+        d.type,
+        n.name AS namespace
     FROM definitions d
     JOIN files f on f.id = d.path_id
+    JOIN namespaces n on n.id = d.namespace_id
     WHERE d.name = :name OR d.name LIKE :name || '<%>'
     ORDER BY
+        n.name ASC,
         f.path ASC
 ]]
 
@@ -20,13 +23,16 @@ M.get_definition_by_name_and_type = [[
         f.path,
         d.row,
         d.column,
-        d.type
+        d.type,
+        n.name AS namespace
     FROM definitions d
     JOIN files f on f.id = d.path_id
+    JOIN namespaces n on n.id = d.namespace_id
     WHERE (d.name = :name OR d.name = :name || 'Attribute' OR d.name LIKE :name || '<%>')
         AND d.type = :type
     ORDER BY
         d.name ASC,
+        n.name ASC,
         f.path ASC
 ]]
 
@@ -36,11 +42,14 @@ M.get_all_definitions = [[
         f.path,
         d.row,
         d.column,
-        d.type
+        d.type,
+        n.name AS namespace
     FROM definitions d
     JOIN files f on f.id = d.path_id
+    JOIN namespaces n on n.id = d.namespace_id
     ORDER BY
         d.name ASC,
+        n.name ASC,
         f.path ASC
 ]]
 
@@ -50,12 +59,15 @@ M.get_definition_by_type = [[
         f.path,
         d.row,
         d.column,
-        d.type
+        d.type,
+        n.name AS namespace
     FROM definitions d
     JOIN files f on f.id = d.path_id
+    JOIN namespaces n on n.id = d.namespace_id
     WHERE d.type = :type
     ORDER BY
         d.name ASC,
+        n.name ASC,
         f.path ASC
 ]]
 
@@ -65,12 +77,15 @@ M.get_attributes = [[
         f.path,
         d.row,
         d.column,
-        d.type
+        d.type,
+        n.name AS namespace
     FROM definitions d
     JOIN files f on f.id = d.path_id
+    JOIN namespaces n on n.id = d.namespace_id
     WHERE d.type = 1 AND d.name like '%Attribute'
     ORDER BY
         d.name ASC,
+        n.name ASC,
         f.path ASC
 ]]
 
@@ -83,20 +98,23 @@ M.get_implementations_by_name = [[
         f.path,
         d.row,
         d.column,
-        d.type
+        d.type,
+        n.name AS namespace
     FROM inheritance i
     JOIN definitions d on d.name = i.name
     JOIN files f on f.id = d.path_id
+    JOIN namespaces n on n.id = d.namespace_id
     WHERE (i.base = :name OR i.base LIKE :name || '<%>')
         AND d.type <> 7 -- filter constructors
         AND d.type <> 6 -- filter methods
     ORDER BY
         d.name ASC,
+        n.name ASC,
         f.path ASC
 ]]
 
 -- this is kind of a hack here
--- we get implementaiton defentions from defeinitions table
+-- we get implementaiton defentions from definitions table
 -- and after thath self join on itself by file id to get
 -- method definitions in those types, assumption here is that
 -- method with the same name as defined in a base class
@@ -150,12 +168,15 @@ M.get_reference_by_name = [[
         f.path,
         r.row,
         r.column,
-        r.type
+        r.type,
+        n.name AS namespace
     FROM reference r
     JOIN files f on f.id = r.path_id
+    JOIN namespaces n on n.id = r.namespace_id
     WHERE (r.name = :name OR r.name LIKE :name || '<%>' OR r.name || 'Attribute' = :name)
     ORDER BY
         r.name ASC,
+        n.name ASC,
         f.path ASC
 ]]
 
@@ -165,13 +186,16 @@ M.get_reference_by_name_and_type = [[
         f.path,
         r.row,
         r.column,
-        r.type
+        r.type,
+        n.name AS namespace
     FROM reference r
     JOIN files f on f.id = r.path_id
+    JOIN namespaces n on n.id = r.namespace_id
     WHERE (r.name = :name OR r.name LIKE :name || '<%>')
         AND r.type = :type
     ORDER BY
         r.name ASC,
+        n.name ASC,
         f.path ASC
 ]]
 

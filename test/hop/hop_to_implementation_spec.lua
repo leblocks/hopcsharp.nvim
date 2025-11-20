@@ -57,7 +57,7 @@ describe('hop_to_implementation', function()
     end)
 
     it('__hop_to_implementation hops to nested generic class definition correctly', function()
-        utils.prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 38, 12)
+        utils.prepare('test/sources/get_type_hierarchy.cs', 'test/sources/get_type_hierarchy.cs', 39, 12)
 
         local called = false
         hop.__hop_to_implementation({
@@ -65,7 +65,7 @@ describe('hop_to_implementation', function()
                 called = true
                 assert(#implementations == 1)
                 assert(implementations[1].name == 'Bark<T>')
-                assert(implementations[1].row == 41)
+                assert(implementations[1].row == 42)
                 assert(implementations[1].column == 10)
                 assert(implementations[1].type == databaseutils.types.CLASS)
             end,
