@@ -607,4 +607,48 @@ describe('parse.query', function()
         end)
         assert(visited)
     end)
+
+    it('namespace - file scoped namespace', function()
+        local content = [[
+            namespace This.Is.My.Test;
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.namespace_identifier:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'This.Is.My.Test')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('namespace - namespace declaration', function()
+        local content = [[
+            namespace This.Is.My.Test
+            {
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.namespace_identifier:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'This.Is.My.Test')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
 end)

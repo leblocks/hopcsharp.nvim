@@ -5,6 +5,7 @@ local utils = require('hopcsharp.utils')
 local definition = require('hopcsharp.parse.definition')
 local inheritance = require('hopcsharp.parse.inheritance')
 local reference = require('hopcsharp.parse.reference')
+local namespace = require('hopcsharp.parse.namespace')
 
 local hop = require('hopcsharp.hop')
 local hierarchy = require('hopcsharp.hierarchy')
@@ -24,12 +25,14 @@ M.__init_database = function()
 
     local counter = 0
 
-    utils.__scheduled_iteration(files, function(i, item, items)
+    utils.__scheduled_iteration(files, function(_, item, items)
         parse.__parse_tree(item, function(tree, file_path_id, file_content, wr)
             local root = tree:root()
-            definition.__parse_definitions(root, file_path_id, file_content, wr)
-            inheritance.__parse_inheritance(root, file_path_id, file_content, wr)
-            reference.__parse_reference(root, file_path_id, file_content, wr)
+
+            local namespace_id = namespace.__parse_namespaces(root, file_content)
+            definition.__parse_definitions(root, file_path_id, namespace_id, file_content, wr)
+            inheritance.__parse_inheritance(root, file_path_id, namespace_id, file_content, wr)
+            reference.__parse_reference(root, file_path_id, namespace_id, file_content, wr)
         end, writer)
 
         counter = counter + 1

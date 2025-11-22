@@ -5,6 +5,7 @@ local BufferedWriter = require('hopcsharp.database.buffer')
 
 local parse = require('hopcsharp.parse')
 local definition = require('hopcsharp.parse.reference')
+local namespace = require('hopcsharp.parse.namespace')
 
 describe('parse.reference', function()
     it('__parse_reference populates database correctly', function()
@@ -14,7 +15,8 @@ describe('parse.reference', function()
         local db = database.__get_db()
 
         parse.__parse_tree(path, function(tree, path_id, file_content, wr)
-            definition.__parse_reference(tree:root(), path_id, file_content, wr)
+            local namespace_id = namespace.__parse_namespaces(tree:root(), file_content)
+            definition.__parse_reference(tree:root(), path_id, namespace_id, file_content, wr)
 
             -- attribute TestAttr
             local rows = db:eval(
@@ -26,6 +28,7 @@ describe('parse.reference', function()
             assert(rows[1].path:match('test/sources/hop_to_reference.cs$'))
             assert(rows[1].type == utils.reference_types.ATTRIBUTE)
             assert(rows[1].name == 'TestAttr')
+            assert(rows[1].namespace == 'This.Is.Reference.Namespace')
 
             -- attribute AttributeWow
             rows = db:eval(
@@ -37,6 +40,7 @@ describe('parse.reference', function()
             assert(rows[1].path:match('test/sources/hop_to_reference.cs$'))
             assert(rows[1].type == utils.reference_types.ATTRIBUTE)
             assert(rows[1].name == 'AttributeWow')
+            assert(rows[1].namespace == 'This.Is.Reference.Namespace')
 
             -- method Method1
             rows = db:eval(
@@ -49,6 +53,7 @@ describe('parse.reference', function()
                 assert(row.name == 'Method1')
                 assert(row.path:match('test/sources/hop_to_reference.cs$'))
                 assert(row.type == utils.reference_types.METHOD_INVOCATION)
+                assert(row.namespace == 'This.Is.Reference.Namespace')
             end
 
             -- class Class2
@@ -62,6 +67,7 @@ describe('parse.reference', function()
                 assert(row.name == 'Class2')
                 assert(row.path:match('test/sources/hop_to_reference.cs$'))
                 assert(row.type == utils.reference_types.OBJECT_CREATION)
+                assert(row.namespace == 'This.Is.Reference.Namespace')
             end
 
             -- class Class2 as variable declaration
@@ -75,6 +81,7 @@ describe('parse.reference', function()
                 assert(row.name == 'Class2')
                 assert(row.path:match('test/sources/hop_to_reference.cs$'))
                 assert(row.type == utils.reference_types.VARIABLE_DECLARATION)
+                assert(row.namespace == 'This.Is.Reference.Namespace')
             end
 
             -- method Run
@@ -88,6 +95,7 @@ describe('parse.reference', function()
                 assert(row.name == 'Run')
                 assert(row.path:match('test/sources/hop_to_reference.cs$'))
                 assert(row.type == utils.reference_types.METHOD_INVOCATION)
+                assert(row.namespace == 'This.Is.Reference.Namespace')
             end
         end, writer)
     end)
