@@ -19,7 +19,6 @@ describe('parse.namespace', function()
     it('__parse_namespace inserts empty namespace correctly', function()
         utils.init_test_database()
         local db = database.__get_db()
-
         local namespaces = db:select('namespaces', { where = { name = 'n\\a' } })
         assert(#namespaces == 1)
     end)
