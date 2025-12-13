@@ -1,6 +1,7 @@
 # Contributing to hopcsharp.nvim
 
-Thank you for your interest in contributing to hopcsharp.nvim! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to hopcsharp.nvim! This document provides guidelines and instructions
+for contributing to the project.
 
 ## Development Setup
 
@@ -109,20 +110,7 @@ hopcsharp.nvim/
 
 ## Submitting Changes
 
-1. **Write tests** for your changes when applicable
-2. **Ensure all tests pass** using the methods described above
-3. **Format and lint** your code
-4. **Commit your changes** with clear, descriptive commit messages:
-   ```bash
-   git commit -m "feat: add new navigation feature for interfaces"
-   ```
-5. **Push to your fork**:
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-6. **Create a Pull Request** on GitHub with:
-   - A clear description of the changes
-   - Any relevant issue numbers
+Always write tests for your changes.
 
 ### Commit Message Guidelines
 
@@ -144,12 +132,13 @@ When reporting issues, please include:
 1. **Testing with large C# projects**: The plugin is designed for large codebases. Test your changes with substantial
 C# projects like the [.NET Reference Source](https://github.com/microsoft/referencesource)
 
-2. **Database debugging**: You can inspect the SQLite database directly:
+2. **Database debugging**: You can inspect the SQLite database directly in lua code:
    ```lua
    local db = require('hopcsharp').get_db()
    local results = db:eval("SELECT * FROM files LIMIT 10")
    vim.inspect(results)
    ```
+   or just connect to sqlite file in _nvim-data_ folder with any db client.
 
 3. **Performance considerations**: Since this plugin is designed for large projects, always consider performance implications of your changes
 
@@ -157,8 +146,7 @@ C# projects like the [.NET Reference Source](https://github.com/microsoft/refere
 
 If you have questions about contributing, feel free to:
 
-- Open a discussion on GitHub
-- Create an issue for clarification
+- Create an issue.
 - Check existing issues and pull requests for similar topics
 
 Thank you for contributing to hopcsharp.nvim! 🚀
