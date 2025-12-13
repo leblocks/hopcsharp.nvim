@@ -82,17 +82,29 @@ Please ensure your code follows these standards:
 
 ```
 hopcsharp.nvim/
-├── lua/hopcsharp/          # Main plugin code
+├── lua/hopcsharp/         # Main plugin code
 │   ├── init.lua           # Entry point
+│   │
 │   ├── database/          # Database-related functionality
-│   ├── hierarchy/         # Type hierarchy features
-│   ├── hop/               # Navigation features
-│   └── parse/             # Parsing utilities (used during db buildup)
+│   │                      # schema definition, queries etc.
+│   │
+│   ├── hierarchy/         # Most of get_type_hiearchy implementation
+│   │
+│   ├── hop/               # Navigation features: hop_to_XXX methods
+│   │
+│   └── parse/             # Parsing utilities (used during code database buildup)
+│                          # treesitter queries and methods to extract data about code base
+│
 ├── test/                  # Test files
-│   ├── sources/           # C# source files for testing
-│   └── *_spec.lua        # Test specifications
-├── scripts/               # Helper scripts
-└── doc/                   # Documentation
+│   │
+│   ├── sources/           # C# source files for testing, be careful when updating those
+│   │                      # it may ruin existing asserts in tests
+│   │
+│   └── *_spec.lua         # Tests
+│
+├── scripts/               # Scripts for ci and testing
+│
+└── doc/                   # Vimdoc
 ```
 
 ## Submitting Changes
@@ -111,7 +123,6 @@ hopcsharp.nvim/
 6. **Create a Pull Request** on GitHub with:
    - A clear description of the changes
    - Any relevant issue numbers
-   - Screenshots/GIFs if the change affects the UI
 
 ### Commit Message Guidelines
 
