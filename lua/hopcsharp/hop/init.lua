@@ -106,7 +106,7 @@ M.__hop_to_implementation = function(config)
     local node = vim.treesitter.get_node()
     hop_to({
         implementation_providers.__by_parent_name_and_method_name(cword, node),
-        implementation_providers.__by_name(cword, node)
+        implementation_providers.__by_name(cword, node),
     }, config)
 end
 

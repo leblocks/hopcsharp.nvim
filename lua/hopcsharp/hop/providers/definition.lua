@@ -8,7 +8,9 @@ local M = {}
 ---@param _ TSNode | nil Node under cursor
 M.__by_name = function(current_word, _)
     return {
-        can_handle = function() return true end,
+        can_handle = function()
+            return true
+        end,
         get_hops = function()
             local db = database.__get_db()
             return db:eval(query.get_definition_by_name, { name = current_word })
