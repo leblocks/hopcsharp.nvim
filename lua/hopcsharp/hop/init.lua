@@ -1,9 +1,8 @@
 local utils = require('hopcsharp.hop.utils')
-local database = require('hopcsharp.database')
 local dbutils = require('hopcsharp.database.utils')
-local query = require('hopcsharp.database.query')
 
 local definition_providers = require('hopcsharp.hop.providers.definition')
+local reference_providers = require('hopcsharp.hop.providers.reference')
 local implementation_providers = require('hopcsharp.hop.providers.implementation')
 
 local M = {}
@@ -111,40 +110,11 @@ M.__hop_to_implementation = function(config)
 end
 
 M.__hop_to_reference = function(config)
-    local db = database.__get_db()
     local cword = vim.fn.expand('<cword>')
-
-    config = config or {}
-    local callback = config.callback or nil
-    local jump_on_quickfix = config.jump_on_quickfix or false
-
-    local references = db:eval(query.get_reference_by_name, { name = cword })
-
-    -- query found nothing
-    if type(references) ~= 'table' then
-        return
-    end
-
-    -- filter out current position
-    local filtered_references = filter_entry_under_cursor(references)
-
-    if callback ~= nil then
-        -- user provided custom logic for navigation
-        -- execute and return
-        callback(filtered_references)
-        return
-    end
-
-    -- immediate jump if there is only one case
-    if #filtered_references == 1 then
-        utils.__hop(filtered_references[1].path, filtered_references[1].row + 1, filtered_references[1].column)
-        return
-    end
-
-    -- sent to quickfix if there is too much
-    if #filtered_references > 1 then
-        populate_quickfix(filtered_references, jump_on_quickfix, dbutils.get_reference_type_name)
-    end
+    local node = vim.treesitter.get_node()
+    hop_to({
+        reference_providers.__by_name(cword, node),
+    }, config)
 end
 
 return M
