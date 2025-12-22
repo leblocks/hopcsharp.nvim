@@ -1,7 +1,6 @@
 local database = require('hopcsharp.database')
 local query = require('hopcsharp.database.query')
 
-
 local M = {}
 
 ---@param current_word string Word under cursor
