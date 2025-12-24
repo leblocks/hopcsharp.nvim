@@ -45,6 +45,7 @@ local function filter_entry_under_cursor(entries)
     return filtered_entries
 end
 
+-- TODO cover with tests
 ---@param hop_providers HopProvider[] Hop providers, those define where to jump
 ---@param config table User configuration
 local function hop_to(hop_providers, config)
@@ -56,37 +57,36 @@ local function hop_to(hop_providers, config)
         if provider.can_handle() then
             local items = provider.get_hops()
 
-            -- query found nothing
-            if type(items) ~= 'table' then
+            -- if current provider didn't find anything
+            -- try next one :D
+            if type(items) == 'table' then
+                -- filter out current position
+                local filtered_items = filter_entry_under_cursor(items)
+
+                if #filtered_items == 0 then
+                    return
+                end
+
+                if callback ~= nil then
+                    -- user provided custom logic for navigation
+                    -- execute and return
+                    callback(filtered_items)
+                    return
+                end
+
+                -- immediate jump if there is only one case
+                if #filtered_items == 1 then
+                    utils.__hop(filtered_items[1].path, filtered_items[1].row + 1, filtered_items[1].column)
+                    return
+                end
+
+                -- sent to quickfix if there is too much
+                if #filtered_items > 1 then
+                    populate_quickfix(filtered_items, jump_on_quickfix, dbutils.get_type_name)
+                end
+
                 return
             end
-
-            -- filter out current position
-            local filtered_items = filter_entry_under_cursor(items)
-
-            if #filtered_items == 0 then
-                return
-            end
-
-            if callback ~= nil then
-                -- user provided custom logic for navigation
-                -- execute and return
-                callback(filtered_items)
-                return
-            end
-
-            -- immediate jump if there is only one case
-            if #filtered_items == 1 then
-                utils.__hop(filtered_items[1].path, filtered_items[1].row + 1, filtered_items[1].column)
-                return
-            end
-
-            -- sent to quickfix if there is too much
-            if #filtered_items > 1 then
-                populate_quickfix(filtered_items, jump_on_quickfix, dbutils.get_type_name)
-            end
-
-            return
         end
     end
 end

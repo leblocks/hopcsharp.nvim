@@ -58,32 +58,23 @@ M.__by_name_and_used_namespaces = function(current_word, node)
         node = node:parent()
     end
 
-    if node == nil then
-        return {
-            can_handle = function()
-                return false
-            end,
-
-            get_hops = function()
-                return {}
-            end
-        }
-    end
-
     return {
         can_handle = function()
             return node ~= nil
         end,
 
         get_hops = function()
+            if node == nil then
+                return {}
+            end
+
             local usings = {}
             for _, nn, _, _ in treesitter_query.using_identifier:iter_captures(node, 0, 0, -1) do
                 table.insert(usings, vim.treesitter.get_node_text(nn, 0, nil))
             end
 
-            print(vim.inspect(usings))
-
-            return {} -- TODO for debugging
+            local db = database.__get_db()
+            return db:eval(query.get_definition_by_name_and_usings(usings), { name = current_word })
         end,
     }
 end

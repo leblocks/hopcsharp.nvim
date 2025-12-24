@@ -71,6 +71,32 @@ M.get_definition_by_type = [[
         f.path ASC
 ]]
 
+M.get_definition_by_name_and_usings = function(usings)
+    local query = [[
+        SELECT
+            d.name,
+            f.path,
+            d.row,
+            d.column,
+            d.type,
+            n.name AS namespace
+        FROM definitions d
+        JOIN files f on f.id = d.path_id
+        JOIN namespaces n on n.id = d.namespace_id
+        WHERE (d.name = :name OR d.name LIKE :name || '<%%>')
+            AND n.name IN (%s)
+        ORDER BY
+            n.name ASC,
+            f.path ASC
+    ]]
+
+    for i, using in ipairs(usings) do
+        usings[i] = '"' .. using .. '"'
+    end
+
+    return string.format(query, table.concat(usings, ','))
+end
+
 M.get_attributes = [[
     SELECT
         d.name,
