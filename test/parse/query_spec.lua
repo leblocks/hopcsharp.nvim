@@ -651,4 +651,46 @@ describe('parse.query', function()
         end)
         assert(visited)
     end)
+
+    it('using - qualified_name', function()
+        local content = [[
+            using Test.Namespace.One;
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.using_identifier:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Test.Namespace.One')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('using - identifer', function()
+        local content = [[
+            using Test;
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.using_identifier:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'Test')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
 end)
