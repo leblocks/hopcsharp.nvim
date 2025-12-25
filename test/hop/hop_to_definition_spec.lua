@@ -147,11 +147,60 @@ describe('hop_to_definition', function()
     end)
 
     it('__hop_to_definition hops correctly by namespace info 1', function()
-        -- TODO single namespace has definition
+        local files_to_parse = {
+            'test/sources/HopToDefinitionByNamespace/NamespacedClass1.cs',
+            'test/sources/HopToDefinitionByNamespace/NamespacedClass2.cs',
+            'test/sources/HopToDefinitionByNamespace/Program1.cs',
+        }
+
+        utils.prepare_multiple(files_to_parse, 'test/sources/HopToDefinitionByNamespace/Program1.cs', 4, 15)
+
+        local called = false
+
+        hop.__hop_to_definition({
+            callback = function(definitions)
+                called = true
+                assert(#definitions == 1)
+                assert(definitions[1].name == 'NamespacedClass1')
+                assert(definitions[1].namespace == 'This.Is.Namespace.Two')
+                assert(definitions[1].row == 2)
+                assert(definitions[1].column == 13)
+                assert(definitions[1].type == databaseutils.types.CLASS)
+            end,
+        })
+
+        assert(called)
     end)
 
-    it('__hop_to_definition hops correctly by namespace info 2', function()
-        -- TODO multiple namespaces have single definition
-    end)
+    it('__hop_to_definition hops correctly by namespace info when there are 2 definitions', function()
+        local files_to_parse = {
+            'test/sources/HopToDefinitionByNamespace/NamespacedClass1.cs',
+            'test/sources/HopToDefinitionByNamespace/NamespacedClass2.cs',
+            'test/sources/HopToDefinitionByNamespace/Program2.cs',
+        }
 
+        utils.prepare_multiple(files_to_parse, 'test/sources/HopToDefinitionByNamespace/Program2.cs', 5, 15)
+
+        local called = false
+
+        hop.__hop_to_definition({
+            callback = function(definitions)
+                called = true
+                assert(#definitions == 2)
+                assert(definitions[1].name == 'NamespacedClass1')
+                assert(definitions[1].namespace == 'This.Is.Namespace.One')
+                assert(definitions[1].row == 2)
+                assert(definitions[1].column == 13)
+                assert(definitions[1].type == databaseutils.types.CLASS)
+
+                assert(definitions[2].name == 'NamespacedClass1')
+                assert(definitions[2].namespace == 'This.Is.Namespace.Two')
+                assert(definitions[2].row == 2)
+                assert(definitions[2].column == 13)
+                assert(definitions[2].type == databaseutils.types.CLASS)
+            end,
+        })
+
+        assert(called)
+    end)
 end)

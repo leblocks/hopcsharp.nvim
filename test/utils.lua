@@ -9,17 +9,21 @@ local BufferedWriter = require('hopcsharp.database.buffer')
 local M = {}
 
 M.prepare = function(file_to_parse, file_to_open, row, column)
-    local path_to_parse = file_to_parse
-    local writer = BufferedWriter:new(database.__get_db(), 1)
+    M.prepare_multiple({ file_to_parse }, file_to_open, row, column)
+end
 
+M.prepare_multiple = function(files_to_parse, file_to_open, row, column)
+    local writer = BufferedWriter:new(database.__get_db(), 1)
     database.__drop_db()
-    -- parse file
-    parse.__parse_tree(path_to_parse, function(tree, path_id, file_content, wr)
-        local namespace_id = namespaces.__parse_namespaces(tree:root(), file_content)
-        definition.__parse_definitions(tree:root(), path_id, namespace_id, file_content, wr)
-        inheritance.__parse_inheritance(tree:root(), path_id, namespace_id, file_content, wr)
-        reference.__parse_reference(tree:root(), path_id, namespace_id, file_content, wr)
-    end, writer)
+
+    for _, file_to_parse in ipairs(files_to_parse) do
+        parse.__parse_tree(file_to_parse, function(tree, path_id, file_content, wr)
+            local namespace_id = namespaces.__parse_namespaces(tree:root(), file_content)
+            definition.__parse_definitions(tree:root(), path_id, namespace_id, file_content, wr)
+            inheritance.__parse_inheritance(tree:root(), path_id, namespace_id, file_content, wr)
+            reference.__parse_reference(tree:root(), path_id, namespace_id, file_content, wr)
+        end, writer)
+    end
 
     -- open file and stay on a desired word for hop
     vim.api.nvim_command('edit ' .. vim.fs.joinpath(vim.fn.getcwd(), file_to_open))
