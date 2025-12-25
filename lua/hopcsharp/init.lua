@@ -113,7 +113,6 @@ M.hop_to_implementation = function(config)
     end)
 end
 
--- TODO documentation
 M.hop_to_reference = function(config)
     utils.__block_on_processing(function()
         hop.__hop_to_reference(config)

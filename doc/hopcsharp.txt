@@ -182,7 +182,7 @@ Parameters: ~
                     jump_on_quickfix = false,              -- immediately jump to first entry when qf
                                                            -- list is opened during navigation
 
-                    callback = function(definitions) end   -- (function, optional) Custom callback function to handle
+                    callback = function(references) end    -- (function, optional) Custom callback function to handle
                 }                                          --  multiple reference instead of using quickfix list
 
 

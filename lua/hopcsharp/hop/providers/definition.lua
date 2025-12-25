@@ -1,6 +1,7 @@
 local database = require('hopcsharp.database')
 local dbutils = require('hopcsharp.database.utils')
 local query = require('hopcsharp.database.query')
+local treesitter_query = require('hopcsharp.parse.query')
 
 local M = {}
 
@@ -46,6 +47,34 @@ M.__by_name_and_type = function(current_word, node)
         get_hops = function()
             local db = database.__get_db()
             return db:eval(query.get_definition_by_name_and_type, { name = name, type = node_type })
+        end,
+    }
+end
+
+---@param current_word string Word under cursor
+---@param node TSNode | nil Node under cursor
+M.__by_name_and_used_namespaces = function(current_word, node)
+    while node ~= nil and node:type() ~= 'compilation_unit' do
+        node = node:parent()
+    end
+
+    return {
+        can_handle = function()
+            return node ~= nil
+        end,
+
+        get_hops = function()
+            if node == nil then
+                return {}
+            end
+
+            local usings = {}
+            for _, nn, _, _ in treesitter_query.using_identifier:iter_captures(node, 0, 0, -1) do
+                table.insert(usings, vim.treesitter.get_node_text(nn, 0, nil))
+            end
+
+            local db = database.__get_db()
+            return db:eval(query.get_definition_by_name_and_usings(usings), { name = current_word })
         end,
     }
 end

@@ -94,4 +94,11 @@ M.namespace_identifier = utils.__get_query([[
     ]
 ]])
 
+M.using_identifier = utils.__get_query([[
+    [
+        (using_directive (qualified_name) @name)
+        (using_directive (identifier) @name)
+    ]
+]])
+
 return M
