@@ -145,4 +145,13 @@ describe('hop_to_definition', function()
 
         assert(called)
     end)
+
+    it('__hop_to_definition hops correctly by namespace info 1', function()
+        -- TODO single namespace has definition
+    end)
+
+    it('__hop_to_definition hops correctly by namespace info 2', function()
+        -- TODO multiple namespaces have single definition
+    end)
+
 end)
