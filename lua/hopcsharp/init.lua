@@ -29,6 +29,7 @@ M.__init_database = function()
         parse.__parse_tree(item, function(tree, file_path_id, file_content, wr)
             local root = tree:root()
 
+            -- TODO provide here some parser infra
             local namespace_id = namespace.__parse_namespaces(root, file_content)
             definition.__parse_definitions(root, file_path_id, namespace_id, file_content, wr)
             inheritance.__parse_inheritance(root, file_path_id, namespace_id, file_content, wr)

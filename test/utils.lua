@@ -31,6 +31,8 @@ M.prepare_multiple = function(files_to_parse, file_to_open, row, column)
     vim.api.nvim_win_set_cursor(0, { row, column })
 end
 
+-- TODO reduce code duplication between
+-- init.lua and here and line 16
 M.init_test_database = function()
     database.__drop_db()
     local writer = BufferedWriter:new(database.__get_db(), 1)

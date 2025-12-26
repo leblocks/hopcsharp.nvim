@@ -54,7 +54,7 @@ M.__hop_to = function(hop_providers, config)
 
     for _, provider in ipairs(hop_providers) do
         if provider.can_handle() then
-            local items = provider.get_hops()
+            local items, type_converter = provider.get_hops()
 
             -- if current provider didn't find anything
             -- try next one :D
@@ -81,7 +81,9 @@ M.__hop_to = function(hop_providers, config)
 
                 -- sent to quickfix if there is too much
                 if #filtered_items > 1 then
-                    populate_quickfix(filtered_items, jump_on_quickfix, dbutils.get_type_name)
+                    -- TODO cover this in test
+                    local converter = type_converter or dbutils.get_type_name
+                    populate_quickfix(filtered_items, jump_on_quickfix, converter)
                 end
 
                 return
