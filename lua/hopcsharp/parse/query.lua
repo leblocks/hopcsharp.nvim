@@ -2,8 +2,6 @@ local utils = require('hopcsharp.parse.utils')
 
 local M = {}
 
--- type_parameter_list
-
 M.declaration_identifier = utils.__get_query([[
     [
         (enum_declaration name: (identifier) @name)
@@ -99,6 +97,49 @@ M.using_identifier = utils.__get_query([[
         (using_directive (qualified_name) @name)
         (using_directive (identifier) @name)
     ]
+]])
+
+M.type_argument_list = utils.__get_query([[
+    (type_argument_list (identifier) @name
+          ;; ignore those predefines types
+          ;; data taken from this query on a db parsed on reference source of dotnet
+          ;; select count() as cnt, name from reference where type = 4 group by name order by cnt desc limit 100;
+          (#not-any-of? @name
+            "Action"
+            "Array"
+            "ArrayList"
+            "Boolean"
+            "Collection"
+            "DateTime"
+            "Dictionary"
+            "Enumerable"
+            "Exception"
+            "Func"
+            "Guid"
+            "HashSet"
+            "Hashtable"
+            "ICollection"
+            "IDictionary"
+            "IEnumerable"
+            "IList"
+            "IntPtr"
+            "List"
+            "MemoryStream"
+            "MethodInfo"
+            "Object"
+            "Queue"
+            "Set"
+            "Stack"
+            "Stream"
+            "String"
+            "StringBuilder"
+            "Task"
+            "TimeSpan"
+            "Tuple"
+            "Type"
+            "UInt32"
+          )
+    )
 ]])
 
 return M

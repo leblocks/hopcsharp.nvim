@@ -581,6 +581,53 @@ describe('parse.query', function()
         assert(visited)
     end)
 
+    it('type_argument_list captures types on var creation', function()
+        local content = [[
+            var test = new Meow<One,Two>();
+        ]]
+
+        local visited = false
+        local visited_nodes = {}
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.type_argument_list:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(visited_nodes, name)
+                end
+            end)
+        end)
+        assert(visited_nodes[1] == 'One')
+        assert(visited_nodes[2] == 'Two')
+        assert(visited)
+    end)
+
+    it('type_argument_list ignored types are not captured', function()
+        local content = [[
+            var test = new Meow<Task, Action>();
+        ]]
+
+        local visited = false
+        local visited_nodes = {}
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.type_argument_list:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(visited_nodes, name)
+                end
+            end)
+        end)
+        assert(#visited_nodes == 0)
+        assert(not visited)
+    end)
+
     it('reference - types from ignore list are not captured', function()
         local content = [[
             public class Test
