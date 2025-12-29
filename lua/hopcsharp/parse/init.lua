@@ -3,6 +3,7 @@ local namespace = require('hopcsharp.parse.namespace')
 local reference = require('hopcsharp.parse.reference')
 local definition = require('hopcsharp.parse.definition')
 local inheritance = require('hopcsharp.parse.inheritance')
+local type_argument = require('hopcsharp.parse.type_argument')
 
 local M = {}
 
@@ -58,6 +59,7 @@ M.__parse_file = function(file_path, writer)
         definition.__parse_definitions(root, path_id, namespace_id, file_content, wr)
         inheritance.__parse_inheritance(root, path_id, namespace_id, file_content, wr)
         reference.__parse_reference(root, path_id, namespace_id, file_content, wr)
+        type_argument.__parse_type_arguments(root, path_id, namespace_id, file_content, wr)
     end, writer)
 end
 
