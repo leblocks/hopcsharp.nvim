@@ -1,5 +1,6 @@
 local utils = require('hopcsharp.utils')
 local database = require('hopcsharp.database')
+local database_utils = require('hopcsharp.database.utils')
 local tree = require('hopcsharp.hierarchy.tree')
 local query = require('hopcsharp.database.query')
 
@@ -33,7 +34,19 @@ M.__get_type_parents = function(type_name)
         end
 
         current = next
+
+        -- TODO refactor and test
+        for _, entry in ipairs(type_relations) do
+            if entry["name"] == current.base then
+                local items = db:eval(query.get_definition_by_name_and_type, { name = current.base, type = database_utils.types.CLASS })
+                if type(items) == "table" then
+                    next = entry
+                    goto continue
+                end
+            end
+        end
         next = utils.__find_first(type_relations, 'name', current.base)
+        ::continue::
     end
 
     return tree.__build_hierarchy_tree(current.base, type_relations)
