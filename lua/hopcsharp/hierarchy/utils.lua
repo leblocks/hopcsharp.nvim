@@ -1,9 +1,34 @@
 local utils = require('hopcsharp.utils')
 local database = require('hopcsharp.database')
+local database_utils = require('hopcsharp.database.utils')
 local tree = require('hopcsharp.hierarchy.tree')
 local query = require('hopcsharp.database.query')
 
 local M = {}
+
+local function find_first_class(type_relations, type_name)
+    local db = database.__get_db()
+    for _, entry in ipairs(type_relations) do
+        if entry['name'] == type_name then
+            -- if current entry base type is a class -> bingo!
+            local items = db:eval(
+                query.get_definition_by_name_and_type,
+                { name = entry['base'], type = database_utils.types.CLASS }
+            )
+
+            -- if we have found any class in result
+            if type(items) == 'table' then
+                return entry
+            end
+        end
+    end
+
+    -- we didn't find base class,
+    -- fallback to default behaviour
+    return utils.__find_first(type_relations, 'name', type_name)
+end
+
+find_first_class({}, {})
 
 M.__get_type_parents = function(type_name)
     local db = database.__get_db()
@@ -13,7 +38,7 @@ M.__get_type_parents = function(type_name)
         return tree.__create_node(type_name, {})
     end
 
-    local current = utils.__find_first(type_relations, 'name', type_name)
+    local current = find_first_class(type_relations, type_name)
 
     if current == nil then
         return {}
@@ -33,7 +58,7 @@ M.__get_type_parents = function(type_name)
         end
 
         current = next
-        next = utils.__find_first(type_relations, 'name', current.base)
+        next = find_first_class(type_relations, current.base)
     end
 
     return tree.__build_hierarchy_tree(current.base, type_relations)
