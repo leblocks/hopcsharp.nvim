@@ -24,7 +24,7 @@ M.base_identifier = utils.__get_query([[
 ]])
 
 M.reference = utils.__get_query([[
-[
+    [
       (invocation_expression function: [
         (identifier) @name
         (generic_name (identifier) @name)
@@ -82,6 +82,8 @@ M.reference = utils.__get_query([[
       ])
 
       (attribute name: (identifier) @name)
+
+      (typeof_expression type: (identifier) @name)
     ]
 ]])
 

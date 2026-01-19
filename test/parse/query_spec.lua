@@ -740,4 +740,25 @@ describe('parse.query', function()
         end)
         assert(visited)
     end)
+
+    it('typeof expression', function()
+        local content = [[
+            var type = typeof(ReferenceClass);
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    assert(name == 'ReferenceClass')
+                end
+            end)
+        end)
+        assert(visited)
+    end)
 end)
