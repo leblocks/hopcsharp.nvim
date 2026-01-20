@@ -27,6 +27,10 @@ namespace This.Is.Reference.Namespace
 
     private class AlfaAttribute : Attribute
     {
+        private void AlfaMethod()
+        {
+            var type = typeof(Class2);
+        }
     }
 }
 

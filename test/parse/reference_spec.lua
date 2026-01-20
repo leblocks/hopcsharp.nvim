@@ -97,6 +97,18 @@ describe('parse.reference', function()
                 assert(row.type == utils.reference_types.METHOD_INVOCATION)
                 assert(row.namespace == 'This.Is.Reference.Namespace')
             end
+
+            -- typeof
+            rows = db:eval(
+                query.get_reference_by_name_and_type,
+                { name = 'Class2', type = utils.reference_types.TYPEOF_EXPRESSION }
+            )
+
+            assert(#rows == 1)
+            assert(rows[1].name == 'Class2')
+            assert(rows[1].path:match('test/sources/hop_to_reference.cs$'))
+            assert(rows[1].type == utils.reference_types.TYPEOF_EXPRESSION)
+            assert(rows[1].namespace == 'This.Is.Reference.Namespace')
         end, writer)
     end)
 end)

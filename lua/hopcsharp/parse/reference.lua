@@ -35,6 +35,8 @@ M.__parse_reference = function(tree, path_id, namespace_id, file_content, writer
             type = dbutils.reference_types.ATTRIBUTE
         elseif parent_node_type == 'variable_declaration' then
             type = dbutils.reference_types.VARIABLE_DECLARATION
+        elseif parent_node_type == 'typeof_expression' then
+            type = dbutils.reference_types.TYPEOF_EXPRESSION
         end
 
         writer:add_to_buffer('reference', {
