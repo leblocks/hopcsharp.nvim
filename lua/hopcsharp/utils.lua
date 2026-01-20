@@ -45,7 +45,7 @@ end
 
 M.__log = function(message, prefix)
     prefix = prefix or 'hopcsharp: '
-    print(prefix .. message)
+    print(M.__escape_ansi(prefix .. message))
 end
 
 ---@param entries table to iterate on
@@ -69,6 +69,18 @@ M.__scheduled_iteration = function(entries, callback)
     end
 
     iterate(1)
+end
+
+M.__escape_ansi = function(string)
+    local result, _ = string
+        :gsub('%^%[%[%?%d+%a', '') -- ^[[?131232h
+        :gsub('%^%[%[%d+%a', '') -- ^[[123131H
+        :gsub('%^%[%[%a', '') -- ^[[D
+        :gsub('\27%[%?%d+%a', '') -- \27[?131232h
+        :gsub('\27%[%d+%a', '') -- \27[123131H
+        :gsub('\27%[%a', '') -- \27[D
+
+    return result
 end
 
 return M
