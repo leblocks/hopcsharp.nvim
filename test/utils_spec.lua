@@ -117,7 +117,13 @@ describe('utils', function()
         assert(not called)
     end)
 
-    it('__scheduled_iteration - dictionary', function() end)
+    it('__scheduled_iteration - dictionary', function()
+        local called = false
+        utils.__scheduled_iteration({}, function(i, item, items)
+            called = true
+        end)
+        assert(not called)
+    end)
 
     it('__scheduled_iteration - happy path', function()
         local entries = {
@@ -130,5 +136,35 @@ describe('utils', function()
         utils.__scheduled_iteration(entries, function(i, item, items)
             assert(items[i] == item)
         end)
+    end)
+
+    it('__escape_ansi - escapes correctly', function()
+        local tests = {
+            {
+                expected_output = 'processed 100/10188 of files',
+                input = '^[[?9001h^[[?1004h^[[?25l^[[2J^[[m^[[H^[[?25hprocessed 100/10188 of files',
+            },
+            {
+                expected_output = 'processed 100/448 of files',
+                input = '^[[?9001h^[[?1004h^[[?25l^[[2J^[[m^[[H^[[?25hprocessed 100/448 of files',
+            },
+            {
+                expected_output = 'processed 400/448 of files',
+                input = 'processed 400/448 of files^[[?9001l^[[?1004l',
+            },
+            {
+                expected_output = 'hopcsharp: "processed 100/10188 of files processed 100/10188 of files',
+                input = 'hopcsharp: \27[?9001h\27[?1004h\27[?25l\27[2J\27[m\27[H\27['
+                    .. '?25h"processed 100/10188 of files processed 100/10188 of files',
+            },
+        }
+
+        for _, test in ipairs(tests) do
+            assert(test.expected_output, utils.__escape_ansi(test.input))
+        end
+    end)
+
+    it('__escape_ansi - does not escapes regular string', function()
+        assert('test' == utils.__escape_ansi('test'))
     end)
 end)
