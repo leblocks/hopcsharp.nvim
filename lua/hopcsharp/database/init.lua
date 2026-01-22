@@ -58,10 +58,17 @@ M.__get_db = function()
     -- add empty namespace
     _db:insert('namespaces', { name = 'n\\a' })
 
-    -- some dumb performance optimizations
-    _db:execute('pragma synchronous = OFF')
-    _db:execute('pragma cache_size = -32768')
-    _db:execute('pragma journal_mode = OFF')
+    -- dumb performance optimizations
+    _db:execute('PRAGMA cache_size = -131072')   -- 128MB cache
+    _db:execute('PRAGMA journal_mode = OFF')
+    _db:execute('PRAGMA synchronous = OFF')
+
+    if not vim.g.hopcsharp_processing then
+        -- we are in read only mode
+        _db:execute('PRAGMA mmap_size = 1073741824') -- 1GB mmap
+        _db:execute('PRAGMA temp_store = MEMORY')
+        _db:execute('PRAGMA optimize')
+    end
 
     return _db
 end
