@@ -27,17 +27,14 @@ local function populate_quickfix(entries, jump_on_quickfix, type_converter)
             stop_callback = stop
         end
 
-        vim.fn.setqflist(
+        vim.fn.setqflist({
             {
-                {
-                    filename = item.path,
-                    lnum = item.row + 1,
-                    col = item.col,
-                    text = string.format('%-10s | %s', type_converter(item.type), item.namespace or ''),
-                },
+                filename = item.path,
+                lnum = item.row + 1,
+                col = item.col,
+                text = string.format('%-10s | %s', type_converter(item.type), item.namespace or ''),
             },
-            'a'
-        )
+        }, 'a')
     end)
 
     vim.cmd([[ :copen ]])
