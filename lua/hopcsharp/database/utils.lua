@@ -76,23 +76,23 @@ M.get_reference_type_name = function(type)
     end
 
     if type == M.reference_types.METHOD_INVOCATION then
-        return 'method invocation'
+        return 'method'
     end
 
     if type == M.reference_types.OBJECT_CREATION then
-        return 'object creation'
+        return 'object'
     end
 
     if type == M.reference_types.VARIABLE_DECLARATION then
-        return 'variable declaration'
+        return 'variable'
     end
 
     if type == M.reference_types.TYPE_ARGUMENT then
-        return 'type argument'
+        return 'type'
     end
 
     if type == M.reference_types.TYPEOF_EXPRESSION then
-        return 'typeof reference'
+        return 'type'
     end
 end
 
