@@ -46,7 +46,7 @@ M.__by_name_and_type = function(current_word, node)
 
         get_hops = function()
             local db = database.__get_db()
-            return db:eval(query.get_definition_by_name_and_type, { name = name, type = node_type })
+            return db:eval(query.get_definition_by_name_and_type(name, node_type))
         end,
     }
 end

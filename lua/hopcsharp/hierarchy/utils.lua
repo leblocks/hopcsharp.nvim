@@ -11,10 +11,7 @@ local function find_first_class(type_relations, type_name)
     for _, entry in ipairs(type_relations) do
         if entry['name'] == type_name then
             -- if current entry base type is a class -> bingo!
-            local items = db:eval(
-                query.get_definition_by_name_and_type,
-                { name = entry['base'], type = database_utils.types.CLASS }
-            )
+            local items = db:eval(query.get_definition_by_name_and_type(entry['base'], database_utils.types.CLASS))
 
             -- if we have found any class in result
             if type(items) == 'table' then

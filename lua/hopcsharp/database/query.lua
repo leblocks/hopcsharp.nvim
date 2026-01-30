@@ -19,27 +19,32 @@ M.get_definition_by_name = function(name)
     ]]
 
     -- using GLOB to make use of indexes
-    return string.format(query, name, name .. '<*>' )
+    return string.format(query, name, name .. '<*>')
 end
 
-M.get_definition_by_name_and_type = [[
-    SELECT
-        d.name,
-        f.path,
-        d.row,
-        d.column,
-        d.type,
-        n.name AS namespace
-    FROM definitions d
-    JOIN files f on f.id = d.path_id
-    JOIN namespaces n on n.id = d.namespace_id
-    WHERE (d.name = :name OR d.name = :name || 'Attribute' OR d.name LIKE :name || '<%>')
-        AND d.type = :type
-    ORDER BY
-        d.name ASC,
-        n.name ASC,
-        f.path ASC
-]]
+M.get_definition_by_name_and_type = function(name, type)
+    local query = [[
+        SELECT
+            d.name,
+            f.path,
+            d.row,
+            d.column,
+            d.type,
+            n.name AS namespace
+        FROM definitions d
+        JOIN files f on f.id = d.path_id
+        JOIN namespaces n on n.id = d.namespace_id
+        WHERE (d.name = '%s' OR d.name GLOB '%s'  OR d.name GLOB '%s')
+            AND d.type = %s
+        ORDER BY
+            d.name ASC,
+            n.name ASC,
+            f.path ASC
+    ]]
+
+    -- using GLOB to make use of indexes
+    return string.format(query, name, name .. 'Attribute', name .. '<*>', type)
+end
 
 M.get_all_definitions = [[
     SELECT
