@@ -74,7 +74,7 @@ M.__by_name_and_used_namespaces = function(current_word, node)
             end
 
             local db = database.__get_db()
-            return db:eval(query.get_definition_by_name_and_usings(usings), { name = current_word })
+            return db:eval(query.get_definition_by_name_and_usings(current_word, usings))
         end,
     }
 end

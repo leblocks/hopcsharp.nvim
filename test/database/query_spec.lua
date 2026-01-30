@@ -59,6 +59,6 @@ describe('query', function()
 
     it('can invoke get_definition_by_name_and_usings ', function()
         local db = database.__get_db()
-        assert(db:eval(query.get_definition_by_name_and_usings({ 'Test.One', 'Test.Two' }), { name = 'test' }))
+        assert(db:eval(query.get_definition_by_name_and_usings('test', { 'Test.One', 'Test.Two' })))
     end)
 end)

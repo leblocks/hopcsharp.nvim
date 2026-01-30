@@ -81,7 +81,7 @@ M.get_definition_by_type = [[
         f.path ASC
 ]]
 
-M.get_definition_by_name_and_usings = function(usings)
+M.get_definition_by_name_and_usings = function(name, usings)
     local query = [[
         SELECT
             d.name,
@@ -93,8 +93,7 @@ M.get_definition_by_name_and_usings = function(usings)
         FROM definitions d
         JOIN files f on f.id = d.path_id
         JOIN namespaces n on n.id = d.namespace_id
-        WHERE (d.name = :name OR d.name LIKE :name || '<%%>')
-            AND n.name IN (%s)
+        WHERE (d.name = '%s' OR d.name GLOB '%s') AND n.name IN (%s)
         ORDER BY
             n.name ASC,
             f.path ASC
@@ -104,7 +103,7 @@ M.get_definition_by_name_and_usings = function(usings)
         usings[i] = '"' .. using .. '"'
     end
 
-    return string.format(query, table.concat(usings, ','))
+    return string.format(query, name, name .. '<*>', table.concat(usings, ','))
 end
 
 M.get_attributes = [[
