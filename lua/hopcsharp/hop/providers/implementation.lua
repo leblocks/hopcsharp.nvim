@@ -63,7 +63,7 @@ M.__by_name = function(current_word, node)
         end,
         get_hops = function()
             local db = database.__get_db()
-            return db:eval(query.get_implementations_by_name, { name = current_word })
+            return db:eval(query.get_implementations_by_name(current_word))
         end,
     }
 end

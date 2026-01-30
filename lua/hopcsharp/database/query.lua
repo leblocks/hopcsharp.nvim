@@ -81,6 +81,7 @@ M.get_definition_by_type = [[
         f.path ASC
 ]]
 
+-- TODO think of by name, type and usings?
 M.get_definition_by_name_and_usings = function(name, usings)
     local query = [[
         SELECT
@@ -127,26 +128,30 @@ M.get_attributes = [[
 -- have to add distinct here to avoid listing
 -- classes that has the same name as :name but are not
 -- implementing anything
-M.get_implementations_by_name = [[
-    SELECT DISTINCT
-        d.name,
-        f.path,
-        d.row,
-        d.column,
-        d.type,
-        n.name AS namespace
-    FROM inheritance i
-    JOIN definitions d on d.name = i.name
-    JOIN files f on f.id = d.path_id
-    JOIN namespaces n on n.id = d.namespace_id
-    WHERE (i.base = :name OR i.base LIKE :name || '<%>')
-        AND d.type <> 7 -- filter constructors
-        AND d.type <> 6 -- filter methods
-    ORDER BY
-        d.name ASC,
-        n.name ASC,
-        f.path ASC
-]]
+M.get_implementations_by_name = function(name)
+    local query = [[
+        SELECT DISTINCT
+            d.name,
+            f.path,
+            d.row,
+            d.column,
+            d.type,
+            n.name AS namespace
+        FROM inheritance i
+        JOIN definitions d on d.name = i.name
+        JOIN files f on f.id = d.path_id
+        JOIN namespaces n on n.id = d.namespace_id
+        WHERE (i.base = '%s' OR i.base GLOB '%s')
+            AND d.type <> 7 -- filter constructors
+            AND d.type <> 6 -- filter methods
+        ORDER BY
+            d.name ASC,
+            n.name ASC,
+            f.path ASC
+    ]]
+
+    return string.format(query, name, name .. '<*>')
+end
 
 -- this is kind of a hack here
 -- we get implementaiton defentions from definitions table

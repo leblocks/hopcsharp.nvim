@@ -73,6 +73,7 @@ end
 M.__create_indexes = function()
     -- TODO if not exists
     -- CREATE INDEX idx_definitions_name_type ON definitions(name, type);
+    -- CREATE INDEX idx_inheritance_name ON inheritance(name);
 end
 
 M.__drop_db = function()

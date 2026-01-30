@@ -19,7 +19,7 @@ describe('query', function()
 
     it('can invoke get_implementations_by_name query', function()
         local db = database.__get_db()
-        assert(db:eval(query.get_implementations_by_name, { name = 'test' }))
+        assert(db:eval(query.get_implementations_by_name('test')))
     end)
 
     it('can invoke get_attributes query', function()
