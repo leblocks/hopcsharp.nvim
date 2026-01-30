@@ -71,11 +71,11 @@ M.__get_db = function()
 end
 
 M.__create_indexes = function()
-    -- TODO if not exists
-    -- CREATE INDEX idx_definitions_name_type ON definitions(name, type);
-    -- CREATE INDEX idx_inheritance_name ON inheritance(name);
-    -- CREATE INDEX idx_inheritance_base ON inheritance(base);
-    -- CREATE INDEX idx_reference_name_type ON reference(name, type);
+    local db = M.__get_db()
+    db:eval('CREATE INDEX IF NOT EXISTS idx_definitions_name_type ON definitions(name, type);')
+    db:eval('CREATE INDEX IF NOT EXISTS idx_inheritance_name ON inheritance(name);')
+    db:eval('CREATE INDEX IF NOT EXISTS idx_inheritance_base ON inheritance(base);')
+    db:eval('CREATE INDEX IF NOT EXISTS idx_reference_name_type ON reference(name, type);')
 end
 
 M.__drop_db = function()
