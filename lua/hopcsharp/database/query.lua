@@ -205,41 +205,47 @@ M.get_all_child_types = [[
     SELECT DISTINCT name, base FROM children WHERE base <> name;
 ]]
 
-M.get_reference_by_name = [[
-    SELECT
-        r.name,
-        f.path,
-        r.row,
-        r.column,
-        r.type,
-        n.name AS namespace
-    FROM reference r
-    JOIN files f on f.id = r.path_id
-    JOIN namespaces n on n.id = r.namespace_id
-    WHERE (r.name = :name OR r.name LIKE :name || '<%>' OR r.name || 'Attribute' = :name)
-    ORDER BY
-        r.name ASC,
-        n.name ASC,
-        f.path ASC
-]]
+M.get_reference_by_name = function(name)
+    local query = [[
+        SELECT
+            r.name,
+            f.path,
+            r.row,
+            r.column,
+            r.type,
+            n.name AS namespace
+        FROM reference r
+        JOIN files f on f.id = r.path_id
+        JOIN namespaces n on n.id = r.namespace_id
+        WHERE (r.name = '%s' OR r.name GLOB '%s' OR r.name || 'Attribute' = '%s')
+        ORDER BY
+            r.name ASC,
+            n.name ASC,
+            f.path ASC
+    ]]
+    return string.format(query, name, name .. '<*>', name)
+end
 
-M.get_reference_by_name_and_type = [[
-    SELECT
-        r.name,
-        f.path,
-        r.row,
-        r.column,
-        r.type,
-        n.name AS namespace
-    FROM reference r
-    JOIN files f on f.id = r.path_id
-    JOIN namespaces n on n.id = r.namespace_id
-    WHERE (r.name = :name OR r.name LIKE :name || '<%>')
-        AND r.type = :type
-    ORDER BY
-        r.name ASC,
-        n.name ASC,
-        f.path ASC
-]]
+M.get_reference_by_name_and_type = function(name, type)
+    local query = [[
+        SELECT
+            r.name,
+            f.path,
+            r.row,
+            r.column,
+            r.type,
+            n.name AS namespace
+        FROM reference r
+        JOIN files f on f.id = r.path_id
+        JOIN namespaces n on n.id = r.namespace_id
+        WHERE (r.name = '%s' OR r.name GLOB '%s') AND r.type = %s
+        ORDER BY
+            r.name ASC,
+            n.name ASC,
+            f.path ASC
+    ]]
+
+    return string.format(query, name, name .. '<*>', type)
+end
 
 return M

@@ -49,12 +49,12 @@ describe('query', function()
 
     it('can invoke get_reference_by_name', function()
         local db = database.__get_db()
-        assert(db:eval(query.get_reference_by_name, { name = 'test' }))
+        assert(db:eval(query.get_reference_by_name('test')))
     end)
 
     it('can invoke get_reference_by_name_and_type', function()
         local db = database.__get_db()
-        assert(db:eval(query.get_reference_by_name_and_type, { name = 'test', type = 23 }))
+        assert(db:eval(query.get_reference_by_name_and_type('test', 23)))
     end)
 
     it('can invoke get_definition_by_name_and_usings ', function()

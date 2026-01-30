@@ -19,10 +19,7 @@ describe('parse.reference', function()
             definition.__parse_reference(tree:root(), path_id, namespace_id, file_content, wr)
 
             -- attribute TestAttr
-            local rows = db:eval(
-                query.get_reference_by_name_and_type,
-                { name = 'TestAttr', type = utils.reference_types.ATTRIBUTE }
-            )
+            local rows = db:eval(query.get_reference_by_name_and_type('TestAttr', utils.reference_types.ATTRIBUTE))
 
             assert(#rows == 1)
             assert(rows[1].path:match('test/sources/hop_to_reference.cs$'))
@@ -31,10 +28,7 @@ describe('parse.reference', function()
             assert(rows[1].namespace == 'This.Is.Reference.Namespace')
 
             -- attribute AttributeWow
-            rows = db:eval(
-                query.get_reference_by_name_and_type,
-                { name = 'AttributeWow', type = utils.reference_types.ATTRIBUTE }
-            )
+            rows = db:eval(query.get_reference_by_name_and_type('AttributeWow', utils.reference_types.ATTRIBUTE))
 
             assert(#rows == 1)
             assert(rows[1].path:match('test/sources/hop_to_reference.cs$'))
@@ -43,10 +37,7 @@ describe('parse.reference', function()
             assert(rows[1].namespace == 'This.Is.Reference.Namespace')
 
             -- method Method1
-            rows = db:eval(
-                query.get_reference_by_name_and_type,
-                { name = 'Method1', type = utils.reference_types.METHOD_INVOCATION }
-            )
+            rows = db:eval(query.get_reference_by_name_and_type('Method1', utils.reference_types.METHOD_INVOCATION))
 
             assert(#rows == 4)
             for _, row in ipairs(rows) do
@@ -57,10 +48,7 @@ describe('parse.reference', function()
             end
 
             -- class Class2
-            rows = db:eval(
-                query.get_reference_by_name_and_type,
-                { name = 'Class2', type = utils.reference_types.OBJECT_CREATION }
-            )
+            rows = db:eval(query.get_reference_by_name_and_type('Class2', utils.reference_types.OBJECT_CREATION))
 
             assert(#rows == 1)
             for _, row in ipairs(rows) do
@@ -71,10 +59,7 @@ describe('parse.reference', function()
             end
 
             -- class Class2 as variable declaration
-            rows = db:eval(
-                query.get_reference_by_name_and_type,
-                { name = 'Class2', type = utils.reference_types.VARIABLE_DECLARATION }
-            )
+            rows = db:eval(query.get_reference_by_name_and_type('Class2', utils.reference_types.VARIABLE_DECLARATION))
 
             assert(#rows == 2)
             for _, row in ipairs(rows) do
@@ -85,10 +70,7 @@ describe('parse.reference', function()
             end
 
             -- method Run
-            rows = db:eval(
-                query.get_reference_by_name_and_type,
-                { name = 'Run', type = utils.reference_types.METHOD_INVOCATION }
-            )
+            rows = db:eval(query.get_reference_by_name_and_type('Run', utils.reference_types.METHOD_INVOCATION))
 
             assert(#rows == 2)
             for _, row in ipairs(rows) do
@@ -99,10 +81,7 @@ describe('parse.reference', function()
             end
 
             -- typeof
-            rows = db:eval(
-                query.get_reference_by_name_and_type,
-                { name = 'Class2', type = utils.reference_types.TYPEOF_EXPRESSION }
-            )
+            rows = db:eval(query.get_reference_by_name_and_type('Class2', utils.reference_types.TYPEOF_EXPRESSION))
 
             assert(#rows == 1)
             assert(rows[1].name == 'Class2')

@@ -13,7 +13,7 @@ M.__by_name = function(current_word, _)
         end,
         get_hops = function()
             local db = database.__get_db()
-            return db:eval(query.get_reference_by_name, { name = current_word }), dbutils.get_reference_type_name
+            return db:eval(query.get_reference_by_name(current_word)), dbutils.get_reference_type_name
         end,
     }
 end
