@@ -70,6 +70,11 @@ M.__get_db = function()
     return _db
 end
 
+M.__create_indexes = function()
+    -- TODO if not exists
+    -- CREATE INDEX idx_definitions_name_type ON definitions(name, type);
+end
+
 M.__drop_db = function()
     local db = M.__get_db()
     db:eval('delete from definitions')

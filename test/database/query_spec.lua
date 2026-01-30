@@ -4,7 +4,7 @@ local query = require('hopcsharp.database.query')
 describe('query', function()
     it('can invoke get_definition_by_name query', function()
         local db = database.__get_db()
-        assert(db:eval(query.get_definition_by_name, { name = 'test' }))
+        assert(db:eval(query.get_definition_by_name('test')))
     end)
 
     it('can invoke get_definition_by_name_and_type query', function()

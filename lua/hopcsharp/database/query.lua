@@ -1,21 +1,26 @@
 local M = {}
 
-M.get_definition_by_name = [[
-    SELECT
-        d.name,
-        f.path,
-        d.row,
-        d.column,
-        d.type,
-        n.name AS namespace
-    FROM definitions d
-    JOIN files f on f.id = d.path_id
-    JOIN namespaces n on n.id = d.namespace_id
-    WHERE d.name = :name OR d.name LIKE :name || '<%>'
-    ORDER BY
-        n.name ASC,
-        f.path ASC
-]]
+M.get_definition_by_name = function(name)
+    local query = [[
+        SELECT
+            d.name,
+            f.path,
+            d.row,
+            d.column,
+            d.type,
+            n.name AS namespace
+        FROM definitions d
+        JOIN files f on f.id = d.path_id
+        JOIN namespaces n on n.id = d.namespace_id
+        WHERE d.name = '%s' OR d.name GLOB '%s'
+        ORDER BY
+            n.name ASC,
+            f.path ASC
+    ]]
+
+    -- using GLOB to make use of indexes
+    return string.format(query, name, name .. '<*>' )
+end
 
 M.get_definition_by_name_and_type = [[
     SELECT

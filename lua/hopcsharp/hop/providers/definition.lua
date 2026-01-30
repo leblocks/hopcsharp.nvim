@@ -14,7 +14,7 @@ M.__by_name = function(current_word, _)
         end,
         get_hops = function()
             local db = database.__get_db()
-            return db:eval(query.get_definition_by_name, { name = current_word })
+            return db:eval(query.get_definition_by_name(current_word))
         end,
     }
 end
