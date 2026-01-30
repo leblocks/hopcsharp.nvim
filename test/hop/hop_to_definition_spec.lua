@@ -131,13 +131,13 @@ describe('hop_to_definition', function()
             callback = function(definitions)
                 called = true
                 assert(#definitions == 2)
-                assert(definitions[1].name == 'Child<T,V,Z>')
-                assert(definitions[1].row == 52)
+                assert(definitions[1].name == 'Child<T>')
+                assert(definitions[1].row == 34)
                 assert(definitions[1].column == 13)
                 assert(definitions[1].type == databaseutils.types.CLASS)
 
-                assert(definitions[2].name == 'Child<T>')
-                assert(definitions[2].row == 34)
+                assert(definitions[2].name == 'Child<T,V,Z>')
+                assert(definitions[2].row == 52)
                 assert(definitions[2].column == 13)
                 assert(definitions[2].type == databaseutils.types.CLASS)
             end,
