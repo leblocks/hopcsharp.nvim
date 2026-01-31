@@ -32,7 +32,7 @@ local function populate_quickfix(entries, jump_on_quickfix, type_converter)
                 filename = item.path,
                 lnum = item.row + 1,
                 col = item.col,
-                text = string.format('%-10s | %s', type_converter(item.type), item.namespace or ''),
+                text = string.format('%-15s | %s', type_converter(item.type), item.namespace or ''),
             },
         }, 'a')
     end)
