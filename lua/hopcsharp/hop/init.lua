@@ -1,4 +1,5 @@
-local utils = require('hopcsharp.hop.utils')
+local utils = require('hopcsharp.utils')
+local hop_utils = require('hopcsharp.hop.utils')
 local dbutils = require('hopcsharp.database.utils')
 
 local definition_providers = require('hopcsharp.hop.providers.definition')
@@ -7,19 +8,35 @@ local implementation_providers = require('hopcsharp.hop.providers.implementation
 
 local M = {}
 
-local function populate_quickfix(entries, jump_on_quickfix, type_converter)
-    local qflist = {}
+local stop_callback = nil
 
-    for _, entry in ipairs(entries) do
-        table.insert(qflist, {
-            filename = entry.path,
-            lnum = entry.row + 1,
-            col = entry.col,
-            text = (entry.namespace or '') .. ' | ' .. type_converter(entry.type) .. ' | ' .. entry.name,
-        })
+local function populate_quickfix(entries, jump_on_quickfix, type_converter)
+    -- stop previous quickfix population
+    -- won't work 100% but it much better
+    -- rathen that nothing
+    if stop_callback then
+        stop_callback()
+        stop_callback = nil
     end
 
-    vim.fn.setqflist(qflist, 'r')
+    -- remove previous quickfix entries
+    vim.fn.setqflist({}, 'r')
+
+    utils.__scheduled_iteration(entries, function(i, item, _, stop)
+        if i == 1 then
+            stop_callback = stop
+        end
+
+        vim.fn.setqflist({
+            {
+                filename = item.path,
+                lnum = item.row + 1,
+                col = item.col,
+                text = string.format('%-15s | %s', type_converter(item.type), item.namespace or ''),
+            },
+        }, 'a')
+    end)
+
     vim.cmd([[ :copen ]])
 
     if jump_on_quickfix then
@@ -75,7 +92,7 @@ M.__hop_to = function(hop_providers, config)
 
                 -- immediate jump if there is only one case
                 if #filtered_items == 1 then
-                    utils.__hop(filtered_items[1].path, filtered_items[1].row + 1, filtered_items[1].column)
+                    hop_utils.__hop(filtered_items[1].path, filtered_items[1].row + 1, filtered_items[1].column)
                     return
                 end
 

@@ -31,6 +31,8 @@ M.__init_database = function()
 
         if counter == #items then
             writer:flush()
+            utils.__log('creating indexes', '')
+            database.__create_indexes()
         end
     end)
 end

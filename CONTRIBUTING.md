@@ -130,7 +130,8 @@ When reporting issues, please include:
 ## Development Tips
 
 1. **Testing with large C# projects**: The plugin is designed for large codebases. Test your changes with substantial
-C# projects like the [.NET Reference Source](https://github.com/microsoft/referencesource)
+C# projects like the [.NET Reference Source](https://github.com/microsoft/referencesource) or [azure-sdk-for-net](https://github.com/Azure/azure-sdk-for-net)
+latter is especially heave, around 100k source code files.
 
 2. **Database debugging**: You can inspect the SQLite database directly in lua code:
    ```lua

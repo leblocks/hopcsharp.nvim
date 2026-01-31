@@ -1,40 +1,50 @@
 local M = {}
 
-M.get_definition_by_name = [[
-    SELECT
-        d.name,
-        f.path,
-        d.row,
-        d.column,
-        d.type,
-        n.name AS namespace
-    FROM definitions d
-    JOIN files f on f.id = d.path_id
-    JOIN namespaces n on n.id = d.namespace_id
-    WHERE d.name = :name OR d.name LIKE :name || '<%>'
-    ORDER BY
-        n.name ASC,
-        f.path ASC
-]]
+M.get_definition_by_name = function(name)
+    local query = [[
+        SELECT
+            d.name,
+            f.path,
+            d.row,
+            d.column,
+            d.type,
+            n.name AS namespace
+        FROM definitions d
+        JOIN files f on f.id = d.path_id
+        JOIN namespaces n on n.id = d.namespace_id
+        WHERE d.name = '%s' OR d.name GLOB '%s'
+        ORDER BY
+            n.name ASC,
+            f.path ASC
+    ]]
 
-M.get_definition_by_name_and_type = [[
-    SELECT
-        d.name,
-        f.path,
-        d.row,
-        d.column,
-        d.type,
-        n.name AS namespace
-    FROM definitions d
-    JOIN files f on f.id = d.path_id
-    JOIN namespaces n on n.id = d.namespace_id
-    WHERE (d.name = :name OR d.name = :name || 'Attribute' OR d.name LIKE :name || '<%>')
-        AND d.type = :type
-    ORDER BY
-        d.name ASC,
-        n.name ASC,
-        f.path ASC
-]]
+    -- using GLOB to make use of indexes
+    return string.format(query, name, name .. '<*>')
+end
+
+M.get_definition_by_name_and_type = function(name, type)
+    local query = [[
+        SELECT
+            d.name,
+            f.path,
+            d.row,
+            d.column,
+            d.type,
+            n.name AS namespace
+        FROM definitions d
+        JOIN files f on f.id = d.path_id
+        JOIN namespaces n on n.id = d.namespace_id
+        WHERE (d.name = '%s' OR d.name GLOB '%s'  OR d.name GLOB '%s')
+            AND d.type = %s
+        ORDER BY
+            d.name ASC,
+            n.name ASC,
+            f.path ASC
+    ]]
+
+    -- using GLOB to make use of indexes
+    return string.format(query, name, name .. 'Attribute', name .. '<*>', type)
+end
 
 M.get_all_definitions = [[
     SELECT
@@ -71,7 +81,8 @@ M.get_definition_by_type = [[
         f.path ASC
 ]]
 
-M.get_definition_by_name_and_usings = function(usings)
+-- TODO think of by name, type and usings?
+M.get_definition_by_name_and_usings = function(name, usings)
     local query = [[
         SELECT
             d.name,
@@ -83,8 +94,7 @@ M.get_definition_by_name_and_usings = function(usings)
         FROM definitions d
         JOIN files f on f.id = d.path_id
         JOIN namespaces n on n.id = d.namespace_id
-        WHERE (d.name = :name OR d.name LIKE :name || '<%%>')
-            AND n.name IN (%s)
+        WHERE (d.name = '%s' OR d.name GLOB '%s') AND n.name IN (%s)
         ORDER BY
             n.name ASC,
             f.path ASC
@@ -94,7 +104,7 @@ M.get_definition_by_name_and_usings = function(usings)
         usings[i] = '"' .. using .. '"'
     end
 
-    return string.format(query, table.concat(usings, ','))
+    return string.format(query, name, name .. '<*>', table.concat(usings, ','))
 end
 
 M.get_attributes = [[
@@ -118,26 +128,30 @@ M.get_attributes = [[
 -- have to add distinct here to avoid listing
 -- classes that has the same name as :name but are not
 -- implementing anything
-M.get_implementations_by_name = [[
-    SELECT DISTINCT
-        d.name,
-        f.path,
-        d.row,
-        d.column,
-        d.type,
-        n.name AS namespace
-    FROM inheritance i
-    JOIN definitions d on d.name = i.name
-    JOIN files f on f.id = d.path_id
-    JOIN namespaces n on n.id = d.namespace_id
-    WHERE (i.base = :name OR i.base LIKE :name || '<%>')
-        AND d.type <> 7 -- filter constructors
-        AND d.type <> 6 -- filter methods
-    ORDER BY
-        d.name ASC,
-        n.name ASC,
-        f.path ASC
-]]
+M.get_implementations_by_name = function(name)
+    local query = [[
+        SELECT DISTINCT
+            d.name,
+            f.path,
+            d.row,
+            d.column,
+            d.type,
+            n.name AS namespace
+        FROM inheritance i
+        JOIN definitions d on d.name = i.name
+        JOIN files f on f.id = d.path_id
+        JOIN namespaces n on n.id = d.namespace_id
+        WHERE (i.base = '%s' OR i.base GLOB '%s')
+            AND d.type <> 7 -- filter constructors
+            AND d.type <> 6 -- filter methods
+        ORDER BY
+            d.name ASC,
+            n.name ASC,
+            f.path ASC
+    ]]
+
+    return string.format(query, name, name .. '<*>')
+end
 
 -- this is kind of a hack here
 -- we get implementaiton defentions from definitions table
@@ -191,41 +205,47 @@ M.get_all_child_types = [[
     SELECT DISTINCT name, base FROM children WHERE base <> name;
 ]]
 
-M.get_reference_by_name = [[
-    SELECT
-        r.name,
-        f.path,
-        r.row,
-        r.column,
-        r.type,
-        n.name AS namespace
-    FROM reference r
-    JOIN files f on f.id = r.path_id
-    JOIN namespaces n on n.id = r.namespace_id
-    WHERE (r.name = :name OR r.name LIKE :name || '<%>' OR r.name || 'Attribute' = :name)
-    ORDER BY
-        r.name ASC,
-        n.name ASC,
-        f.path ASC
-]]
+M.get_reference_by_name = function(name)
+    local query = [[
+        SELECT
+            r.name,
+            f.path,
+            r.row,
+            r.column,
+            r.type,
+            n.name AS namespace
+        FROM reference r
+        JOIN files f on f.id = r.path_id
+        JOIN namespaces n on n.id = r.namespace_id
+        WHERE (r.name = '%s' OR r.name GLOB '%s' OR r.name || 'Attribute' = '%s')
+        ORDER BY
+            r.name ASC,
+            n.name ASC,
+            f.path ASC
+    ]]
+    return string.format(query, name, name .. '<*>', name)
+end
 
-M.get_reference_by_name_and_type = [[
-    SELECT
-        r.name,
-        f.path,
-        r.row,
-        r.column,
-        r.type,
-        n.name AS namespace
-    FROM reference r
-    JOIN files f on f.id = r.path_id
-    JOIN namespaces n on n.id = r.namespace_id
-    WHERE (r.name = :name OR r.name LIKE :name || '<%>')
-        AND r.type = :type
-    ORDER BY
-        r.name ASC,
-        n.name ASC,
-        f.path ASC
-]]
+M.get_reference_by_name_and_type = function(name, type)
+    local query = [[
+        SELECT
+            r.name,
+            f.path,
+            r.row,
+            r.column,
+            r.type,
+            n.name AS namespace
+        FROM reference r
+        JOIN files f on f.id = r.path_id
+        JOIN namespaces n on n.id = r.namespace_id
+        WHERE (r.name = '%s' OR r.name GLOB '%s') AND r.type = %s
+        ORDER BY
+            r.name ASC,
+            n.name ASC,
+            f.path ASC
+    ]]
+
+    return string.format(query, name, name .. '<*>', type)
+end
 
 return M

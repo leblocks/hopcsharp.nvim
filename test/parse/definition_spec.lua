@@ -18,7 +18,7 @@ describe('parse.definition', function()
             local namespace_id = namespace.__parse_namespaces(tree:root(), file_content)
             definition.__parse_definitions(tree:root(), path_id, namespace_id, file_content, wr)
 
-            local rows = db:eval(query.get_definition_by_name_and_type, { name = 'Class1', type = utils.types.CLASS })
+            local rows = db:eval(query.get_definition_by_name_and_type('Class1', utils.types.CLASS))
 
             -- class Class1
             assert(#rows == 1)
@@ -28,7 +28,7 @@ describe('parse.definition', function()
             assert(rows[1].namespace == 'This.Is.Namespace.One')
 
             -- method Foo
-            rows = db:eval(query.get_definition_by_name_and_type, { name = 'Foo', type = utils.types.METHOD })
+            rows = db:eval(query.get_definition_by_name_and_type('Foo', utils.types.METHOD))
             assert(#rows == 1)
             assert(rows[1].name == 'Foo')
             assert(rows[1].path:match('test/sources/Class1.cs$'))
@@ -36,7 +36,7 @@ describe('parse.definition', function()
             assert(rows[1].namespace == 'This.Is.Namespace.One')
 
             -- method Bar
-            rows = db:eval(query.get_definition_by_name_and_type, { name = 'Bar', type = utils.types.METHOD })
+            rows = db:eval(query.get_definition_by_name_and_type('Bar', utils.types.METHOD))
             assert(#rows == 1)
             assert(rows[1].name == 'Bar')
             assert(rows[1].path:match('test/sources/Class1.cs$'))
@@ -44,7 +44,7 @@ describe('parse.definition', function()
             assert(rows[1].namespace == 'This.Is.Namespace.One')
 
             -- constructor
-            rows = db:eval(query.get_definition_by_name_and_type, { name = 'Class1', type = utils.types.CONSTRUCTOR })
+            rows = db:eval(query.get_definition_by_name_and_type('Class1', utils.types.CONSTRUCTOR))
             assert(#rows == 1)
             assert(rows[1].name == 'Class1')
             assert(rows[1].path:match('test/sources/Class1.cs$'))
@@ -52,7 +52,7 @@ describe('parse.definition', function()
             assert(rows[1].namespace == 'This.Is.Namespace.One')
 
             -- enum
-            rows = db:eval(query.get_definition_by_name_and_type, { name = 'Enum1', type = utils.types.ENUM })
+            rows = db:eval(query.get_definition_by_name_and_type('Enum1', utils.types.ENUM))
             assert(#rows == 1)
             assert(rows[1].name == 'Enum1')
             assert(rows[1].path:match('test/sources/Class1.cs$'))
@@ -60,7 +60,7 @@ describe('parse.definition', function()
             assert(rows[1].namespace == 'This.Is.Namespace.One')
 
             -- struct
-            rows = db:eval(query.get_definition_by_name_and_type, { name = 'Struct1', type = utils.types.STRUCT })
+            rows = db:eval(query.get_definition_by_name_and_type('Struct1', utils.types.STRUCT))
             assert(#rows == 1)
             assert(rows[1].name == 'Struct1')
             assert(rows[1].path:match('test/sources/Class1.cs$'))
@@ -68,7 +68,7 @@ describe('parse.definition', function()
             assert(rows[1].namespace == 'This.Is.Namespace.One')
 
             -- record
-            rows = db:eval(query.get_definition_by_name_and_type, { name = 'Record1', type = utils.types.RECORD })
+            rows = db:eval(query.get_definition_by_name_and_type('Record1', utils.types.RECORD))
             assert(#rows == 1)
             assert(rows[1].name == 'Record1')
             assert(rows[1].path:match('test/sources/Class1.cs$'))
@@ -76,7 +76,7 @@ describe('parse.definition', function()
             assert(rows[1].namespace == 'This.Is.Namespace.One')
 
             -- interface
-            rows = db:eval(query.get_definition_by_name_and_type, { name = 'IInterface', type = utils.types.INTERFACE })
+            rows = db:eval(query.get_definition_by_name_and_type('IInterface', utils.types.INTERFACE))
             assert(#rows == 1)
             assert(rows[1].name == 'IInterface')
             assert(rows[1].path:match('test/sources/Class1.cs$'))

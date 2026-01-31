@@ -14,7 +14,7 @@ M.__by_name = function(current_word, _)
         end,
         get_hops = function()
             local db = database.__get_db()
-            return db:eval(query.get_definition_by_name, { name = current_word })
+            return db:eval(query.get_definition_by_name(current_word))
         end,
     }
 end
@@ -46,7 +46,7 @@ M.__by_name_and_type = function(current_word, node)
 
         get_hops = function()
             local db = database.__get_db()
-            return db:eval(query.get_definition_by_name_and_type, { name = name, type = node_type })
+            return db:eval(query.get_definition_by_name_and_type(name, node_type))
         end,
     }
 end
@@ -74,7 +74,7 @@ M.__by_name_and_used_namespaces = function(current_word, node)
             end
 
             local db = database.__get_db()
-            return db:eval(query.get_definition_by_name_and_usings(usings), { name = current_word })
+            return db:eval(query.get_definition_by_name_and_usings(current_word, usings))
         end,
     }
 end

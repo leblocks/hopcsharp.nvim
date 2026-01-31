@@ -9,10 +9,7 @@ describe('parse.type_argument', function()
 
         local db = database.__get_db()
 
-        local rows = db:eval(
-            query.get_reference_by_name_and_type,
-            { name = 'Meow', type = database_utils.reference_types.TYPE_ARGUMENT }
-        )
+        local rows = db:eval(query.get_reference_by_name_and_type('Meow', database_utils.reference_types.TYPE_ARGUMENT))
 
         assert(#rows == 1)
         assert(rows[1].name == 'Meow')

@@ -58,12 +58,24 @@ M.__get_db = function()
     -- add empty namespace
     _db:insert('namespaces', { name = 'n\\a' })
 
-    -- some dumb performance optimizations
-    _db:execute('pragma synchronous = OFF')
-    _db:execute('pragma cache_size = -32768')
-    _db:execute('pragma journal_mode = OFF')
+    -- dumb performance optimizations
+    _db:execute('PRAGMA cache_size = -131072') -- 128MB cache
+    _db:execute('PRAGMA journal_mode = OFF')
+    _db:execute('PRAGMA synchronous = OFF')
+    _db:execute('PRAGMA page_size = 8192')
+    _db:execute('PRAGMA mmap_size = 1073741824') -- 1GB mmap
+    _db:execute('PRAGMA temp_store = MEMORY')
+    _db:execute('PRAGMA optimize')
 
     return _db
+end
+
+M.__create_indexes = function()
+    local db = M.__get_db()
+    db:eval('CREATE INDEX IF NOT EXISTS idx_definitions_name_type ON definitions(name, type);')
+    db:eval('CREATE INDEX IF NOT EXISTS idx_inheritance_name ON inheritance(name);')
+    db:eval('CREATE INDEX IF NOT EXISTS idx_inheritance_base ON inheritance(base);')
+    db:eval('CREATE INDEX IF NOT EXISTS idx_reference_name_type ON reference(name, type);')
 end
 
 M.__drop_db = function()

@@ -55,17 +55,26 @@ M.__scheduled_iteration = function(entries, callback)
         return
     end
 
+    -- TODO cover with unittests
+    local should_stop = false
+
+    local function stop()
+        should_stop = true
+    end
+
     local function iterate(i)
         if i > #entries then
             -- finished iteration
             return
         end
 
-        callback(i, entries[i], entries)
+        callback(i, entries[i], entries, stop)
 
-        vim.schedule(function()
-            iterate(i + 1)
-        end)
+        if not should_stop then
+            vim.schedule(function()
+                iterate(i + 1)
+            end)
+        end
     end
 
     iterate(1)
