@@ -1,4 +1,8 @@
+local utils = require('hopcsharp.utils')
+
 local M = {}
+
+local stop_callback = nil
 
 M.__open_buffer = function(path, exists_callback, not_exists_callback)
     local buffers = vim.api.nvim_list_bufs()
@@ -52,6 +56,40 @@ M.__thop = function(path, row, column)
     end)
 
     vim.fn.setcursorcharpos(row, column + 1)
+end
+
+M.__populate_quickfix = function(entries, jump_on_quickfix, type_converter)
+    -- stop previous quickfix population
+    -- won't work 100% but it much better
+    -- rathen that nothing
+    if stop_callback then
+        stop_callback()
+        stop_callback = nil
+    end
+
+    -- remove previous quickfix entries
+    vim.fn.setqflist({}, 'r')
+
+    utils.__scheduled_iteration(entries, function(i, item, _, stop)
+        if i == 1 then
+            stop_callback = stop
+        end
+
+        vim.fn.setqflist({
+            {
+                filename = item.path,
+                lnum = item.row + 1,
+                col = item.col,
+                text = string.format('%-15s | %s', type_converter(item.type), item.namespace or ''),
+            },
+        }, 'a')
+    end)
+
+    vim.cmd([[ :copen ]])
+
+    if jump_on_quickfix then
+        vim.cmd([[ :cc! ]])
+    end
 end
 
 return M
