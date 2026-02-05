@@ -26,32 +26,31 @@ M.all_definitions = utils.__get_picker(fzf, function()
 end, utils.__format_name_and_namespace)
 
 -- TODO add documentation in vimdoc
-M.class_definitions = utils.__get_picker(fzf, get_items_by_type(db_utils.types.CLASS),
-    utils.__format_name_and_namespace)
+M.class_definitions =
+    utils.__get_picker(fzf, get_items_by_type(db_utils.types.CLASS), utils.__format_name_and_namespace)
 
 -- TODO add documentation in vimdoc
-M.interface_definitions = utils.__get_picker(fzf, get_items_by_type(db_utils.types.INTERFACE),
-    utils.__format_name_and_namespace)
+M.interface_definitions =
+    utils.__get_picker(fzf, get_items_by_type(db_utils.types.INTERFACE), utils.__format_name_and_namespace)
 
 -- TODO add documentation in vimdoc
-M.method_definitions = utils.__get_picker(fzf, get_items_by_type(db_utils.types.METHOD),
-    utils.__format_name_and_namespace)
+M.method_definitions =
+    utils.__get_picker(fzf, get_items_by_type(db_utils.types.METHOD), utils.__format_name_and_namespace)
 
 -- TODO add documentation in vimdoc
-M.struct_definitions = utils.__get_picker(fzf, get_items_by_type(db_utils.types.STRUCT),
-    utils.__format_name_and_namespace)
+M.struct_definitions =
+    utils.__get_picker(fzf, get_items_by_type(db_utils.types.STRUCT), utils.__format_name_and_namespace)
 
 -- TODO add documentation in vimdoc
-M.enum_definitions = utils.__get_picker(fzf, get_items_by_type(db_utils.types.ENUM),
-    utils.__format_name_and_namespace)
+M.enum_definitions = utils.__get_picker(fzf, get_items_by_type(db_utils.types.ENUM), utils.__format_name_and_namespace)
 
 -- TODO add documentation in vimdoc
-M.struct_definitions = utils.__get_picker(fzf, get_items_by_type(db_utils.types.STRUCT),
-    utils.__format_name_and_namespace)
+M.struct_definitions =
+    utils.__get_picker(fzf, get_items_by_type(db_utils.types.STRUCT), utils.__format_name_and_namespace)
 
 -- TODO add documentation in vimdoc
-M.record_definitions = utils.__get_picker(fzf, get_items_by_type(db_utils.types.RECORD),
-    utils.__format_name_and_namespace)
+M.record_definitions =
+    utils.__get_picker(fzf, get_items_by_type(db_utils.types.RECORD), utils.__format_name_and_namespace)
 
 -- TODO add documentation in vimdoc
 M.attribute_definitions = utils.__get_picker(fzf, function()

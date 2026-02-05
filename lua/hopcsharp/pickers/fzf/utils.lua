@@ -1,4 +1,5 @@
 local hop_utils = require('hopcsharp.hop.utils')
+local db_utils = require('hopcsharp.database.utils')
 
 local M = {}
 
@@ -6,13 +7,13 @@ local function parse_entry(entry, items)
     local id = nil
 
     -- lookup id of the item in items
-    for part in string.gmatch(entry, "%[(%d+)%]") do
+    for part in string.gmatch(entry, '%[(%d+)%]') do
         id = tonumber(part)
     end
 
     local item = items[id]
 
-    return item.path, item.row + 1, item.column
+    return item.path, item.row + 1, item.column, item.type, item.namespace
 end
 
 M.__format_entry_name_type_namespace = function(i, entry)
@@ -72,7 +73,19 @@ M.__get_picker = function(fzf, items_provider, formatter)
                 end,
 
                 ['alt-q'] = function(selected)
-                    -- TODO send to quickfix
+                    local quickfix_entries = {}
+                    for _, selected_item in ipairs(selected) do
+                        local path, row, column, type, namespace = parse_entry(selected_item, items)
+                        table.insert(quickfix_entries, {
+                            path = path,
+                            row = row,
+                            column = column,
+                            type = type,
+                            namespace = namespace,
+                        })
+                    end
+
+                    hop_utils.__populate_quickfix(quickfix_entries, true, db_utils.get_type_name)
                 end,
             },
 
@@ -85,6 +98,5 @@ M.__get_picker = function(fzf, items_provider, formatter)
     end
     return picker
 end
-
 
 return M
