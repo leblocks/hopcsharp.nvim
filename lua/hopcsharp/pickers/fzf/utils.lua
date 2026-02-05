@@ -13,7 +13,7 @@ local function parse_entry(entry, items)
 
     local item = items[id]
 
-    return item.path, item.row + 1, item.column, item.type, item.namespace
+    return item.path, item.row, item.column, item.type, item.namespace
 end
 
 M.__format_entry_name_type_namespace = function(i, entry)
