@@ -1,6 +1,8 @@
 -- TODO how can it be tested?
 -- TODO make this module conditional
 local fzf = require('fzf-lua')
+-- TODO make this module conditional
+local builtin = require('fzf-lua.previewer.builtin')
 local hopcsharp = require('hopcsharp')
 local file = require('hopcsharp.pickers.fzf.file')
 local utils = require('hopcsharp.pickers.fzf.utils')
@@ -16,44 +18,39 @@ local get_items_by_type = function(type)
     end
 end
 
+local get_items_by_type_picker = function(item_type)
+    return utils.__get_picker(fzf, builtin, get_items_by_type(item_type), utils.__format_name_and_namespace)
+end
+
 -- TODO add documentation in vimdoc
 M.source_files = file.__source_files(fzf)
 
 -- TODO add documentation in vimdoc
-M.all_definitions = utils.__get_picker(fzf, function()
+M.all_definitions = utils.__get_picker(fzf, builtin, function()
     local db = hopcsharp.get_db()
     return db:eval(db_query.get_all_definitions)
 end, utils.__format_name_and_namespace)
 
 -- TODO add documentation in vimdoc
-M.class_definitions =
-    utils.__get_picker(fzf, get_items_by_type(db_utils.types.CLASS), utils.__format_name_and_namespace)
+M.class_definitions = get_items_by_type_picker(db_utils.types.CLASS)
 
 -- TODO add documentation in vimdoc
-M.interface_definitions =
-    utils.__get_picker(fzf, get_items_by_type(db_utils.types.INTERFACE), utils.__format_name_and_namespace)
+M.interface_definitions = get_items_by_type_picker(db_utils.types.INTERFACE)
 
 -- TODO add documentation in vimdoc
-M.method_definitions =
-    utils.__get_picker(fzf, get_items_by_type(db_utils.types.METHOD), utils.__format_name_and_namespace)
+M.method_definitions = get_items_by_type_picker(db_utils.types.METHOD)
 
 -- TODO add documentation in vimdoc
-M.struct_definitions =
-    utils.__get_picker(fzf, get_items_by_type(db_utils.types.STRUCT), utils.__format_name_and_namespace)
+M.struct_definitions = get_items_by_type_picker(db_utils.types.STRUCT)
 
 -- TODO add documentation in vimdoc
-M.enum_definitions = utils.__get_picker(fzf, get_items_by_type(db_utils.types.ENUM), utils.__format_name_and_namespace)
+M.enum_definitions = get_items_by_type_picker(db_utils.types.ENUM)
 
 -- TODO add documentation in vimdoc
-M.struct_definitions =
-    utils.__get_picker(fzf, get_items_by_type(db_utils.types.STRUCT), utils.__format_name_and_namespace)
+M.record_definitions = get_items_by_type_picker(db_utils.types.RECORD)
 
 -- TODO add documentation in vimdoc
-M.record_definitions =
-    utils.__get_picker(fzf, get_items_by_type(db_utils.types.RECORD), utils.__format_name_and_namespace)
-
--- TODO add documentation in vimdoc
-M.attribute_definitions = utils.__get_picker(fzf, function()
+M.attribute_definitions = utils.__get_picker(fzf, builtin, function()
     local db = hopcsharp.get_db()
     return db:eval(db_query.get_attributes)
 end, utils.__format_name_and_namespace)

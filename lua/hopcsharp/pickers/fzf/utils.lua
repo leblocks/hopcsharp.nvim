@@ -25,11 +25,26 @@ M.__format_name_and_namespace = function(i, entry)
     return string.format('%-70s %-30s [%s]', entry.name, entry.namespace, i)
 end
 
-M.__get_picker = function(fzf, items_provider, formatter)
+M.__get_picker = function(fzf, builtin_previewer, items_provider, formatter)
     -- store items in a closure
     -- so after db call and render
     -- we can retrieve info from here
     local items = {}
+
+    -- see example here https://github.com/ibhagwan/fzf-lua/wiki/Advanced#preview-nvim-builtin
+    local custom_previewer = builtin_previewer.buffer_or_file:extend()
+
+    function custom_previewer:new(o, opts, fzf_win)
+        custom_previewer.super.new(self, o, opts, fzf_win)
+        setmetatable(self, custom_previewer)
+        return self
+    end
+
+    function custom_previewer:parse_entry(entry_str)
+        local path, line, col = parse_entry(entry_str, items)
+        return { path = path, line = line + 1, col = col + 1 }
+    end
+
     local picker = function()
         -- get database (connection is always opened)
         fzf.fzf_exec(function(fzf_cb)
@@ -89,7 +104,8 @@ M.__get_picker = function(fzf, items_provider, formatter)
                 end,
             },
 
-            -- TODO use custom previewer here
+            previewer = custom_previewer,
+
             fzf_opts = {
                 ['--wrap'] = false,
                 ['--multi'] = true,
