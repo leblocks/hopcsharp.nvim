@@ -61,7 +61,6 @@ M.__hop_to = function(hop_providers, config)
 
                 -- sent to quickfix if there is too much
                 if #filtered_items > 1 then
-                    -- TODO cover this in test
                     local converter = type_converter or dbutils.get_type_name
                     hop_utils.__populate_quickfix(filtered_items, jump_on_quickfix, converter)
                 end
