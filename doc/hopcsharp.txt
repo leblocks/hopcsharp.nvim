@@ -1,5 +1,5 @@
 ==============================================================================
-INTRODUCTION                                                     *hopcsharp.txt
+INTRODUCTION                                                     *hopcsharp.txt*
 
 Author: a.f.gurevich@gmail.com
 
@@ -14,9 +14,10 @@ CONTENTS                                                    *hopcsharp-contents*
     3. Installation .............. |hopcsharp-installation|
     4. Configuration ............. |hopcsharp-configuration|
     5. API ....................... |hopcsharp-api|
-    6. Commands .................. |hopcsharp-commands|
-    7  Schema .................... |hopcsharp-database|
-    8. Troubleshooting ........... |hopcsharp-troubleshooting|
+    6. FZF Pickers ............... |hopcsharp-fzf-pickers|
+    7. Commands .................. |hopcsharp-commands|
+    8. Schema .................... |hopcsharp-database|
+    9. Troubleshooting ........... |hopcsharp-troubleshooting|
 
 
 ==============================================================================
@@ -230,6 +231,112 @@ Example: >
         ORDER BY
             f.path ASC
             ]], { name = 'MyClassName' })
+<
+
+==============================================================================
+FZF PICKERS                                            *hopcsharp-fzf-pickers*
+
+hopcsharp.nvim provides built-in fzf-lua pickers for navigating definitions
+and source files. These require the |fzf-lua| plugin to be installed.
+https://github.com/ibhagwan/fzf-lua
+
+All pickers support the following keybindings:
+- `enter`   - open file
+- `ctrl-s`  - open in horizontal split
+- `ctrl-v`  - open in vertical split
+- `ctrl-t`  - open in new tab
+- `alt-q`   - send selection to quickfix list
+
+
+------------------------------------------------------------------------------
+                                                  *hopcsharp.pickers.fzf.source_files*
+hopcsharp.pickers.fzf.source_files()
+
+Opens fzf-lua picker listing all `.cs` source files stored in the database.
+
+Example: >
+    require('hopcsharp.pickers.fzf').source_files()
+<
+
+------------------------------------------------------------------------------
+                                                  *hopcsharp.pickers.fzf.all_definitions*
+hopcsharp.pickers.fzf.all_definitions()
+
+Opens fzf-lua picker listing all definitions (classes, interfaces, methods,
+structs, enums, records, and attributes).
+
+Example: >
+    require('hopcsharp.pickers.fzf').all_definitions()
+<
+
+------------------------------------------------------------------------------
+                                                  *hopcsharp.pickers.fzf.class_definitions*
+hopcsharp.pickers.fzf.class_definitions()
+
+Opens fzf-lua picker listing class definitions.
+
+Example: >
+    require('hopcsharp.pickers.fzf').class_definitions()
+<
+
+------------------------------------------------------------------------------
+                                                  *hopcsharp.pickers.fzf.interface_definitions*
+hopcsharp.pickers.fzf.interface_definitions()
+
+Opens fzf-lua picker listing interface definitions.
+
+Example: >
+    require('hopcsharp.pickers.fzf').interface_definitions()
+<
+
+------------------------------------------------------------------------------
+                                                  *hopcsharp.pickers.fzf.method_definitions*
+hopcsharp.pickers.fzf.method_definitions()
+
+Opens fzf-lua picker listing method definitions.
+
+Example: >
+    require('hopcsharp.pickers.fzf').method_definitions()
+<
+
+------------------------------------------------------------------------------
+                                                  *hopcsharp.pickers.fzf.struct_definitions*
+hopcsharp.pickers.fzf.struct_definitions()
+
+Opens fzf-lua picker listing struct definitions.
+
+Example: >
+    require('hopcsharp.pickers.fzf').struct_definitions()
+<
+
+------------------------------------------------------------------------------
+                                                  *hopcsharp.pickers.fzf.enum_definitions*
+hopcsharp.pickers.fzf.enum_definitions()
+
+Opens fzf-lua picker listing enum definitions.
+
+Example: >
+    require('hopcsharp.pickers.fzf').enum_definitions()
+<
+
+------------------------------------------------------------------------------
+                                                  *hopcsharp.pickers.fzf.record_definitions*
+hopcsharp.pickers.fzf.record_definitions()
+
+Opens fzf-lua picker listing record definitions.
+
+Example: >
+    require('hopcsharp.pickers.fzf').record_definitions()
+<
+
+------------------------------------------------------------------------------
+                                                  *hopcsharp.pickers.fzf.attribute_definitions*
+hopcsharp.pickers.fzf.attribute_definitions()
+
+Opens fzf-lua picker listing attribute definitions.
+
+Example: >
+    require('hopcsharp.pickers.fzf').attribute_definitions()
 <
 
 ==============================================================================
