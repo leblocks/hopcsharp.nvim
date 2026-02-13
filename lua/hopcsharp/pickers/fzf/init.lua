@@ -1,7 +1,9 @@
--- TODO how can it be tested?
--- TODO make this module conditional
+local ok, _ = pcall(require, 'fzf-lua')
+if not ok then
+    error("hopcsharp.pickers.fzf was required but 'fzf-lua' plugin was not found")
+end
+
 local fzf = require('fzf-lua')
--- TODO make this module conditional
 local builtin = require('fzf-lua.previewer.builtin')
 local hopcsharp = require('hopcsharp')
 local file = require('hopcsharp.pickers.fzf.file')
