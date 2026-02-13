@@ -69,27 +69,31 @@ M.__get_picker = function(fzf, builtin_previewer, items_provider, formatter)
                 -- on select hop to definition by path row and column
                 ['default'] = function(selected)
                     local path, row, column = parse_entry(selected[1], items)
-                    hop_utils.__hop(path, row, column)
+                    -- fixing row by + 1 because __hop internally fixies column already
+                    -- TODO do those fixes in a single place
+                    hop_utils.__hop(path, row + 1, column)
                 end,
 
                 ['ctrl-v'] = function(selected)
                     local path, row, column = parse_entry(selected[1], items)
-                    hop_utils.__vhop(path, row, column)
+                    hop_utils.__vhop(path, row + 1, column)
                 end,
 
                 ['ctrl-s'] = function(selected)
                     local path, row, column = parse_entry(selected[1], items)
-                    hop_utils.__shop(path, row, column)
+                    hop_utils.__shop(path, row + 1, column)
                 end,
 
                 ['ctrl-t'] = function(selected)
                     local path, row, column = parse_entry(selected[1], items)
-                    hop_utils.__thop(path, row, column)
+                    hop_utils.__thop(path, row + 1, column)
                 end,
 
                 ['alt-q'] = function(selected)
                     local quickfix_entries = {}
                     for _, selected_item in ipairs(selected) do
+                        -- not fixing here row and column by + 1
+                        -- because populate_quickfix already does that
                         local path, row, column, type, namespace = parse_entry(selected_item, items)
                         table.insert(quickfix_entries, {
                             path = path,
