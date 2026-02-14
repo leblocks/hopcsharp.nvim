@@ -5,16 +5,16 @@ Cached treesitter navigation on a big projects, an attempt to make navigation in
 ## Description
 
 _hopcsharp_ is a lightweight code navigation tool inspired by [ctags](https://github.com/universal-ctags/ctags), built
-for large C# projects. It uses [tree-sitter](https://tree-sitter.github.io/tree-sitter/) to quickly (not blazing fast
-but still good) parse code and store marks in a SQLite database for fast access, after that you can navigate freely in
-code base using built in methods or writing queries on your own against sqlite database.
+for large C# projects. It uses [tree-sitter](https://tree-sitter.github.io/tree-sitter/) to quickly parse code and
+store marks in a SQLite database for fast access, after that you can navigate freely in
+code base using built in methods or writing queries on your own against sqlite database. Important to understand that this is 
+not an _LSP server_ this tool is intended for code navigation and read. It won't be as precise as full blown _LSP server_ but
+it won't require you to compile code as well :) so basically any c# codebase can be opened and parsed with this plugin.
 
-__This plugin is in its early stages__ expect lots of bugs :D, I hope that there will be people's interest and
+I hope that there will be people's interest and
 contributions as well. I'll try to improve it little by little.
 
-<p align="center">
-   <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3Q0YTdkNWkxb2Z0d216eW5rcHB0N2dxd2htYXZiZGphbTZkNGRxdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HBGku9Wu9y0CtgXuCF/giphy.gif" />
-</p>
+[![bvT1Q.gif](https://s12.gifyu.com/images/bvT1Q.gif)](https://gifyu.com/image/bvT1Q)
 
 ## How does it work?
 
