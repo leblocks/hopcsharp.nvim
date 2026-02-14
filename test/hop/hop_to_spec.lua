@@ -25,6 +25,37 @@ describe('hop_to', function()
         assert(called_get_hops)
     end)
 
+    it('__hop_to calls type_converter if providers returns it', function()
+        local called_can_handle = false
+        local called_get_hops = false
+        local called_type_provider = false
+
+        local provider = function(current_word, node)
+            return {
+                can_handle = function()
+                    called_can_handle = true
+                    return true
+                end,
+
+                get_hops = function()
+                    called_get_hops = true
+                    return {
+                        { row = 10, column = 10, path = 'dummy1', name = 'dummy_name' },
+                        { row = 11, column = 10, path = 'dummy2', name = 'dummy_name' },
+                    }, function()
+                        called_type_provider = true
+                    end
+                end,
+            }
+        end
+
+        hop.__hop_to({ provider('test', nil) }, {})
+
+        assert(called_type_provider)
+        assert(called_can_handle)
+        assert(called_get_hops)
+    end)
+
     it("__hop_to calls providers that can handle hop and won't call other providers", function()
         local called_can_handle1 = false
         local called_get_hops1 = false

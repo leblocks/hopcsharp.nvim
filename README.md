@@ -5,16 +5,16 @@ Cached treesitter navigation on a big projects, an attempt to make navigation in
 ## Description
 
 _hopcsharp_ is a lightweight code navigation tool inspired by [ctags](https://github.com/universal-ctags/ctags), built
-for large C# projects. It uses [tree-sitter](https://tree-sitter.github.io/tree-sitter/) to quickly (not blazing fast
-but still good) parse code and store marks in a SQLite database for fast access, after that you can navigate freely in
-code base using built in methods or writing queries on your own against sqlite database.
+for large C# projects. It uses [tree-sitter](https://tree-sitter.github.io/tree-sitter/) to quickly parse code and
+store marks in a SQLite database for fast access, after that you can navigate freely in
+code base using built in methods or writing queries on your own against sqlite database. Important to understand that this is 
+not an _LSP server_ this tool is intended for code navigation and read. It won't be as precise as full blown _LSP server_ but
+it won't require you to compile code as well :) so basically any c# codebase can be opened and parsed with this plugin.
 
-__This plugin is in its early stages__ expect lots of bugs :D, I hope that there will be people's interest and
+I hope that there will be people's interest and
 contributions as well. I'll try to improve it little by little.
 
-<p align="center">
-   <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3Q0YTdkNWkxb2Z0d216eW5rcHB0N2dxd2htYXZiZGphbTZkNGRxdiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HBGku9Wu9y0CtgXuCF/giphy.gif" />
-</p>
+[![bvT1Q.gif](https://s12.gifyu.com/images/bvT1Q.gif)](https://gifyu.com/image/bvT1Q)
 
 ## How does it work?
 
@@ -37,6 +37,31 @@ Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use({ 'leblocks/hopcsharp.nvim', requires = { { 'kkharji/sqlite.lua' } } })
+```
+
+## Quick Start
+
+Example keybinding configuration:
+
+```lua
+local hopcsharp = require('hopcsharp')
+
+-- database
+vim.keymap.set('n', '<leader>hD', hopcsharp.init_database, { desc = 'hopcsharp: init database' })
+
+-- navigation
+vim.keymap.set('n', '<leader>hd', hopcsharp.hop_to_definition, { desc = 'hopcsharp: go to definition' })
+vim.keymap.set('n', '<leader>hi', hopcsharp.hop_to_implementation, { desc = 'hopcsharp: go to implementation' })
+vim.keymap.set('n', '<leader>hr', hopcsharp.hop_to_reference, { desc = 'hopcsharp: go to reference' })
+vim.keymap.set('n', '<leader>ht', hopcsharp.get_type_hierarchy, { desc = 'hopcsharp: type hierarchy' })
+
+-- fzf pickers (requires fzf-lua)
+local pickers = require('hopcsharp.pickers.fzf')
+vim.keymap.set('n', '<leader>hf', pickers.source_files, { desc = 'hopcsharp: find source files' })
+vim.keymap.set('n', '<leader>ha', pickers.all_definitions, { desc = 'hopcsharp: all definitions' })
+vim.keymap.set('n', '<leader>hc', pickers.class_definitions, { desc = 'hopcsharp: class definitions' })
+vim.keymap.set('n', '<leader>hn', pickers.interface_definitions, { desc = 'hopcsharp: interface definitions' })
+vim.keymap.set('n', '<leader>he', pickers.enum_definitions, { desc = 'hopcsharp: enum definitions' })
 ```
 
 ## API
@@ -91,56 +116,25 @@ Opens read-only buffer with type hierarchy.
 require('hopcsharp').get_db()
 ```
 
-Returns opened _[sqlite_db](https://github.com/kkharji/sqlite.lua/blob/50092d60feb242602d7578398c6eb53b4a8ffe7b/doc/sqlite.txt#L76)_ object, you can create custom flows querying it with SQL queries from lua. See customization
+Returns opened _[sqlite_db](https://github.com/kkharji/sqlite.lua/blob/50092d60feb242602d7578398c6eb53b4a8ffe7b/doc/sqlite.txt#L76)_ object, you can create custom flows querying it with SQL queries from lua. See `:h hopcsharp.get_db` for more details.
 
-## Example customizations
+## FZF Pickers
 
-[Here](https://github.com/leblocks/dotfiles/blob/master/packages/neovim/config/lua/plugins/hopcsharp.lua) (this is my
-configuration that I use day to day) you can take a look at example configuration based on _get_db()_ method and _[fzf-lua](https://github.com/ibhagwan/fzf-lua)_,
-here is demo usage of it on a [net framework reference source](https://github.com/microsoft/referencesource) repository
+hopcsharp ships with built-in [fzf-lua](https://github.com/ibhagwan/fzf-lua) pickers for browsing definitions and source files. Requires the `fzf-lua` plugin to be installed.
 
-<p align="center">
-   <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExODhzM2JnMTc1eGZ0ajB5cjFvNXF5ZDV1aDFkbG5saWhwcGo4a3o2ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/HXFp3DblkKtrcOBn8J/giphy.gif" />
-</p>
+All pickers are available via `require('hopcsharp.pickers.fzf')`:
 
-Create repository _.cs_ files fzf-lua picker that were previously stored in a db:
+| Picker | Description |
+|---|---|
+| `source_files` | Browse all `.cs` source files in the database |
+| `all_definitions` | Browse all definitions |
+| `class_definitions` | Browse class definitions |
+| `interface_definitions` | Browse interface definitions |
+| `method_definitions` | Browse method definitions |
+| `struct_definitions` | Browse struct definitions |
+| `enum_definitions` | Browse enum definitions |
+| `record_definitions` | Browse record definitions |
+| `attribute_definitions` | Browse attribute definitions |
 
-<p align="center">
-   <img src="https://media.giphy.com/media/jvaFNuMIKjvHsACiBM/giphy.gif" />
-</p>
-
-```lua
-local list_files = function()
-    -- get database (connection is always opened)
-    fzf_lua.fzf_exec(function(fzf_cb)
-        coroutine.wrap(function()
-            local db = hopcsharp.get_db()
-            local co = coroutine.running()
-            local items = db:eval([[ SELECT path FROM files ]])
-
-            if type(items) ~= 'table' then
-                items = {}
-            end
-
-            for _, entry in pairs(items) do
-                fzf_cb(entry.path, function() coroutine.resume(co) end)
-                coroutine.yield()
-            end
-            fzf_cb()
-        end)()
-    end, {
-        actions = {
-            ["enter"]  = actions.file_edit_or_qf,
-            ["ctrl-s"] = actions.file_split,
-            ["ctrl-v"] = actions.file_vsplit,
-            ["ctrl-t"] = actions.file_tabedit,
-            ["alt-q"]  = actions.file_sel_to_qf,
-            ["alt-Q"]  = actions.file_sel_to_ll,
-            ["alt-i"]  = actions.toggle_ignore,
-            ["alt-h"]  = actions.toggle_hidden,
-            ["alt-f"]  = actions.toggle_follow,
-        }
-    })
-end
-```
+See `:h hopcsharp-fzf-pickers` for more details.
 

@@ -42,10 +42,21 @@ local function check_treesitter_c_sharp_grammar_installation()
     end
 end
 
+local function check_fzf_lua_optional()
+    vim.health.start('fzf-lua [optional]')
+    local ok, _ = pcall(require, 'fzf-lua')
+    if ok then
+        vim.health.ok('fzf-lua is installed')
+    else
+        vim.health.error('fzf-lua is not installed')
+    end
+end
+
 M.check = function()
     check_fd()
     check_sqlite_installation()
     check_treesitter_c_sharp_grammar_installation()
+    check_fzf_lua_optional()
 end
 
 return M

@@ -1,4 +1,3 @@
-local utils = require('hopcsharp.utils')
 local hop_utils = require('hopcsharp.hop.utils')
 local dbutils = require('hopcsharp.database.utils')
 
@@ -7,42 +6,6 @@ local reference_providers = require('hopcsharp.hop.providers.reference')
 local implementation_providers = require('hopcsharp.hop.providers.implementation')
 
 local M = {}
-
-local stop_callback = nil
-
-local function populate_quickfix(entries, jump_on_quickfix, type_converter)
-    -- stop previous quickfix population
-    -- won't work 100% but it much better
-    -- rathen that nothing
-    if stop_callback then
-        stop_callback()
-        stop_callback = nil
-    end
-
-    -- remove previous quickfix entries
-    vim.fn.setqflist({}, 'r')
-
-    utils.__scheduled_iteration(entries, function(i, item, _, stop)
-        if i == 1 then
-            stop_callback = stop
-        end
-
-        vim.fn.setqflist({
-            {
-                filename = item.path,
-                lnum = item.row + 1,
-                col = item.col,
-                text = string.format('%-15s | %s', type_converter(item.type), item.namespace or ''),
-            },
-        }, 'a')
-    end)
-
-    vim.cmd([[ :copen ]])
-
-    if jump_on_quickfix then
-        vim.cmd([[ :cc! ]])
-    end
-end
 
 local function filter_entry_under_cursor(entries)
     local filtered_entries = {}
@@ -98,9 +61,8 @@ M.__hop_to = function(hop_providers, config)
 
                 -- sent to quickfix if there is too much
                 if #filtered_items > 1 then
-                    -- TODO cover this in test
                     local converter = type_converter or dbutils.get_type_name
-                    populate_quickfix(filtered_items, jump_on_quickfix, converter)
+                    hop_utils.__populate_quickfix(filtered_items, jump_on_quickfix, converter)
                 end
 
                 return
