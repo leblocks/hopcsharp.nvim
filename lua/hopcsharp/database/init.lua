@@ -80,6 +80,10 @@ end
 
 M.__drop_db = function()
     local db = M.__get_db()
+    db:eval('DROP INDEX IF EXISTS idx_definitions_name_type;')
+    db:eval('DROP INDEX IF EXISTS idx_inheritance_name;')
+    db:eval('DROP INDEX IF EXISTS idx_inheritance_base;')
+    db:eval('DROP INDEX IF EXISTS idx_reference_name_type;')
     db:eval('delete from definitions')
     db:eval('delete from inheritance')
     db:eval('delete from reference')
