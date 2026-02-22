@@ -15,7 +15,7 @@ vim.g.hopcsharp_processing = false
 M.__init_database = function()
     -- drop existing schema
     database.__drop_db()
-    local writer = BufferedWriter:new(database.__get_db(), 1000)
+    local writer = BufferedWriter:new(database.__get_db(), 10000)
 
     local files = parse.__get_source_files()
 

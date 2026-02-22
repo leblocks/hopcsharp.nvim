@@ -96,4 +96,42 @@ M.get_reference_type_name = function(type)
     end
 end
 
+M.__get_definitions_insert_command = function(entries)
+    return M.__get_insert_command('definitions', entries)
+end
+
+M.__get_references_insert_command = function(entries)
+    return M.__get_insert_command('reference', entries)
+end
+
+-- TODO tests
+M.__get_inheritance_insert_command = function(entries)
+    if entries == nil or #entries == 0 then
+        return ""
+    end
+    local values = {}
+    for _, entry in ipairs(entries) do
+        local value = string.format('(%s, %s, "%s", "%s")', entry.path_id, entry.namespace_id, entry.name, entry.base)
+        table.insert(values, value)
+    end
+
+    local template = "INSERT INTO inheritance (path_id, namespace_id, name, base) VALUES %s;"
+    return string.format(template, table.concat(values, ','));
+end
+
+M.__get_insert_command = function(table_name, entries)
+    if entries == nil or #entries == 0 then
+        return ""
+    end
+    local values = {}
+    for _, entry in ipairs(entries) do
+        local value = string.format('(%s, %s, %s, "%s", %s, %s)', entry.path_id, entry.namespace_id, entry.type,
+            entry.name, entry.row, entry.column)
+        table.insert(values, value)
+    end
+
+    local template = "INSERT INTO %s (path_id, namespace_id, type, name, row, column) VALUES %s;"
+    return string.format(template, table_name, table.concat(values, ','));
+end
+
 return M
