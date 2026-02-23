@@ -37,6 +37,13 @@ M.__init_database = function()
     end)
 end
 
+M.setup = function(config)
+    -- TODO
+    -- vimdoc
+    -- defaults
+    -- usage in methods
+end
+
 M.init_database = function()
     utils.__block_on_processing(function()
         vim.g.hopcsharp_processing = true
