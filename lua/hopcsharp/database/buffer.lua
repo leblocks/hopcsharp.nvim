@@ -1,5 +1,3 @@
-local db_utils = require('hopcsharp.database.utils')
-
 local BufferedWriter = {}
 BufferedWriter.__index = BufferedWriter
 
@@ -24,17 +22,7 @@ end
 -- Method to write buffered data to the database
 function BufferedWriter:write_buffer_to_db()
     for table_name, entries in pairs(self.buffer) do
-        if table_name ~= 'inheritance' then
-            local command = db_utils.__get_insert_command(table_name, entries)
-            if command ~= '' then
-                self.db:execute(command)
-            end
-        else
-            local command = db_utils.__get_inheritance_insert_command(entries)
-            if command ~= '' then
-                self.db:execute(command)
-            end
-        end
+        self.db:insert(table_name, entries)
     end
 
     self.buffer = {}
