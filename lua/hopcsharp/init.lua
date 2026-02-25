@@ -41,9 +41,6 @@ end
 
 ---@param opts HopcsharpConfiguration Configuration object
 M.setup = function(opts)
-    -- TODO
-    -- vimdoc
-    -- usage in methods
     config.__set_config(opts)
 end
 

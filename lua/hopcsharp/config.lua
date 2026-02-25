@@ -10,8 +10,8 @@ local M = {}
 ---@field buffer_size number Number of entries to buffer before flushing to the database during init
 
 ---@class HopcsharpHopConfiguration
----@field jump_on_quickfix boolean If true, immediately jump to first quickfix entry when multiple results are found (default: false)
----@field filter_entry_under_cursor boolean If true, exclude an entry at the current cursor position from results (default: true)
+---@field jump_on_quickfix boolean If true, immediately jump to first quickfix entry when multiple results are found
+---@field filter_entry_under_cursor boolean If true, exclude an entry at the current cursor position from results
 
 ---@class HopcsharpConfiguration
 ---@field hop HopcsharpHopConfiguration Hop navigation settings

@@ -72,6 +72,49 @@ CONFIGURATION                                          *hopcsharp-configuration*
 hopcsharp.nvim works out of the box with minimal configuration. The plugin
 automatically detects C# projects and creates a database in your project root.
 
+                                                              *hopcsharp.setup*
+hopcsharp.setup({opts})
+
+Configures the plugin with the provided options. All fields are optional;
+only provided values will override the defaults.
+
+Parameters: ~
+
+    {opts}    (table, optional) configuration object
+    >lua
+                {
+                    hop = {
+                        jump_on_quickfix = false,           -- (boolean, default: false)
+                                                            -- immediately jump to first quickfix
+                                                            -- entry when multiple results are found
+
+                        filter_entry_under_cursor = true,   -- (boolean, default: true)
+                                                            -- exclude an entry at the current cursor
+                                                            -- position from results
+                    },
+
+                    database = {
+                        folder_path = vim.fn.stdpath('state'),  -- (string) directory path where the
+                                                                -- SQLite database file is stored
+
+                        buffer_size = 10000,                -- (number, default: 10000) number of
+                                                            -- entries to buffer before flushing to
+                                                            -- the database during init
+                    },
+                }
+<
+
+Example: >
+    require('hopcsharp').setup({
+        hop = {
+            jump_on_quickfix = true,
+        },
+        database = {
+            folder_path = '/custom/path',
+        },
+    })
+<
+
 Global Variables:~
 
 *g:hopcsharp_processing*        (boolean, default: false)
@@ -124,6 +167,9 @@ Parameters: ~
                     jump_on_quickfix = false,              -- immediately jump to first entry when qf
                                                            -- list is opened during navigation
 
+                    filter_entry_under_cursor = true,      -- exclude an entry at the current cursor
+                                                           -- position from results
+
                     callback = function(definitions) end   -- (function, optional) Custom callback function to handle
                 }                                          --  multiple definitions instead of using quickfix list
 
@@ -159,6 +205,9 @@ Parameters: ~
                     jump_on_quickfix = false,              -- immediately jump to first entry when qf
                                                            -- list is opened during navigation
 
+                    filter_entry_under_cursor = true,      -- exclude an entry at the current cursor
+                                                           -- position from results
+
                     callback = function(definitions) end   -- (function, optional) Custom callback function to handle
                 }                                          --  multiple implementation instead of using quickfix list
 
@@ -182,6 +231,9 @@ Parameters: ~
                 {
                     jump_on_quickfix = false,              -- immediately jump to first entry when qf
                                                            -- list is opened during navigation
+
+                    filter_entry_under_cursor = true,      -- exclude an entry at the current cursor
+                                                           -- position from results
 
                     callback = function(references) end    -- (function, optional) Custom callback function to handle
                 }                                          --  multiple reference instead of using quickfix list

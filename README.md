@@ -41,6 +41,21 @@ use({ 'leblocks/hopcsharp.nvim', requires = { { 'kkharji/sqlite.lua' } } })
 
 ## Quick Start
 
+Optional configuration (all values shown are defaults):
+
+```lua
+require('hopcsharp').setup({
+    hop = {
+        jump_on_quickfix = false,
+        filter_entry_under_cursor = true,
+    },
+    database = {
+        folder_path = vim.fn.stdpath('state'),
+        buffer_size = 10000,
+    },
+})
+```
+
 Example keybinding configuration:
 
 ```lua
@@ -66,6 +81,22 @@ vim.keymap.set('n', '<leader>he', pickers.enum_definitions, { desc = 'hopcsharp:
 
 ## API
 This plugin exposes only a small set of functions, allowing you to build various interfaces and workflows on top of them.
+
+### setup
+
+```lua
+require('hopcsharp').setup(opts)
+```
+
+Configures the plugin with the provided options. All fields are optional; only provided values will override the
+defaults. See `:h hopcsharp.setup` for more details.
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `hop.jump_on_quickfix` | boolean | `false` | Immediately jump to first quickfix entry when multiple results are found |
+| `hop.filter_entry_under_cursor` | boolean | `true` | Exclude an entry at the current cursor position from results |
+| `database.folder_path` | string | `vim.fn.stdpath('state')` | Directory path where the SQLite database file is stored |
+| `database.buffer_size` | number | `10000` | Number of entries to buffer before flushing to the database during init |
 
 ### init_database
 
