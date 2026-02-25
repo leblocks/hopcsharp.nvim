@@ -1,5 +1,6 @@
 local hop_utils = require('hopcsharp.hop.utils')
 local dbutils = require('hopcsharp.database.utils')
+local config = require('hopcsharp.config')
 
 local definition_providers = require('hopcsharp.hop.providers.definition')
 local reference_providers = require('hopcsharp.hop.providers.reference')
@@ -26,11 +27,15 @@ local function filter_entry_under_cursor(entries)
 end
 
 ---@param hop_providers HopProvider[] Hop providers, those define where to jump
----@param config table User configuration
-M.__hop_to = function(hop_providers, config)
-    config = config or {}
-    local callback = config.callback or nil
-    local jump_on_quickfix = config.jump_on_quickfix or false
+---@param config_override HopcsharpUserConfigurationOverride User provided configuration overrides
+M.__hop_to = function(hop_providers, config_override)
+    local current_config = config.__get_config()
+    config_override = config_override or {}
+    local callback = config_override.callback or nil
+    local jump_on_quickfix = config_override.jump_on_quickfix or current_config.hop.jump_on_quickfix
+
+    local filter_under_cursor = config_override.filter_entry_under_cursor
+        or current_config.hop.filter_entry_under_cursor
 
     for _, provider in ipairs(hop_providers) do
         if provider.can_handle() then
@@ -39,8 +44,13 @@ M.__hop_to = function(hop_providers, config)
             -- if current provider didn't find anything
             -- try next one :D
             if type(items) == 'table' then
-                -- filter out current position
-                local filtered_items = filter_entry_under_cursor(items)
+                -- filter out current position if requested
+                local filtered_items
+                if filter_under_cursor then
+                    filtered_items = filter_entry_under_cursor(items)
+                else
+                    filtered_items = items
+                end
 
                 if #filtered_items == 0 then
                     return
@@ -71,31 +81,31 @@ M.__hop_to = function(hop_providers, config)
     end
 end
 
-M.__hop_to_definition = function(config)
+M.__hop_to_definition = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
     M.__hop_to({
         definition_providers.__by_name_and_used_namespaces(cword, node),
         definition_providers.__by_name_and_type(cword, node),
         definition_providers.__by_name(cword, node),
-    }, config)
+    }, config_override)
 end
 
-M.__hop_to_implementation = function(config)
+M.__hop_to_implementation = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
     M.__hop_to({
         implementation_providers.__by_parent_name_and_method_name(cword, node),
         implementation_providers.__by_name(cword, node),
-    }, config)
+    }, config_override)
 end
 
-M.__hop_to_reference = function(config)
+M.__hop_to_reference = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
     M.__hop_to({
         reference_providers.__by_name(cword, node),
-    }, config)
+    }, config_override)
 end
 
 return M

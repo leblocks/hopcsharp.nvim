@@ -101,21 +101,21 @@ M.init_database = function()
     end)
 end
 
-M.hop_to_definition = function(config)
+M.hop_to_definition = function(config_override)
     utils.__block_on_processing(function()
-        hop.__hop_to_definition(config)
+        hop.__hop_to_definition(config_override)
     end)
 end
 
-M.hop_to_implementation = function(config)
+M.hop_to_implementation = function(config_override)
     utils.__block_on_processing(function()
-        hop.__hop_to_implementation(config)
+        hop.__hop_to_implementation(config_override)
     end)
 end
 
-M.hop_to_reference = function(config)
+M.hop_to_reference = function(config_override)
     utils.__block_on_processing(function()
-        hop.__hop_to_reference(config)
+        hop.__hop_to_reference(config_override)
     end)
 end
 

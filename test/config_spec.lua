@@ -15,9 +15,9 @@ describe('config', function()
         local object = {
             a = {
                 b = {
-                    c = 133
-                }
-            }
+                    c = 133,
+                },
+            },
         }
 
         local result = config.__get_value(object, { 'a', 'b', 'c' })

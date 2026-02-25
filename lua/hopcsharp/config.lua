@@ -1,13 +1,17 @@
-local db_utils = require('hopcsharp.database.utils')
-
 local M = {}
 
----@class HopcsharpHopConfiguration
----@field jump_on_quickfix TODO doc
+---@class HopcsharpUserConfigurationOverride
+---@field jump_on_quickfix boolean TODO doc
+---@field filter_entry_under_cursor boolean TODO doc
+---@field callback function TODO doc
 
 ---@class HopcsharpDatabaseConfiguration
----@field file_path string TODO file path
+---@field folder_path string TODO file path
 ---@field buffer_size number TODO buffer size
+
+---@class HopcsharpHopConfiguration
+---@field jump_on_quickfix boolean TODO doc
+---@field filter_entry_under_cursor boolean TODO doc
 
 ---@class HopcsharpConfiguration
 ---@field hop HopcsharpHopConfiguration TODO doc
@@ -16,14 +20,15 @@ local config = {
 
     hop = {
         jump_on_quickfix = false,
+        filter_entry_under_cursor = true,
     },
 
     database = {
-        file_path = vim.fs.joinpath(vim.fn.stdpath('state'), db_utils.__get_db_file_name(vim.fn.getcwd())),
+        -- TODO rename to folder path
+        folder_path = vim.fn.stdpath('state'),
         buffer_size = 10000,
     },
 }
-
 
 -- TODO tests
 ---@return HopcsharpConfiguration Table with hopcsharp configuration
@@ -35,7 +40,12 @@ end
 ---@param opts HopcsharpConfiguration Configuration object
 M.__set_config = function(opts)
     config.hop.jump_on_quickfix = M.__get_value(opts, { 'hop', 'jump_on_quickfix' }) or config.hop.jump_on_quickfix
-    config.database.file_path = M.__get_value(opts, { 'database', 'file_path' }) or config.database.file_path
+
+    config.hop.filter_entry_under_cursor = M.__get_value(opts, { 'hop', 'filter_entry_under_cursor' })
+        or config.hop.filter_entry_under_cursor
+
+    config.database.folder_path = M.__get_value(opts, { 'database', 'folder_path' }) or config.database.folder_path
+
     config.database.buffer_size = M.__get_value(opts, { 'database', 'buffer_size' }) or config.database.buffer_size
 end
 

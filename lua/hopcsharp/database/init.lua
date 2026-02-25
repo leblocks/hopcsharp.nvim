@@ -1,11 +1,12 @@
 local sqlite = require('sqlite.db')
-local utils = require('hopcsharp.database.utils')
+local config = require('hopcsharp.config')
+local db_utils = require('hopcsharp.database.utils')
 
 local M = {}
 
 local _db = nil
 
-local URI = vim.fs.joinpath(vim.fn.stdpath('state'), utils.__get_db_file_name(vim.fn.getcwd()))
+local URI = vim.fs.joinpath(config.__get_config().database.folder_path, db_utils.__get_db_file_name(vim.fn.getcwd()))
 
 ---@return sqlite_db @Main sqlite.lua object.
 M.__init_db = function()
