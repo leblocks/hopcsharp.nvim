@@ -1,21 +1,21 @@
 local M = {}
 
 ---@class HopcsharpUserConfigurationOverride
----@field jump_on_quickfix boolean TODO doc
----@field filter_entry_under_cursor boolean TODO doc
----@field callback function TODO doc
+---@field jump_on_quickfix boolean If true, immediately jump to first quickfix entry when multiple results are found
+---@field filter_entry_under_cursor boolean If true, exclude an entry at the current cursor position from results
+---@field callback function Custom callback to handle results instead of using quickfix list, receives list of entries
 
 ---@class HopcsharpDatabaseConfiguration
----@field folder_path string TODO file path
----@field buffer_size number TODO buffer size
+---@field folder_path string Directory path where the SQLite database file is stored (default: vim.fn.stdpath('state'))
+---@field buffer_size number Number of entries to buffer before flushing to the database during init
 
 ---@class HopcsharpHopConfiguration
----@field jump_on_quickfix boolean TODO doc
----@field filter_entry_under_cursor boolean TODO doc
+---@field jump_on_quickfix boolean If true, immediately jump to first quickfix entry when multiple results are found (default: false)
+---@field filter_entry_under_cursor boolean If true, exclude an entry at the current cursor position from results (default: true)
 
 ---@class HopcsharpConfiguration
----@field hop HopcsharpHopConfiguration TODO doc
----@field database HopcsharpDatabaseConfiguration TODO doc
+---@field hop HopcsharpHopConfiguration Hop navigation settings
+---@field database HopcsharpDatabaseConfiguration Database storage settings
 local config = {
 
     hop = {
@@ -24,7 +24,6 @@ local config = {
     },
 
     database = {
-        -- TODO rename to folder path
         folder_path = vim.fn.stdpath('state'),
         buffer_size = 10000,
     },
