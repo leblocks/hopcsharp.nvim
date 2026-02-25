@@ -29,7 +29,6 @@ local config = {
     },
 }
 
--- TODO tests
 ---@return HopcsharpConfiguration Table with hopcsharp configuration
 M.__get_config = function()
     return config
@@ -45,6 +44,7 @@ M.__set_config = function(opts)
 
     config.database.folder_path = M.__get_value(opts, { 'database', 'folder_path' }) or config.database.folder_path
 
+    -- TODO bug, what if I want to pass false as config? I'll get default true instead
     config.database.buffer_size = M.__get_value(opts, { 'database', 'buffer_size' }) or config.database.buffer_size
 end
 
