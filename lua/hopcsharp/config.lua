@@ -37,14 +37,17 @@ end
 -- TODO tests
 ---@param opts HopcsharpConfiguration Configuration object
 M.__set_config = function(opts)
-    config.hop.jump_on_quickfix = M.__get_value(opts, { 'hop', 'jump_on_quickfix' }) or config.hop.jump_on_quickfix
+    local jump_on_quickfix = M.__get_value(opts, { 'hop', 'jump_on_quickfix' })
+    if jump_on_quickfix ~= nil then
+        config.hop.jump_on_quickfix = jump_on_quickfix
+    end
 
-    config.hop.filter_entry_under_cursor = M.__get_value(opts, { 'hop', 'filter_entry_under_cursor' })
-        or config.hop.filter_entry_under_cursor
+    local filter_entry_under_cursor = M.__get_value(opts, { 'hop', 'filter_entry_under_cursor' })
+    if filter_entry_under_cursor ~= nil then
+        config.hop.filter_entry_under_cursor = filter_entry_under_cursor
+    end
 
     config.database.folder_path = M.__get_value(opts, { 'database', 'folder_path' }) or config.database.folder_path
-
-    -- TODO bug, what if I want to pass false as config? I'll get default true instead
     config.database.buffer_size = M.__get_value(opts, { 'database', 'buffer_size' }) or config.database.buffer_size
 end
 
