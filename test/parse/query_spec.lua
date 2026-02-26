@@ -605,6 +605,58 @@ describe('parse.query', function()
         assert(visited)
     end)
 
+    it('ignored parameter type is not captured', function()
+        local content = [[
+            void MyMethod(int at1, AmazingType2 at2)
+            {
+            }
+        ]]
+
+        local visited = false
+        local visited_nodes = {}
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(visited_nodes, name)
+                end
+            end)
+        end)
+        assert(visited_nodes[1] == 'AmazingType2')
+        assert(#visited_nodes == 1)
+        assert(visited)
+    end)
+
+    it('parameter type is captured', function()
+        local content = [[
+            void MyMethod(AmazingType1 at1, AmazingType2 at2)
+            {
+            }
+        ]]
+
+        local visited = false
+        local visited_nodes = {}
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.reference:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(visited_nodes, name)
+                end
+            end)
+        end)
+        assert(visited_nodes[1] == 'AmazingType1')
+        assert(visited_nodes[2] == 'AmazingType2')
+        assert(visited)
+    end)
+
     it('type_argument_list ignored types are not captured', function()
         local content = [[
             var test = new Meow<Task, Action>();
