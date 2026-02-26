@@ -38,6 +38,7 @@ M.reference_types = {
     VARIABLE_DECLARATION = 4,
     TYPE_ARGUMENT = 5,
     TYPEOF_EXPRESSION = 6,
+    PARAMETER = 7,
 }
 
 M.get_type_name = function(type)
@@ -93,6 +94,10 @@ M.get_reference_type_name = function(type)
 
     if type == M.reference_types.TYPEOF_EXPRESSION then
         return 'type'
+    end
+
+    if type == M.reference_types.PARAMETER then
+        return 'parameter'
     end
 end
 
