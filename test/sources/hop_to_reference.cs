@@ -3,7 +3,7 @@ namespace This.Is.Reference.Namespace
     public class HopToReference
     {
         [Alfa]
-        private void Method1([TestAttr] int argument)
+        private void Method1([TestAttr] int argument, NonExistingType net1)
         {
         }
 

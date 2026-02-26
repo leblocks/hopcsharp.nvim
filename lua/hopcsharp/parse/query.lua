@@ -84,6 +84,47 @@ M.reference = utils.__get_query([[
       (attribute name: (identifier) @name)
 
       (typeof_expression type: (identifier) @name)
+
+      (parameter type: (identifier) @name
+          ;; ignore those predefines types
+          ;; data taken from this query on a db parsed on reference source of dotnet
+          ;; select count() as cnt, name from reference where type = 4 group by name order by cnt desc limit 100;
+          (#not-any-of? @name
+            "Action"
+            "Array"
+            "ArrayList"
+            "Boolean"
+            "Collection"
+            "DateTime"
+            "Dictionary"
+            "Enumerable"
+            "Exception"
+            "Func"
+            "Guid"
+            "HashSet"
+            "Hashtable"
+            "ICollection"
+            "IDictionary"
+            "IEnumerable"
+            "IList"
+            "IntPtr"
+            "List"
+            "MemoryStream"
+            "MethodInfo"
+            "Object"
+            "Queue"
+            "Set"
+            "Stack"
+            "Stream"
+            "String"
+            "StringBuilder"
+            "Task"
+            "TimeSpan"
+            "Tuple"
+            "Type"
+            "UInt32"
+          )
+      )
     ]
 ]])
 

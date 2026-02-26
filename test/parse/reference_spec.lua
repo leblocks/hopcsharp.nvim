@@ -88,6 +88,15 @@ describe('parse.reference', function()
             assert(rows[1].path:match('test/sources/hop_to_reference.cs$'))
             assert(rows[1].type == utils.reference_types.TYPEOF_EXPRESSION)
             assert(rows[1].namespace == 'This.Is.Reference.Namespace')
+
+            -- typeof
+            rows = db:eval(query.get_reference_by_name_and_type('NonExistingType', utils.reference_types.PARAMETER))
+
+            assert(#rows == 1)
+            assert(rows[1].name == 'NonExistingType')
+            assert(rows[1].path:match('test/sources/hop_to_reference.cs$'))
+            assert(rows[1].type == utils.reference_types.PARAMETER)
+            assert(rows[1].namespace == 'This.Is.Reference.Namespace')
         end, writer)
     end)
 end)
