@@ -25,8 +25,6 @@ local function find_first_class(type_relations, type_name)
     return utils.__find_first(type_relations, 'name', type_name)
 end
 
-find_first_class({}, {})
-
 M.__get_type_parents = function(type_name)
     local db = database.__get_db()
     local type_relations = db:eval(query.get_all_parent_types, { type = type_name })

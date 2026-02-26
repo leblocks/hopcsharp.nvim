@@ -14,8 +14,8 @@ local db_utils = require('hopcsharp.database.utils')
 local M = {}
 
 local get_items_by_type = function(type)
-    local db = hopcsharp.get_db()
     return function()
+        local db = hopcsharp.get_db()
         return db:eval(db_query.get_definition_by_type, { type = type })
     end
 end

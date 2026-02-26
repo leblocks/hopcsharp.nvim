@@ -6,12 +6,15 @@ local M = {}
 
 local _db = nil
 
-local URI = vim.fs.joinpath(config.__get_config().database.folder_path, db_utils.__get_db_file_name(vim.fn.getcwd()))
+local function get_database_uri()
+    local folder_path = config.__get_config().database.folder_path
+    return vim.fs.joinpath(folder_path, db_utils.__get_db_file_name(vim.fn.getcwd()))
+end
 
 ---@return sqlite_db @Main sqlite.lua object.
 M.__init_db = function()
     return sqlite({
-        uri = URI,
+        uri = get_database_uri(),
         files = {
             id = true,
             path = { type = 'text', unique = true },
