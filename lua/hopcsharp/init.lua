@@ -2,6 +2,7 @@ local os = require('os')
 
 local parse = require('hopcsharp.parse')
 local utils = require('hopcsharp.utils')
+local config = require('hopcsharp.config')
 
 local hop = require('hopcsharp.hop')
 local hierarchy = require('hopcsharp.hierarchy')
@@ -15,7 +16,8 @@ vim.g.hopcsharp_processing = false
 M.__init_database = function()
     -- drop existing schema
     database.__drop_db()
-    local writer = BufferedWriter:new(database.__get_db(), 10000)
+    local buffer_size = config.__get_config().database.buffer_size
+    local writer = BufferedWriter:new(database.__get_db(), buffer_size)
 
     local files = parse.__get_source_files()
 
@@ -35,6 +37,11 @@ M.__init_database = function()
             database.__create_indexes()
         end
     end)
+end
+
+---@param opts HopcsharpConfiguration Configuration object
+M.setup = function(opts)
+    config.__set_config(opts)
 end
 
 M.init_database = function()
@@ -91,21 +98,21 @@ M.init_database = function()
     end)
 end
 
-M.hop_to_definition = function(config)
+M.hop_to_definition = function(config_override)
     utils.__block_on_processing(function()
-        hop.__hop_to_definition(config)
+        hop.__hop_to_definition(config_override)
     end)
 end
 
-M.hop_to_implementation = function(config)
+M.hop_to_implementation = function(config_override)
     utils.__block_on_processing(function()
-        hop.__hop_to_implementation(config)
+        hop.__hop_to_implementation(config_override)
     end)
 end
 
-M.hop_to_reference = function(config)
+M.hop_to_reference = function(config_override)
     utils.__block_on_processing(function()
-        hop.__hop_to_reference(config)
+        hop.__hop_to_reference(config_override)
     end)
 end
 

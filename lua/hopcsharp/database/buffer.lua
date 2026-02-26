@@ -2,8 +2,6 @@ local BufferedWriter = {}
 BufferedWriter.__index = BufferedWriter
 
 ---@class BufferedWriter
----TODO finish
-
 ---@param db sqlite_db db object
 ---@param buffer_size number size of the buffer
 function BufferedWriter:new(db, buffer_size)
