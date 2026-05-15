@@ -79,4 +79,19 @@ M.__by_name_and_used_namespaces = function(current_word, node)
     }
 end
 
+---@param current_word string Word under cursor
+---@param node TSNode | nil Node under cursor
+M.__by_name_and_current_namespace = function(current_word, node)
+    -- TODO
+    return {
+        can_handle = function()
+            -- TODO
+        end,
+
+        get_hops = function()
+            -- TODO
+        end,
+    }
+end
+
 return M

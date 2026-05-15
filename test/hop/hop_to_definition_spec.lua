@@ -203,4 +203,32 @@ describe('hop_to_definition', function()
 
         assert(called)
     end)
+
+    it('__hop_to_definition hops correctly by current namespace', function()
+        local files_to_parse = {
+            'test/sources/HopToDefinitionByCurrentNamespace/Program.cs',
+            'test/sources/HopToDefinitionByCurrentNamespace/Namespace1.cs',
+            'test/sources/HopToDefinitionByCurrentNamespace/Namespace2.cs',
+        }
+
+        utils.prepare_multiple(files_to_parse, 'test/sources/HopToDefinitionByCurrentNamespace/Program.cs', 6, 25)
+
+        local called = false
+
+        hop.__hop_to_definition({
+            callback = function(definitions)
+                called = true
+                print(vim.inspect(definitions))
+                assert(#definitions == 2)
+                assert(definitions[1].name == 'NamespacedClass1')
+                assert(definitions[1].namespace == 'This.Is.Namespace.One')
+                assert(definitions[1].row == 2)
+                assert(definitions[1].column == 13)
+                assert(definitions[1].type == databaseutils.types.CLASS)
+            end,
+        })
+
+        assert(called)
+    end)
+
 end)
