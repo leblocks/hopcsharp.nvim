@@ -230,5 +230,4 @@ describe('hop_to_definition', function()
 
         assert(called)
     end)
-
 end)

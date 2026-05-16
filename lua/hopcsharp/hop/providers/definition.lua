@@ -82,14 +82,30 @@ end
 ---@param current_word string Word under cursor
 ---@param node TSNode | nil Node under cursor
 M.__by_name_and_current_namespace = function(current_word, node)
-    -- TODO
+    -- TODO styling
+    while
+        node ~= nil and (node:type() ~= 'file_scoped_namespace_declaration' or node:type() ~= 'namespace_declaration')
+    do
+        node = node:parent()
+    end
+
     return {
         can_handle = function()
-            -- TODO
+            return node ~= nil
         end,
 
         get_hops = function()
-            -- TODO
+            if node == nil then
+                return {}
+            end
+
+            local namespace = {}
+            for _, nn, _, _ in treesitter_query.namespace_identifier:iter_captures(node, 0, 0, -1) do
+                table.insert(namespace, vim.treesitter.get_node_text(nn, 0, nil))
+            end
+
+            local db = database.__get_db()
+            return db:eval(query.get_definition_by_name_and_usings(current_word, namespace))
         end,
     }
 end
