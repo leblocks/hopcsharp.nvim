@@ -218,11 +218,10 @@ describe('hop_to_definition', function()
         hop.__hop_to_definition({
             callback = function(definitions)
                 called = true
-                print(vim.inspect(definitions))
-                assert(#definitions == 2)
-                assert(definitions[1].name == 'NamespacedClass1')
-                assert(definitions[1].namespace == 'This.Is.Namespace.One')
-                assert(definitions[1].row == 2)
+                assert(#definitions == 1)
+                assert(definitions[1].name == 'SameNameNamespaceClass')
+                assert(definitions[1].namespace == 'HopToDefintion.By.Current.Namespace.Two')
+                assert(definitions[1].row == 3)
                 assert(definitions[1].column == 13)
                 assert(definitions[1].type == databaseutils.types.CLASS)
             end,

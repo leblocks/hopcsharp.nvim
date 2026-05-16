@@ -82,10 +82,7 @@ end
 ---@param current_word string Word under cursor
 ---@param node TSNode | nil Node under cursor
 M.__by_name_and_current_namespace = function(current_word, node)
-    -- TODO styling
-    while
-        node ~= nil and (node:type() ~= 'file_scoped_namespace_declaration' or node:type() ~= 'namespace_declaration')
-    do
+    while node ~= nil and node:type() ~= 'compilation_unit' do
         node = node:parent()
     end
 
