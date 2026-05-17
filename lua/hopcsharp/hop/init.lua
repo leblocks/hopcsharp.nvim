@@ -85,8 +85,8 @@ M.__hop_to_definition = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
     M.__hop_to({
-        definition_providers.__by_name_and_current_namespace(cword, node),
-        definition_providers.__by_name_and_used_namespaces(cword, node),
+        definition_providers.__by_name_type_and_current_namespace(cword, node),
+        definition_providers.__by_name_type_and_used_namespaces(cword, node),
         definition_providers.__by_name_and_type(cword, node),
         definition_providers.__by_name(cword, node),
     }, config_override)

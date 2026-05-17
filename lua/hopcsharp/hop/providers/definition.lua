@@ -5,6 +5,24 @@ local treesitter_query = require('hopcsharp.parse.query')
 
 local M = {}
 
+local get_node_type = function(name, node)
+    local node_type = nil
+    if node then
+        local parent_type = node:parent():type()
+
+        if parent_type == 'attribute' then
+            name = name .. 'Attribute'
+            node_type = dbutils.types.CLASS
+        end
+
+        if parent_type == 'invocation_expression' then
+            node_type = dbutils.types.METHOD
+        end
+    end
+
+    return name, node_type
+end
+
 ---@param current_word string Word under cursor
 ---@param _ TSNode | nil Node under cursor
 M.__by_name = function(current_word, _)
@@ -53,7 +71,9 @@ end
 
 ---@param current_word string Word under cursor
 ---@param node TSNode | nil Node under cursor
-M.__by_name_and_used_namespaces = function(current_word, node)
+M.__by_name_type_and_used_namespaces = function(current_word, node)
+    local name, node_type = get_node_type(current_word, node)
+
     while node ~= nil and node:type() ~= 'compilation_unit' do
         node = node:parent()
     end
@@ -68,20 +88,22 @@ M.__by_name_and_used_namespaces = function(current_word, node)
                 return {}
             end
 
-            local usings = {}
+            local namespace = {}
             for _, nn, _, _ in treesitter_query.using_identifier:iter_captures(node, 0, 0, -1) do
-                table.insert(usings, vim.treesitter.get_node_text(nn, 0, nil))
+                table.insert(namespace, vim.treesitter.get_node_text(nn, 0, nil))
             end
 
             local db = database.__get_db()
-            return db:eval(query.get_definition_by_name_and_usings(current_word, usings))
+            return db:eval(query.get_definition_by_name_type_and_namespace(name, node_type, namespace))
         end,
     }
 end
 
 ---@param current_word string Word under cursor
 ---@param node TSNode | nil Node under cursor
-M.__by_name_and_current_namespace = function(current_word, node)
+M.__by_name_type_and_current_namespace = function(current_word, node)
+    local name, node_type = get_node_type(current_word, node)
+
     while node ~= nil and node:type() ~= 'compilation_unit' do
         node = node:parent()
     end
@@ -102,7 +124,7 @@ M.__by_name_and_current_namespace = function(current_word, node)
             end
 
             local db = database.__get_db()
-            return db:eval(query.get_definition_by_name_and_usings(current_word, namespace))
+            return db:eval(query.get_definition_by_name_type_and_namespace(name, node_type, namespace))
         end,
     }
 end
