@@ -40,21 +40,7 @@ end
 ---@param current_word string Word under cursor
 ---@param node TSNode | nil Node under cursor
 M.__by_name_and_type = function(current_word, node)
-    local node_type = nil
-    local name = current_word
-
-    if node then
-        local parent_type = node:parent():type()
-
-        if parent_type == 'attribute' then
-            name = name .. 'Attribute'
-            node_type = dbutils.types.CLASS
-        end
-
-        if parent_type == 'invocation_expression' then
-            node_type = dbutils.types.METHOD
-        end
-    end
+    local name, node_type = get_node_type(current_word, node)
 
     return {
 

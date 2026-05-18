@@ -86,8 +86,6 @@ describe('hop_to_definition', function()
         assert(called == false)
     end)
 
-    -- TODO to fix this test I need to create a provider
-    -- by namespace and by type
     it('__hop_to_definition hops to method definition correctly', function()
         -- parse hop_to_definition.cs and stay on a function call Foo in a file hop_to_definition.cs
         utils.prepare('test/sources/hop_to_definition.cs', 'test/sources/hop_to_definition.cs', 11, 9)
