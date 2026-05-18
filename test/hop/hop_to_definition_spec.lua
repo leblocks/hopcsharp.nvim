@@ -203,4 +203,30 @@ describe('hop_to_definition', function()
 
         assert(called)
     end)
+
+    it('__hop_to_definition hops correctly by current namespace', function()
+        local files_to_parse = {
+            'test/sources/HopToDefinitionByCurrentNamespace/Program.cs',
+            'test/sources/HopToDefinitionByCurrentNamespace/Namespace1.cs',
+            'test/sources/HopToDefinitionByCurrentNamespace/Namespace2.cs',
+        }
+
+        utils.prepare_multiple(files_to_parse, 'test/sources/HopToDefinitionByCurrentNamespace/Program.cs', 6, 25)
+
+        local called = false
+
+        hop.__hop_to_definition({
+            callback = function(definitions)
+                called = true
+                assert(#definitions == 1)
+                assert(definitions[1].name == 'SameNameNamespaceClass')
+                assert(definitions[1].namespace == 'HopToDefintion.By.Current.Namespace.Two')
+                assert(definitions[1].row == 3)
+                assert(definitions[1].column == 13)
+                assert(definitions[1].type == databaseutils.types.CLASS)
+            end,
+        })
+
+        assert(called)
+    end)
 end)

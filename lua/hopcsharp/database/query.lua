@@ -81,7 +81,6 @@ M.get_definition_by_type = [[
         f.path ASC
 ]]
 
--- TODO think of by name, type and usings?
 M.get_definition_by_name_and_usings = function(name, usings)
     local query = [[
         SELECT
@@ -105,6 +104,38 @@ M.get_definition_by_name_and_usings = function(name, usings)
     end
 
     return string.format(query, name, name .. '<*>', table.concat(usings, ','))
+end
+
+M.get_definition_by_name_type_and_namespace = function(name, type, namespaces)
+    local query = [[
+        SELECT
+            d.name,
+            f.path,
+            d.row,
+            d.column,
+            d.type,
+            n.name AS namespace
+        FROM definitions d
+        JOIN files f on f.id = d.path_id
+        JOIN namespaces n on n.id = d.namespace_id
+        WHERE (d.name = '%s' OR d.name GLOB '%s') AND n.name IN (%s)
+            %s -- this one is optional
+        ORDER BY
+            n.name ASC,
+            f.path ASC
+    ]]
+
+    for i, namespace in ipairs(namespaces) do
+        namespaces[i] = '"' .. namespace .. '"'
+    end
+
+    if type then
+        type = 'AND d.type = ' .. type
+    else
+        type = ' '
+    end
+
+    return string.format(query, name, name .. '<*>', table.concat(namespaces, ','), type)
 end
 
 M.get_attributes = [[
