@@ -14,9 +14,12 @@ local M = {}
 ---@field filter_entry_under_cursor boolean If true, exclude an entry at the current cursor position from results
 
 ---@class HopcsharpConfiguration
+---@field debug boolean If true, write debug log in a separate sql database, TODO better docstring
 ---@field hop HopcsharpHopConfiguration Hop navigation settings
 ---@field database HopcsharpDatabaseConfiguration Database storage settings
 local config = {
+
+    debug = false,
 
     hop = {
         jump_on_quickfix = false,
@@ -34,7 +37,7 @@ M.__get_config = function()
     return config
 end
 
--- TODO tests
+-- TODO implement setting of a debug parameter
 ---@param opts HopcsharpConfiguration Configuration object
 M.__set_config = function(opts)
     local jump_on_quickfix = M.__get_value(opts, { 'hop', 'jump_on_quickfix' })
