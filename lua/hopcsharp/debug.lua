@@ -12,7 +12,7 @@ local function __init_db()
         uri = vim.fs.joinpath(vim.fn.stdpath('state'), 'hopcsharp.debug.sql'),
         logs = {
             -- Use the TEXT storage class to store dates in the ISO8601 format: YYYY-MM-DD HH:MM:SS.SSS.
-            date = { type = 'text', },
+            date = { type = 'text' },
             project = { type = 'text' },
             message = { type = 'text' },
             level = { type = 'integer' },

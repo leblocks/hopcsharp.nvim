@@ -1,4 +1,3 @@
-
 local debug = require('hopcsharp.debug')
 local config = require('hopcsharp.config')
 
