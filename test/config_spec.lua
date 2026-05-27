@@ -57,6 +57,8 @@ describe('config', function()
     it('__set_config happy path', function()
         config.__set_config({
 
+            debug = true,
+
             hop = {
                 jump_on_quickfix = true,
                 filter_entry_under_cursor = false,
@@ -69,6 +71,8 @@ describe('config', function()
         })
 
         local actual_config = config.__get_config()
+
+        assert(actual_config.debug)
 
         assert(actual_config.database ~= nil)
         assert(actual_config.database.buffer_size == 142)
