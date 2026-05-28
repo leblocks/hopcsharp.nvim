@@ -1,6 +1,7 @@
 local os = require('os')
 local sqlite = require('sqlite.db')
 local config = require('hopcsharp.config')
+local utils = require('hopcsharp.debug.utils')
 
 local M = {}
 
@@ -34,12 +35,13 @@ M.__get_db = function()
     return _db
 end
 
--- TODO move debug into a folder
--- TODO level mapping
 M.__log = function(message, level)
+
     if not config.__get_config().debug then
         return
     end
+
+    level = level or utils.level.INFO;
 
     M.__get_db():insert('logs', {
         level = level,
@@ -51,3 +53,4 @@ M.__log = function(message, level)
 end
 
 return M
+

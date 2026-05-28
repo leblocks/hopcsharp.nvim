@@ -49,7 +49,10 @@ M.__set_config = function(opts)
         config.hop.filter_entry_under_cursor = filter_entry_under_cursor
     end
 
-    config.debug = M.__get_value(opts, { 'debug' }) or config.debug
+    local debug = M.__get_value(opts, { 'debug' })
+    if debug ~= nil then
+        config.debug = debug
+    end
     config.database.folder_path = M.__get_value(opts, { 'database', 'folder_path' }) or config.database.folder_path
     config.database.buffer_size = M.__get_value(opts, { 'database', 'buffer_size' }) or config.database.buffer_size
 end
