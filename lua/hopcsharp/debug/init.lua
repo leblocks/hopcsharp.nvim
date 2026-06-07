@@ -52,5 +52,21 @@ M.__log = function(message, level)
     })
 end
 
+M.__log_info = function(message)
+    M.__log(message, utils.level.INFO)
+end
+
+M.__log_warning = function(message)
+    M.__log(message, utils.level.WARNING)
+end
+
+M.__log_error = function(message)
+    M.__log(message, utils.level.ERROR)
+end
+
+M.__log_debug = function(message)
+    M.__log(message, utils.level.DEBUG)
+end
+
 return M
 
