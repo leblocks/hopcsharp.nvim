@@ -14,9 +14,12 @@ local M = {}
 ---@field filter_entry_under_cursor boolean If true, exclude an entry at the current cursor position from results
 
 ---@class HopcsharpConfiguration
+---@field debug boolean If true, writes debug log in a separate sql database
 ---@field hop HopcsharpHopConfiguration Hop navigation settings
 ---@field database HopcsharpDatabaseConfiguration Database storage settings
 local config = {
+
+    debug = false,
 
     hop = {
         jump_on_quickfix = false,
@@ -34,7 +37,6 @@ M.__get_config = function()
     return config
 end
 
--- TODO tests
 ---@param opts HopcsharpConfiguration Configuration object
 M.__set_config = function(opts)
     local jump_on_quickfix = M.__get_value(opts, { 'hop', 'jump_on_quickfix' })
@@ -47,6 +49,10 @@ M.__set_config = function(opts)
         config.hop.filter_entry_under_cursor = filter_entry_under_cursor
     end
 
+    local debug = M.__get_value(opts, { 'debug' })
+    if debug ~= nil then
+        config.debug = debug
+    end
     config.database.folder_path = M.__get_value(opts, { 'database', 'folder_path' }) or config.database.folder_path
     config.database.buffer_size = M.__get_value(opts, { 'database', 'buffer_size' }) or config.database.buffer_size
 end
