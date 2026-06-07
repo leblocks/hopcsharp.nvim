@@ -36,12 +36,11 @@ M.__get_db = function()
 end
 
 M.__log = function(message, level)
-
     if not config.__get_config().debug then
         return
     end
 
-    level = level or utils.level.INFO;
+    level = level or utils.level.INFO
 
     M.__get_db():insert('logs', {
         level = level,
@@ -69,4 +68,3 @@ M.__log_debug = function(message)
 end
 
 return M
-
