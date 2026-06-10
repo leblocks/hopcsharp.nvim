@@ -1,12 +1,27 @@
+local config = require('hopcsharp.config')
+local debug = require('hopcsharp.debug')
 local hop_utils = require('hopcsharp.hop.utils')
 local dbutils = require('hopcsharp.database.utils')
-local config = require('hopcsharp.config')
 
 local definition_providers = require('hopcsharp.hop.providers.definition')
 local reference_providers = require('hopcsharp.hop.providers.reference')
 local implementation_providers = require('hopcsharp.hop.providers.implementation')
 
 local M = {}
+
+local log_hop_to_x = function(method, cword, node)
+    debug.__log_debug(method .. ' <cword> ' .. cword)
+
+    if node then
+        debug.__log_debug(method .. ' node ' .. node:type())
+    end
+
+    debug.__log_debug(method .. ' config_override ' .. vim.inspect(config_override))
+end
+
+local log_hop_to = function(i, message)
+    debug.__log_debug('__hop_to(' .. i .. ') ' .. message)
+end
 
 local function filter_entry_under_cursor(entries)
     local filtered_entries = {}
@@ -37,13 +52,17 @@ M.__hop_to = function(hop_providers, config_override)
     local filter_under_cursor = config_override.filter_entry_under_cursor
         or current_config.hop.filter_entry_under_cursor
 
-    for _, provider in ipairs(hop_providers) do
+
+    for i, provider in ipairs(hop_providers) do
+        log_hop_to(i, 'trying')
         if provider.can_handle() then
+            log_hop_to(i, 'can_handle() = true')
             local items, type_converter = provider.get_hops()
 
             -- if current provider didn't find anything
             -- try next one :D
             if type(items) == 'table' then
+                log_hop_to(i, '#items = ' .. #items)
                 -- filter out current position if requested
                 local filtered_items
                 if filter_under_cursor then
@@ -53,10 +72,12 @@ M.__hop_to = function(hop_providers, config_override)
                 end
 
                 if #filtered_items == 0 then
+                    log_hop_to(i, '#filtered_items = ' .. #filtered_items)
                     return
                 end
 
                 if callback ~= nil then
+                    log_hop_to(i, 'using callback')
                     -- user provided custom logic for navigation
                     -- execute and return
                     callback(filtered_items)
@@ -65,12 +86,14 @@ M.__hop_to = function(hop_providers, config_override)
 
                 -- immediate jump if there is only one case
                 if #filtered_items == 1 then
+                    log_hop_to(i, 'immediate jump insteaf of quickfix')
                     hop_utils.__hop(filtered_items[1].path, filtered_items[1].row + 1, filtered_items[1].column)
                     return
                 end
 
                 -- sent to quickfix if there is too much
                 if #filtered_items > 1 then
+                    log_hop_to(i, 'send to quick fix')
                     local converter = type_converter or dbutils.get_type_name
                     hop_utils.__populate_quickfix(filtered_items, jump_on_quickfix, converter)
                 end
@@ -84,6 +107,7 @@ end
 M.__hop_to_definition = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
+    log_hop_to_x('__hop_to_definition', cword, node)
     M.__hop_to({
         definition_providers.__by_name_type_and_current_namespace(cword, node),
         definition_providers.__by_name_type_and_used_namespaces(cword, node),
@@ -95,6 +119,7 @@ end
 M.__hop_to_implementation = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
+    log_hop_to_x('__hop_to_implementation', cword, node)
     M.__hop_to({
         implementation_providers.__by_parent_name_and_method_name(cword, node),
         implementation_providers.__by_name(cword, node),
@@ -104,6 +129,7 @@ end
 M.__hop_to_reference = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
+    log_hop_to_x('__hop_to_reference', cword, node)
     M.__hop_to({
         reference_providers.__by_name(cword, node),
     }, config_override)
