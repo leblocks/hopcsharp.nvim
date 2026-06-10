@@ -9,7 +9,7 @@ local implementation_providers = require('hopcsharp.hop.providers.implementation
 
 local M = {}
 
-local log_hop_to_x = function(method, cword, node)
+local log_hop_to_x = function(method, cword, node, config_override)
     debug.__log_debug(method .. ' <cword> ' .. cword)
 
     if node then
@@ -106,7 +106,7 @@ end
 M.__hop_to_definition = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
-    log_hop_to_x('__hop_to_definition', cword, node)
+    log_hop_to_x('__hop_to_definition', cword, node, config_override)
     M.__hop_to({
         definition_providers.__by_name_type_and_current_namespace(cword, node),
         definition_providers.__by_name_type_and_used_namespaces(cword, node),
@@ -118,7 +118,7 @@ end
 M.__hop_to_implementation = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
-    log_hop_to_x('__hop_to_implementation', cword, node)
+    log_hop_to_x('__hop_to_implementation', cword, node, config_override)
     M.__hop_to({
         implementation_providers.__by_parent_name_and_method_name(cword, node),
         implementation_providers.__by_name(cword, node),
@@ -128,7 +128,7 @@ end
 M.__hop_to_reference = function(config_override)
     local cword = vim.fn.expand('<cword>')
     local node = vim.treesitter.get_node()
-    log_hop_to_x('__hop_to_reference', cword, node)
+    log_hop_to_x('__hop_to_reference', cword, node, config_override)
     M.__hop_to({
         reference_providers.__by_name(cword, node),
     }, config_override)
