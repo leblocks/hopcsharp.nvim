@@ -52,7 +52,6 @@ M.__hop_to = function(hop_providers, config_override)
     local filter_under_cursor = config_override.filter_entry_under_cursor
         or current_config.hop.filter_entry_under_cursor
 
-
     for i, provider in ipairs(hop_providers) do
         log_hop_to(i, 'trying')
         if provider.can_handle() then

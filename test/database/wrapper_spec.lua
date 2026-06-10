@@ -39,7 +39,6 @@ describe('wrapper', function()
         assert(#messages > 1)
     end)
 
-
     it('wrapped execute logs call and returns query result', function()
         local main_db, logs_db = prepare_environment()
         local wrapped = wrapper.__get_wrapper(main_db)
