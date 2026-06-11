@@ -14,6 +14,9 @@ describe('parse.namespace', function()
 
         namespaces = db:select('namespaces', { where = { name = 'This.Is.Scoped.Namespace' } })
         assert(#namespaces == 1)
+
+        namespaces = db:select('namespaces', { where = { name = 'SingleWordNamespace' } })
+        assert(#namespaces == 1)
     end)
 
     it('__parse_namespace inserts empty namespace correctly', function()
