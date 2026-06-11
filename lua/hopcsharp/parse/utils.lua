@@ -1,9 +1,19 @@
+local debug = require('hopcsharp.debug')
+
 local M = {}
 
 ---@param query string
 ---@return vim.treesitter.Query
 M.__get_query = function(query)
-    return vim.treesitter.query.parse('c_sharp', query)
+    local ok, result = pcall(vim.treesitter.query.parse, 'c_sharp', query)
+
+    if ok then
+        return result
+    end
+
+    debug.__log_error('treesitter c_sharp parser is not found')
+
+    return nil
 end
 
 ---@param query vim.treesitter.Query
