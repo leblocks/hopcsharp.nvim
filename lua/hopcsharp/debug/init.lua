@@ -46,8 +46,8 @@ M.__log = function(message, level)
         level = level,
         message = message,
         project = vim.fn.getcwd(),
-        -- YYYY-MM-DD HH:MM:SS.SSS
-        date = os.date('%Y-%m-%d %H:%M:%S.000'),
+        -- YYYY-MM-DD HH:MM:SS
+        date = os.date('%Y-%m-%d %H:%M:%S'),
     })
 end
 

@@ -1,6 +1,7 @@
 local sqlite = require('sqlite.db')
 local config = require('hopcsharp.config')
 local db_utils = require('hopcsharp.database.utils')
+local wrapper = require('hopcsharp.database.wrapper')
 
 local M = {}
 
@@ -52,7 +53,7 @@ M.__init_db = function()
 end
 
 ---@return sqlite_db @Main sqlite.lua object.
-M.__get_db = function()
+M.__get_unwrapped_db = function()
     if _db ~= nil then
         return _db
     end
@@ -72,6 +73,11 @@ M.__get_db = function()
     _db:execute('PRAGMA optimize')
 
     return _db
+end
+
+---@return HopcsharpDatabaseWrapper object
+M.__get_db = function()
+    return wrapper.__get_wrapper(M.__get_unwrapped_db())
 end
 
 M.__create_indexes = function()
