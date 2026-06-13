@@ -293,7 +293,6 @@ M.get_reference_by_name_and_current_namespace = function(name, namespaces)
     return string.format(query, name, name .. '<*>', name, table.concat(namespaces, ','))
 end
 
-
 -- TODO remove?
 -- TODO why it is not used?
 M.get_reference_by_name_and_type = function(name, type)

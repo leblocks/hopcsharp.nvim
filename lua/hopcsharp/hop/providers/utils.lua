@@ -21,5 +21,4 @@ M.__get_node_type = function(name, node)
     return name, node_type
 end
 
-
 return M

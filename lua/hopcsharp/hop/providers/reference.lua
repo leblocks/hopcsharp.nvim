@@ -6,7 +6,6 @@ local treesitter_query = require('hopcsharp.parse.query')
 
 local M = {}
 
-
 ---@param current_word string Word under cursor
 ---@param _ TSNode | nil Node under cursor
 M.__by_name = function(current_word, _)
