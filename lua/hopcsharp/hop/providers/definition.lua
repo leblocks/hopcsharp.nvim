@@ -1,27 +1,10 @@
 local database = require('hopcsharp.database')
-local dbutils = require('hopcsharp.database.utils')
 local query = require('hopcsharp.database.query')
+local utils = require('hopcsharp.hop.providers.utils')
 local treesitter_query = require('hopcsharp.parse.query')
 
 local M = {}
 
-local get_node_type = function(name, node)
-    local node_type = nil
-    if node then
-        local parent_type = node:parent():type()
-
-        if parent_type == 'attribute' then
-            name = name .. 'Attribute'
-            node_type = dbutils.types.CLASS
-        end
-
-        if parent_type == 'invocation_expression' then
-            node_type = dbutils.types.METHOD
-        end
-    end
-
-    return name, node_type
-end
 
 ---@param current_word string Word under cursor
 ---@param _ TSNode | nil Node under cursor
@@ -40,7 +23,7 @@ end
 ---@param current_word string Word under cursor
 ---@param node TSNode | nil Node under cursor
 M.__by_name_and_type = function(current_word, node)
-    local name, node_type = get_node_type(current_word, node)
+    local name, node_type = utils.__get_node_type(current_word, node)
 
     return {
 
@@ -58,7 +41,7 @@ end
 ---@param current_word string Word under cursor
 ---@param node TSNode | nil Node under cursor
 M.__by_name_type_and_used_namespaces = function(current_word, node)
-    local name, node_type = get_node_type(current_word, node)
+    local name, node_type = utils.__get_node_type(current_word, node)
 
     while node ~= nil and node:type() ~= 'compilation_unit' do
         node = node:parent()
@@ -88,7 +71,7 @@ end
 ---@param current_word string Word under cursor
 ---@param node TSNode | nil Node under cursor
 M.__by_name_type_and_current_namespace = function(current_word, node)
-    local name, node_type = get_node_type(current_word, node)
+    local name, node_type = utils.__get_node_type(current_word, node)
 
     while node ~= nil and node:type() ~= 'compilation_unit' do
         node = node:parent()

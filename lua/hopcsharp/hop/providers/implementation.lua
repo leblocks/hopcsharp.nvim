@@ -2,6 +2,7 @@ local database = require('hopcsharp.database')
 local query = require('hopcsharp.database.query')
 local query_utils = require('hopcsharp.parse.utils')
 
+-- TODO move to utils.lua + luadoc
 local function find_node_parent_in_tree(node, parent_node, parent_node_type)
     if not node then
         return nil
