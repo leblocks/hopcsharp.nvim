@@ -19,6 +19,7 @@ local function find_node_parent_in_tree(node, parent_node, parent_node_type)
     return find_node_parent_in_tree(node, parent_node:child_with_descendant(node), parent_node_type)
 end
 
+-- TODO move to utils.lua + luadoc
 local function get_method_definition_parent_name(node)
     if node == nil then
         return nil

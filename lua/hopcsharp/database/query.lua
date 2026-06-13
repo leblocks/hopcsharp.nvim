@@ -265,7 +265,7 @@ M.get_reference_by_name = function(name)
     return string.format(query, name, name .. '<*>', name)
 end
 
-M.get_reference_by_name_and_current_namespace = function(name, namespace)
+M.get_reference_by_name_and_current_namespace = function(name, namespaces)
     local query = [[
         SELECT
             r.name,
@@ -279,13 +279,18 @@ M.get_reference_by_name_and_current_namespace = function(name, namespace)
         JOIN namespaces n on n.id = r.namespace_id
         JOIN usings u on f.id = u.path_id
         WHERE (r.name = '%s' OR r.name GLOB '%s' OR r.name || 'Attribute' = '%s')
-            AND (u.namespace = '%s')
+            AND (u.namespace IN (%s))
         ORDER BY
             r.name ASC,
             n.name ASC,
             f.path ASC
     ]]
-    return string.format(query, name, name .. '<*>', name, namespace)
+
+    for i, namespace in ipairs(namespaces) do
+        namespaces[i] = '"' .. namespace .. '"'
+    end
+
+    return string.format(query, name, name .. '<*>', name, table.concat(namespaces, ','))
 end
 
 

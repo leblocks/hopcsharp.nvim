@@ -59,7 +59,7 @@ describe('query', function()
 
     it('can invoke get_reference_by_name_and_current_namespace', function()
         local db = database.__get_db()
-        assert(db:eval(query.get_reference_by_name_and_current_namespace('test', 'System')))
+        assert(db:eval(query.get_reference_by_name_and_current_namespace('test', { 'System' })))
     end)
 
     it('can invoke get_definition_by_name_and_usings', function()

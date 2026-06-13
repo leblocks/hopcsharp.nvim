@@ -2,6 +2,7 @@ local database = require('hopcsharp.database')
 local dbutils = require('hopcsharp.database.utils')
 local utils = require('hopcsharp.hop.providers.utils')
 local query = require('hopcsharp.database.query')
+local treesitter_query = require('hopcsharp.parse.query')
 
 local M = {}
 
@@ -23,8 +24,8 @@ end
 --- known limitation, you have to stay on definition to properly
 --- search by current namespace
 ---@param current_word string Word under cursor
----@param _ TSNode | nil Node under cursor
-M.__by_name_and_current_namespace = function(current_word, _)
+---@param node TSNode | nil Node under cursor
+M.__by_name_and_current_namespace = function(current_word, node)
     local name, _ = utils.__get_node_type(current_word, node)
 
     while node ~= nil and node:type() ~= 'compilation_unit' do
