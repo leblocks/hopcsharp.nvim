@@ -20,6 +20,12 @@ M.__init_db = function()
             id = true,
             path = { type = 'text', unique = true },
         },
+        -- TODO indexes?
+        usings = {
+            id = true,
+            path_id = { type = 'integer', reference = 'files.id' },
+            namespace = 'text',
+        },
         namespaces = {
             id = true,
             name = { type = 'text', unqiue = true },
@@ -98,6 +104,7 @@ M.__drop_db = function()
     db:eval('delete from inheritance')
     db:eval('delete from reference')
     db:eval('delete from namespaces')
+    db:eval('delete from usings')
     db:eval('delete from files')
     db:eval('vacuum')
 end

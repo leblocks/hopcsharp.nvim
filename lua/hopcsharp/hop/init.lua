@@ -130,6 +130,7 @@ M.__hop_to_reference = function(config_override)
     local node = vim.treesitter.get_node()
     log_hop_to_x('__hop_to_reference', cword, node, config_override)
     M.__hop_to({
+        reference_providers.__by_name_and_current_namespace(cword, node),
         reference_providers.__by_name(cword, node),
     }, config_override)
 end

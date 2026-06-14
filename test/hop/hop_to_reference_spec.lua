@@ -68,4 +68,46 @@ describe('hop_to_reference', function()
         assert(position[2] == 18)
         assert(position[3] == 13)
     end)
+
+    it('__hop_to_reference hops correctly considering used namespaces - 1', function()
+        local files_to_parse = {
+            'test/sources/HopToReference/ByNameAndCurrentNamespace/Definition1.cs',
+            'test/sources/HopToReference/ByNameAndCurrentNamespace/Definition2.cs',
+            'test/sources/HopToReference/ByNameAndCurrentNamespace/ReferenceWithUsings1.cs',
+            'test/sources/HopToReference/ByNameAndCurrentNamespace/ReferenceWithUsings2.cs',
+        }
+
+        utils.prepare_multiple(files_to_parse, files_to_parse[1], 4, 14)
+
+        hop.__hop_to_reference({ jump_on_quickfix = true })
+
+        local buf = vim.api.nvim_get_current_buf()
+        local name = vim.fs.normalize(vim.api.nvim_buf_get_name(buf))
+
+        assert(name:find('test/sources/HopToReference/ByNameAndCurrentNamespace/ReferenceWithUsings1.cs$') ~= nil)
+        local position = vim.fn.getcursorcharpos(0)
+        assert(position[2] == 9)
+        assert(position[3] == 25)
+    end)
+
+    it('__hop_to_reference hops correctly considering used namespaces - 2', function()
+        local files_to_parse = {
+            'test/sources/HopToReference/ByNameAndCurrentNamespace/Definition1.cs',
+            'test/sources/HopToReference/ByNameAndCurrentNamespace/Definition2.cs',
+            'test/sources/HopToReference/ByNameAndCurrentNamespace/ReferenceWithUsings1.cs',
+            'test/sources/HopToReference/ByNameAndCurrentNamespace/ReferenceWithUsings2.cs',
+        }
+
+        utils.prepare_multiple(files_to_parse, files_to_parse[2], 4, 14)
+
+        hop.__hop_to_reference({ jump_on_quickfix = true })
+
+        local buf = vim.api.nvim_get_current_buf()
+        local name = vim.fs.normalize(vim.api.nvim_buf_get_name(buf))
+
+        assert(name:find('test/sources/HopToReference/ByNameAndCurrentNamespace/ReferenceWithUsings2.cs$') ~= nil)
+        local position = vim.fn.getcursorcharpos(0)
+        assert(position[2] == 9)
+        assert(position[3] == 25)
+    end)
 end)
