@@ -257,8 +257,6 @@ M.get_reference_by_name = function(name)
     return string.format(query, name, name .. '<*>', name)
 end
 
--- TODO check for indexes
--- TODO reference source test on GetInstance method C:\Users\sagurevich\repos\referencesource\System.Data\System\Data\SqlClient\SqlSecurityUtility.cs
 M.get_reference_by_name_and_current_namespace = function(name, namespaces)
     local query = [[
         SELECT
