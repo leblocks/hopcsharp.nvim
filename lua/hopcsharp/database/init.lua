@@ -20,7 +20,6 @@ M.__init_db = function()
             id = true,
             path = { type = 'text', unique = true },
         },
-        -- TODO indexes?
         usings = {
             id = true,
             path_id = { type = 'integer', reference = 'files.id' },
@@ -126,9 +125,8 @@ M.__drop_by_path = function(paths)
         table.insert(ids, file.id)
     end
 
-    -- TODO how to remove properly
-    -- namespaces by id?
     db:delete('files', { where = { id = ids } })
+    db:delete('usings', { where = { path_id = ids } })
     db:delete('reference', { where = { path_id = ids } })
     db:delete('inheritance', { where = { path_id = ids } })
     db:delete('definitions', { where = { path_id = ids } })

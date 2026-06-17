@@ -184,10 +184,6 @@ M.get_implementations_by_name = function(name)
     return string.format(query, name, name .. '<*>')
 end
 
--- TODO test multilevel inheritance
--- Base -> Middle -> Child (overrides method from base), will it jump?
--- TODO add usings information, filter by current namespace using in the implementation file
---
 -- this is kind of a hack here
 -- we get implementaiton defentions from definitions table
 -- and after that self join on itself by file id to get
@@ -240,10 +236,6 @@ M.get_all_child_types = [[
     SELECT DISTINCT name, base FROM children WHERE base <> name;
 ]]
 
--- TODO enrich with usings:
--- pass here current namespace and filter out references that do not
--- use that namespace (possible problem -> find references on a reference, wrong namespace will be used)
--- MUST pass namespace of a definition!!!
 M.get_reference_by_name = function(name)
     local query = [[
         SELECT
@@ -277,9 +269,11 @@ M.get_reference_by_name_and_current_namespace = function(name, namespaces)
         FROM reference r
         JOIN files f on f.id = r.path_id
         JOIN namespaces n on n.id = r.namespace_id
-        JOIN usings u on f.id = u.path_id
+        LEFT JOIN usings u on f.id = u.path_id -- fix for file with no usings
         WHERE (r.name = '%s' OR r.name GLOB '%s' OR r.name || 'Attribute' = '%s')
-            AND (u.namespace IN (%s))
+            -- or we have using with that namespace
+            -- or we are in the same namespace
+            AND ((u.namespace IN (%s)) OR (n.name IN (%s)))
         ORDER BY
             r.name ASC,
             n.name ASC,
@@ -290,11 +284,11 @@ M.get_reference_by_name_and_current_namespace = function(name, namespaces)
         namespaces[i] = '"' .. namespace .. '"'
     end
 
-    return string.format(query, name, name .. '<*>', name, table.concat(namespaces, ','))
+    local namespace_string = table.concat(namespaces, ',')
+
+    return string.format(query, name, name .. '<*>', name, namespace_string, namespace_string)
 end
 
--- TODO remove?
--- TODO why it is not used?
 M.get_reference_by_name_and_type = function(name, type)
     local query = [[
         SELECT
