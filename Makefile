@@ -1,4 +1,3 @@
-# TODO add debug log target, to easily open and read debug logs
 .PHONY: prepare test lint
 
 prepare:

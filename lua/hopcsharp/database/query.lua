@@ -287,11 +287,8 @@ M.get_reference_by_name_and_current_namespace = function(name, namespaces)
     local namespace_string = table.concat(namespaces, ',')
 
     return string.format(query, name, name .. '<*>', name, namespace_string, namespace_string)
-    -- return string.format(query, name, name .. '<*>', name, namespace_string)
 end
 
--- TODO remove?
--- TODO why it is not used?
 M.get_reference_by_name_and_type = function(name, type)
     local query = [[
         SELECT

@@ -55,7 +55,6 @@ M.__scheduled_iteration = function(entries, callback)
         return
     end
 
-    -- TODO cover with unittests
     local should_stop = false
 
     local function stop()

@@ -70,7 +70,6 @@ M.__get_picker = function(fzf, builtin_previewer, items_provider, formatter)
                 ['default'] = function(selected)
                     local path, row, column = parse_entry(selected[1], items)
                     -- fixing row by + 1 because __hop internally fixies column already
-                    -- TODO do those fixes in a single place
                     hop_utils.__hop(path, row + 1, column)
                 end,
 
