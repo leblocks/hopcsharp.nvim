@@ -40,15 +40,13 @@ M.__parse_tree = function(file_path, callback, writer)
         return
     end
 
-    parser:parse(false, function(_, trees)
-        if not trees then
-            return
-        end
+    local trees = parser:parse(false)
 
-        parser:for_each_tree(function(tree, _)
-            callback(tree, id, file_content, writer)
-        end)
-    end)
+    for _, tree in ipairs(trees) do
+        callback(tree, id, file_content, writer)
+    end
+
+    parser:destroy()
 
     file:close()
 end
