@@ -8,6 +8,14 @@ local type_argument = require('hopcsharp.parse.type_argument')
 
 local M = {}
 
+M.__get_outdated_source_files = function()
+    -- TODO
+    -- get current commit hash
+    -- compare with latest from db
+    -- get changed files
+    -- no commit hash to compare? -> return __get_source_files()
+end
+
 M.__get_source_files = function()
     local result = vim.system({ 'fd', '--extension', 'cs' }, { text = true, cwd = vim.fn.getcwd() }):wait()
 

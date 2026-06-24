@@ -16,6 +16,12 @@ end
 M.__init_db = function()
     return sqlite({
         uri = get_database_uri(),
+        parse_history = {
+            -- TODO remove comment
+            -- must be in following format os.date('%Y-%m-%d %H:%M:%S'),
+            parse_date = 'text',
+            commit_hash = 'text',
+        },
         files = {
             id = true,
             path = { type = 'text', unique = true },

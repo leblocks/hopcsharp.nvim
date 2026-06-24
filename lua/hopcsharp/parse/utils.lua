@@ -26,4 +26,8 @@ M.__icaptures = function(query, tree, file_content, callback)
     end
 end
 
+M.__get_commit_hash = function()
+    -- TODO
+end
+
 return M
