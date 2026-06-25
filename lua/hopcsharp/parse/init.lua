@@ -1,5 +1,6 @@
 local database = require('hopcsharp.database')
 local using = require('hopcsharp.parse.using')
+local history = require('hopcsharp.parse.history')
 local namespace = require('hopcsharp.parse.namespace')
 local reference = require('hopcsharp.parse.reference')
 local definition = require('hopcsharp.parse.definition')
@@ -8,12 +9,27 @@ local type_argument = require('hopcsharp.parse.type_argument')
 
 local M = {}
 
+-- TODO use __get_changed_files
 M.__get_outdated_source_files = function()
-    -- TODO
-    -- get current commit hash
-    -- compare with latest from db
-    -- get changed files
-    -- no commit hash to compare? -> return __get_source_files()
+    local last_commit = history.__get_last_parsed_commit()
+
+    -- no history, get all files
+    if last_commit == '' then
+        return M.__get_source_files()
+    end
+
+    local result = vim.system({ 'git', 'diff', '--name-only', last_commit, 'HEAD' },
+        { text = true, cwd = vim.fn.getcwd() }):wait()
+
+    local files = {}
+
+    for line in result.stdout:gmatch('([^\n]*)\n?') do
+        if (line ~= '') and (line:match('*.cs$')) then
+            table.insert(files, line)
+        end
+    end
+
+    return files
 end
 
 M.__get_source_files = function()

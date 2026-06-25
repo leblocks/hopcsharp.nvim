@@ -37,4 +37,19 @@ M.__get_commit_hash = function()
     return nil
 end
 
+M.__get_changed_files = function(start_commit, end_commit)
+    local result = vim.system({ 'git', 'diff', '--name-only', start_commit, end_commit },
+        { text = true, cwd = vim.fn.getcwd() }):wait()
+
+    local files = {}
+
+    for line in result.stdout:gmatch('([^\n]*)\n?') do
+        if (line ~= '') and (line:match('*.cs$')) then
+            table.insert(files, line)
+        end
+    end
+
+    return files
+end
+
 return M

@@ -11,21 +11,23 @@ M.__add_parse_history_entry = function(commit_hash)
         return
     end
 
-    database.__get_db()
-        :insert('parse_history', {
-            parse_date = os.date('%Y-%m-%d %H:%M:%S'),
-            commit_hash = commit_hash,
-        })
+    database.__get_db():insert('parse_history', { commit_hash = commit_hash, })
 end
 
-M.__get_parse_history = function()
-    return database.__get_db()
+M.__get_last_parsed_commit = function()
+    local rows = database.__get_db()
         :eval([[
-            SELECT parse_date, commit_hash
+            SELECT id, commit_hash
             FROM parse_history
-            ORDER BY parse_date DESC
+            ORDER BY id DESC
             LIMIT 1
         ]])
+
+    if type(rows) ~= 'table' then
+        return ''
+    end
+
+    return rows[1].commit_hash
 end
 
 return M

@@ -17,7 +17,7 @@ M.__init_db = function()
     return sqlite({
         uri = get_database_uri(),
         parse_history = {
-            parse_date = 'text',
+            id = true,
             commit_hash = 'text',
         },
         files = {
