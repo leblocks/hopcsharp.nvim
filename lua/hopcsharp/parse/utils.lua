@@ -27,7 +27,14 @@ M.__icaptures = function(query, tree, file_content, callback)
 end
 
 M.__get_commit_hash = function()
-    -- TODO
+    local output = vim.system({ 'git', 'rev-parse', 'HEAD' },
+        { text = true, cwd = vim.fn.getcwd() }):wait()
+
+    if output.code == 0 then
+        return output.stdout
+    end
+
+    return nil
 end
 
 return M
