@@ -17,8 +17,6 @@ M.__init_db = function()
     return sqlite({
         uri = get_database_uri(),
         parse_history = {
-            -- TODO remove comment
-            -- must be in following format os.date('%Y-%m-%d %H:%M:%S'),
             parse_date = 'text',
             commit_hash = 'text',
         },
@@ -105,6 +103,7 @@ M.__drop_db = function()
     db:eval('DROP INDEX IF EXISTS idx_inheritance_name;')
     db:eval('DROP INDEX IF EXISTS idx_inheritance_base;')
     db:eval('DROP INDEX IF EXISTS idx_reference_name_type;')
+    db:eval('delete from parse_history')
     db:eval('delete from definitions')
     db:eval('delete from inheritance')
     db:eval('delete from reference')
