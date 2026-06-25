@@ -32,4 +32,16 @@ describe('parse.utils', function()
         assert(commit_hash ~= '')
         assert(commit_hash ~= nil)
     end)
+
+    it('__get_changed_files -- no files changed', function()
+        -- TODO
+    end)
+
+    it('__get_changed_files -- only cs files reported', function()
+        -- TODO
+    end)
+
+    it('__get_changed_files -- happy path', function()
+        -- TODO
+    end)
 end)
