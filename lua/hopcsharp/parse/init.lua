@@ -9,7 +9,6 @@ local type_argument = require('hopcsharp.parse.type_argument')
 
 local M = {}
 
--- TODO use __get_changed_files
 M.__get_outdated_source_files = function()
     local last_commit = history.__get_last_parsed_commit()
 
@@ -18,16 +17,7 @@ M.__get_outdated_source_files = function()
         return M.__get_source_files()
     end
 
-    local result = vim.system({ 'git', 'diff', '--name-only', last_commit, 'HEAD' },
-        { text = true, cwd = vim.fn.getcwd() }):wait()
-
-    local files = {}
-
-    for line in result.stdout:gmatch('([^\n]*)\n?') do
-        if (line ~= '') and (line:match('*.cs$')) then
-            table.insert(files, line)
-        end
-    end
+    -- TODO use __get_changed_files
 
     return files
 end

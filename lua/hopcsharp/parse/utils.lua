@@ -44,7 +44,7 @@ M.__get_changed_files = function(start_commit, end_commit)
     local files = {}
 
     for line in result.stdout:gmatch('([^\n]*)\n?') do
-        if (line ~= '') and (line:match('*.cs$')) then
+        if (line ~= '') and (line:match('cs$')) then
             table.insert(files, line)
         end
     end
