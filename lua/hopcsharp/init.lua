@@ -1,6 +1,7 @@
 local os = require('os')
 
 local parse = require('hopcsharp.parse')
+local parse_utils = require('hopcsharp.parse.utils')
 local utils = require('hopcsharp.utils')
 local config = require('hopcsharp.config')
 
@@ -8,18 +9,34 @@ local hop = require('hopcsharp.hop')
 local hierarchy = require('hopcsharp.hierarchy')
 local database = require('hopcsharp.database')
 local BufferedWriter = require('hopcsharp.database.buffer')
+local history = require('hopcsharp.parse.history')
 
 local M = {}
 
 vim.g.hopcsharp_processing = false
 
-M.__init_database = function()
-    -- drop existing schema
-    database.__drop_db()
+-- TODO new vimdoc
+M.__init_database = function(incremental_parsing)
     local buffer_size = config.__get_config().database.buffer_size
     local writer = BufferedWriter:new(database.__get_db(), buffer_size)
 
-    local files = parse.__get_source_files()
+    local files = {}
+
+    -- TODO cover in tests
+    if incremental_parsing then
+        files = parse.__get_outdated_source_files()
+        -- drop by files
+        database.__drop_by_path(files)
+    else
+        files = parse.__get_source_files()
+        -- drop existing schema
+        database.__drop_db()
+    end
+
+    -- TODO cover in tests
+    -- store new entry in parsing history
+    local current_commit = parse_utils.__get_commit_hash()
+    history.__add_parse_history_entry(current_commit)
 
     local counter = 0
 

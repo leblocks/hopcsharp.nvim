@@ -1,5 +1,6 @@
 local database = require('hopcsharp.database')
 local using = require('hopcsharp.parse.using')
+local utils = require('hopcsharp.parse.utils')
 local history = require('hopcsharp.parse.history')
 local namespace = require('hopcsharp.parse.namespace')
 local reference = require('hopcsharp.parse.reference')
@@ -17,9 +18,8 @@ M.__get_outdated_source_files = function()
         return M.__get_source_files()
     end
 
-    -- TODO use __get_changed_files
-
-    return files
+    -- get only changed ones
+    return utils.__get_changed_files(last_commit, 'HEAD')
 end
 
 M.__get_source_files = function()
