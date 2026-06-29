@@ -16,12 +16,12 @@ describe('hopcsharp', function()
         assert(history[1].commit_hash == commit)
     end)
 
-    it('__init_database - incremental_parsing true', function()
-        -- TOOD
+    it('__init_database - incremental_parsing true can be called', function()
+        require('hopcsharp').__init_database(true)
     end)
 
-    it('__init_database - incremental_parsing false', function()
-        -- TOOD
+    it('__init_database - incremental_parsing false can be called', function()
+        require('hopcsharp').__init_database(false)
     end)
 
     it('__init_database - incremental_parsing true - does not drop history', function()
@@ -32,9 +32,5 @@ describe('hopcsharp', function()
         assert(#history == 2)
         assert(history[1].id == 1)
         assert(history[2].id == 2)
-    end)
-
-    it('__init_database - incremental_parsing false - drops whole db', function()
-        -- TOOD
     end)
 end)

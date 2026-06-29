@@ -10,6 +10,7 @@ local hierarchy = require('hopcsharp.hierarchy')
 local database = require('hopcsharp.database')
 local BufferedWriter = require('hopcsharp.database.buffer')
 local history = require('hopcsharp.parse.history')
+local debug = require('hopcsharp.debug')
 
 local M = {}
 
@@ -20,20 +21,19 @@ M.__init_database = function(incremental_parsing)
     local buffer_size = config.__get_config().database.buffer_size
     local writer = BufferedWriter:new(database.__get_db(), buffer_size)
 
-    local files = {}
-
-    -- TODO cover in tests
+    local files
     if incremental_parsing then
         files = parse.__get_outdated_source_files()
+        debug.__log_debug('incremental parsing found ' .. #files .. ' to process')
         -- drop by files
         database.__drop_by_path(files)
     else
         files = parse.__get_source_files()
+        debug.__log_debug('full parsing found ' .. #files .. ' to process')
         -- drop existing schema
         database.__drop_db()
     end
 
-    -- TODO cover in tests
     -- store new entry in parsing history
     local current_commit = parse_utils.__get_commit_hash()
     history.__add_parse_history_entry(current_commit)
