@@ -31,6 +31,7 @@ M.__init_db = function()
         },
         namespaces = {
             id = true,
+            path_id = { type = 'integer', reference = 'files.id' },
             name = { type = 'text', unqiue = true },
         },
         definitions = {
@@ -130,9 +131,8 @@ M.__drop_by_path = function(paths)
         table.insert(ids, file.id)
     end
 
-    -- TODO drop namespaces!
-
     db:delete('files', { where = { id = ids } })
+    db:delete('namespaces', { where = { id = ids } })
     db:delete('usings', { where = { path_id = ids } })
     db:delete('reference', { where = { path_id = ids } })
     db:delete('inheritance', { where = { path_id = ids } })

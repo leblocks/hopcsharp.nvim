@@ -19,7 +19,7 @@ M.__get_outdated_source_files = function()
     end
 
     -- get only changed ones
-    return utils.__get_changed_files(last_commit, 'HEAD')
+    return utils.__get_changed_files(last_commit, '.')
 end
 
 M.__get_source_files = function()
@@ -70,7 +70,7 @@ end
 M.__parse_file = function(file_path, writer)
     M.__parse_tree(file_path, function(tree, path_id, file_content, wr)
         local root = tree:root()
-        local namespace_id = namespace.__parse_namespaces(root, file_content)
+        local namespace_id = namespace.__parse_namespaces(root, path_id, file_content)
         using.__parse_usings(root, path_id, file_content, wr)
         definition.__parse_definitions(root, path_id, namespace_id, file_content, wr)
         inheritance.__parse_inheritance(root, path_id, namespace_id, file_content, wr)

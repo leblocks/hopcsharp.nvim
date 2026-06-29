@@ -29,6 +29,7 @@ describe('database', function()
         })
     end)
 
+    -- TODO tests for namespaces
     it('__drop_by_path - happy path', function()
         utils.init_test_database()
 
@@ -43,6 +44,15 @@ describe('database', function()
         database.__drop_by_path(paths)
         for _, file in ipairs(files) do
             local count = db:eval([[SELECT COUNT(1) FROM files WHERE id = :id ]], { id = file.id })
+            assert(count[1]['COUNT(1)'] == 0)
+
+            count = db:eval([[SELECT COUNT(1) FROM namespace WHERE path_id = :id ]], { id = file.id })
+            assert(count[1]['COUNT(1)'] == 0)
+
+            count = db:eval([[SELECT COUNT(1) FROM usings WHERE path_id = :id ]], { id = file.id })
+            assert(count[1]['COUNT(1)'] == 0)
+
+            count = db:eval([[SELECT COUNT(1) FROM reference WHERE path_id = :id ]], { id = file.id })
             assert(count[1]['COUNT(1)'] == 0)
 
             count = db:eval([[SELECT COUNT(1) FROM inheritance WHERE path_id = :id ]], { id = file.id })

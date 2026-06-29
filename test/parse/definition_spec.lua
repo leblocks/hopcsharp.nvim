@@ -15,7 +15,7 @@ describe('parse.definition', function()
         local db = database.__get_db()
 
         parse.__parse_tree(path, function(tree, path_id, file_content, wr)
-            local namespace_id = namespace.__parse_namespaces(tree:root(), file_content)
+            local namespace_id = namespace.__parse_namespaces(tree:root(), path_id, file_content)
             definition.__parse_definitions(tree:root(), path_id, namespace_id, file_content, wr)
 
             local rows = db:eval(query.get_definition_by_name_and_type('Class1', utils.types.CLASS))

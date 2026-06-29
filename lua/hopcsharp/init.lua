@@ -61,15 +61,21 @@ M.setup = function(opts)
     config.__set_config(opts)
 end
 
-M.init_database = function()
+M.init_database = function(incremental_parsing)
     utils.__block_on_processing(function()
         vim.g.hopcsharp_processing = true
+
+        local do_incremental = 'false'
+
+        if incremental_parsing then
+            do_incremental = 'true'
+        end
 
         local command = {
             'nvim',
             '--headless',
             '-c',
-            'lua require("hopcsharp").__init_database()',
+            'lua require("hopcsharp").__init_database(' .. do_incremental .. ')',
             '-c',
             'qa',
         }
