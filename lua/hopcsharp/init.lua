@@ -22,21 +22,24 @@ M.__init_database = function(incremental_parsing)
     local writer = BufferedWriter:new(database.__get_db(), buffer_size)
 
     local files
+
     if incremental_parsing then
         files = parse.__get_outdated_source_files()
-        debug.__log_debug('incremental parsing found ' .. #files .. ' to process')
+        debug.__log_debug('incremental parsing found ' .. #files .. ' files to process')
         -- drop by files
         database.__drop_by_path(files)
     else
         files = parse.__get_source_files()
-        debug.__log_debug('full parsing found ' .. #files .. ' to process')
+        debug.__log_debug('full parsing found ' .. #files .. ' files to process')
         -- drop existing schema
         database.__drop_db()
     end
 
     -- store new entry in parsing history
-    local current_commit = parse_utils.__get_commit_hash()
-    history.__add_parse_history_entry(current_commit)
+    if #files > 0 then
+        local current_commit = parse_utils.__get_commit_hash()
+        history.__add_parse_history_entry(current_commit)
+    end
 
     local counter = 0
 

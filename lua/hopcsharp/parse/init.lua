@@ -29,7 +29,7 @@ M.__get_source_files = function()
 
     for line in result.stdout:gmatch('([^\n]*)\n?') do
         if line ~= '' then
-            table.insert(files, line)
+            table.insert(files, vim.fs.normalize(line))
         end
     end
 
@@ -45,7 +45,7 @@ M.__parse_tree = function(file_path, callback, writer)
         return
     end
 
-    local _, id = db:insert('files', { path = file_path })
+    local _, id = db:insert('files', { path = vim.fs.normalize(file_path) })
 
     local file_content = file:read('*a')
     local parser = vim.treesitter.get_string_parser(file_content, 'c_sharp', { error = false })

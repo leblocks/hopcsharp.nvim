@@ -40,8 +40,10 @@ describe('parse.utils', function()
 
     it('__get_changed_files -- only cs files reported', function()
         -- here only lua files were changed
-        local files = utils.__get_changed_files('065ee52f9a645d4d7d85823a375b44efe505a1a6',
-            '88279b56355b5911521299a0431607936e13fe30')
+        local files = utils.__get_changed_files(
+            '065ee52f9a645d4d7d85823a375b44efe505a1a6',
+            '88279b56355b5911521299a0431607936e13fe30'
+        )
         assert(#files == 0)
     end)
 

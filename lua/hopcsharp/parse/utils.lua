@@ -27,19 +27,28 @@ M.__icaptures = function(query, tree, file_content, callback)
 end
 
 M.__get_commit_hash = function()
-    local output = vim.system({ 'git', 'rev-parse', 'HEAD' },
-        { text = true, cwd = vim.fn.getcwd() }):wait()
+    local output = vim.system({ 'git', 'rev-parse', 'HEAD' }, { text = true, cwd = vim.fn.getcwd() }):wait()
 
     if output.code == 0 then
-        return output.stdout
+        -- remove newlines from stdout
+        return output.stdout:gsub('\r?\n$', '')
     end
 
     return nil
 end
 
 M.__get_changed_files = function(start_commit, end_commit)
-    local result = vim.system({ 'git', 'diff', '--name-only', start_commit, end_commit },
-        { text = true, cwd = vim.fn.getcwd() }):wait()
+    debug.__log_debug(
+        'vim.system git diff --name-only ' .. start_commit .. ' ' .. end_commit .. ' in ' .. vim.fn.getcwd()
+    )
+
+    local result = vim.system(
+        { 'git', 'diff', '--name-only', start_commit, end_commit },
+        { text = true, cwd = vim.fn.getcwd() }
+    )
+        :wait()
+
+    debug.__log_debug(vim.inspect(result))
 
     local files = {}
 

@@ -26,7 +26,7 @@ M.__insert_namespace = function(name, path_id, db)
 
     if #entries == 0 then
         -- insert new namespace
-        local _, id = db:insert('namespaces', { name = name, path_id = path_id, })
+        local _, id = db:insert('namespaces', { name = name, path_id = path_id })
         return id
     else
         return entries[1].id

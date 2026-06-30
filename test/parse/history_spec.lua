@@ -56,4 +56,3 @@ describe('history', function()
         assert(commit_hash == '5')
     end)
 end)
-
