@@ -13,7 +13,7 @@ describe('parse.inheritance', function()
         local db = database.__get_db()
 
         parse.__parse_tree(path, function(tree, path_id, file_content, wr)
-            local namespace_id = namespace.__parse_namespaces(tree:root(), file_content)
+            local namespace_id = namespace.__parse_namespaces(tree:root(), path_id, file_content)
             inheritance.__parse_inheritance(tree:root(), path_id, namespace_id, file_content, wr)
 
             local rows = db:eval([[select * from inheritance i where i.base = :name ]], { name = 'Interface1' })
