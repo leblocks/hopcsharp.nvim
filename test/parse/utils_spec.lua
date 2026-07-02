@@ -51,6 +51,7 @@ describe('parse.utils', function()
         local commit1 = 'e04b5b38d85e4c07b41c8cb737cb6d7bd6838073'
         local commit2 = '7515d034893f64d7151b7b13924bb1c2dbaa5c65'
         local files = utils.__get_changed_files(commit1, commit2)
+        print(vim.inspect(files))
         assert(#files == 6)
         assert(files[1] == 'test/sources/HopToReference/ByNameAndCurrentNamespace/Definition1.cs')
         assert(files[2] == 'test/sources/HopToReference/ByNameAndCurrentNamespace/Definition2.cs')
