@@ -259,7 +259,7 @@ end
 
 M.get_reference_by_name_and_current_namespace = function(name, namespaces)
     local query = [[
-        SELECT
+        SELECT DISTINCT
             r.name,
             f.path,
             r.row,

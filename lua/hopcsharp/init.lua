@@ -36,10 +36,8 @@ M.__init_database = function(incremental_parsing)
     end
 
     -- store new entry in parsing history
-    if #files > 0 then
-        local current_commit = parse_utils.__get_commit_hash()
-        history.__add_parse_history_entry(current_commit)
-    end
+    local current_commit = parse_utils.__get_commit_hash()
+    history.__add_parse_history_entry(current_commit)
 
     local counter = 0
 
