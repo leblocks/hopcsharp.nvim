@@ -6,26 +6,27 @@ local M = {}
 local EMPTY_NAMESPACE_NAME = 'n\\a'
 
 ---@param tree TSNode under which the search will occur
+---@param path_id number file path id
 ---@param file_content string file content
-M.__parse_namespaces = function(tree, file_content)
+M.__parse_namespaces = function(tree, path_id, file_content)
     local db = database.__get_db()
 
     for _, node, _, _ in query.namespace_identifier:iter_captures(tree, file_content, 0, -1) do
         local namespace = vim.treesitter.get_node_text(node, file_content, nil)
-        return M.__insert_namespace(namespace, db)
+        return M.__insert_namespace(namespace, path_id, db)
     end
 
     -- every file must have a namespace defined
     -- in a rare case when it is missing do this trick
-    return M.__insert_namespace(EMPTY_NAMESPACE_NAME, db)
+    return M.__insert_namespace(EMPTY_NAMESPACE_NAME, path_id, db)
 end
 
-M.__insert_namespace = function(name, db)
+M.__insert_namespace = function(name, path_id, db)
     local entries = db:select('namespaces', { where = { name = name } })
 
     if #entries == 0 then
         -- insert new namespace
-        local _, id = db:insert('namespaces', { name = name })
+        local _, id = db:insert('namespaces', { name = name, path_id = path_id })
         return id
     else
         return entries[1].id

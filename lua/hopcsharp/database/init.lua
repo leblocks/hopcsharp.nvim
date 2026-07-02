@@ -16,6 +16,10 @@ end
 M.__init_db = function()
     return sqlite({
         uri = get_database_uri(),
+        parse_history = {
+            id = true,
+            commit_hash = 'text',
+        },
         files = {
             id = true,
             path = { type = 'text', unique = true },
@@ -27,6 +31,7 @@ M.__init_db = function()
         },
         namespaces = {
             id = true,
+            path_id = { type = 'integer', reference = 'files.id' },
             name = { type = 'text', unqiue = true },
         },
         definitions = {
@@ -126,6 +131,7 @@ M.__drop_by_path = function(paths)
     end
 
     db:delete('files', { where = { id = ids } })
+    db:delete('namespaces', { where = { path_id = ids } })
     db:delete('usings', { where = { path_id = ids } })
     db:delete('reference', { where = { path_id = ids } })
     db:delete('inheritance', { where = { path_id = ids } })

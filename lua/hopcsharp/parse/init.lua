@@ -1,5 +1,7 @@
 local database = require('hopcsharp.database')
 local using = require('hopcsharp.parse.using')
+local utils = require('hopcsharp.parse.utils')
+local history = require('hopcsharp.parse.history')
 local namespace = require('hopcsharp.parse.namespace')
 local reference = require('hopcsharp.parse.reference')
 local definition = require('hopcsharp.parse.definition')
@@ -8,6 +10,18 @@ local type_argument = require('hopcsharp.parse.type_argument')
 
 local M = {}
 
+M.__get_outdated_source_files = function()
+    local last_commit = history.__get_last_parsed_commit()
+
+    -- no history, get all files
+    if last_commit == '' then
+        return M.__get_source_files()
+    end
+
+    -- get only changed ones
+    return utils.__get_changed_files(last_commit, '.')
+end
+
 M.__get_source_files = function()
     local result = vim.system({ 'fd', '--extension', 'cs' }, { text = true, cwd = vim.fn.getcwd() }):wait()
 
@@ -15,7 +29,7 @@ M.__get_source_files = function()
 
     for line in result.stdout:gmatch('([^\n]*)\n?') do
         if line ~= '' then
-            table.insert(files, line)
+            table.insert(files, vim.fs.normalize(line))
         end
     end
 
@@ -31,7 +45,7 @@ M.__parse_tree = function(file_path, callback, writer)
         return
     end
 
-    local _, id = db:insert('files', { path = file_path })
+    local _, id = db:insert('files', { path = vim.fs.normalize(file_path) })
 
     local file_content = file:read('*a')
     local parser = vim.treesitter.get_string_parser(file_content, 'c_sharp', { error = false })
@@ -56,7 +70,7 @@ end
 M.__parse_file = function(file_path, writer)
     M.__parse_tree(file_path, function(tree, path_id, file_content, wr)
         local root = tree:root()
-        local namespace_id = namespace.__parse_namespaces(root, file_content)
+        local namespace_id = namespace.__parse_namespaces(root, path_id, file_content)
         using.__parse_usings(root, path_id, file_content, wr)
         definition.__parse_definitions(root, path_id, namespace_id, file_content, wr)
         inheritance.__parse_inheritance(root, path_id, namespace_id, file_content, wr)

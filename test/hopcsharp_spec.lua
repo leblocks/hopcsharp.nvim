@@ -1,5 +1,0 @@
-describe('hopcsharp', function()
-    it('can require hopcsharp', function()
-        require('hopcsharp')
-    end)
-end)

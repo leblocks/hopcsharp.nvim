@@ -48,7 +48,13 @@ If you don't have `make` installed, you can run the commands manually:
 
 2. **Run tests**:
    ```bash
+   # in a folder
    nvim --headless --clean -u scripts/minimal_init.lua -c "PlenaryBustedDirectory test/ { minimal_init = 'scripts/minimal_init.lua', sequential = true }"
+   ```
+
+   ```bash
+   # in a file
+   nvim --headless --clean -u scripts/minimal_init.lua -c "PlenaryBustedFile test/parse/definition_spec.lua"
    ```
 
 3. **Run linter** (requires luacheck):
