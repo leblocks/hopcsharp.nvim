@@ -83,6 +83,10 @@ Parameters: ~
     {opts}    (table, optional) configuration object
     >lua
                 {
+                    debug = false,                         -- (boolean, default: false)
+                                                            -- enables debug logging into
+                                                            -- hopcsharp.debug.sql
+
                     hop = {
                         jump_on_quickfix = false,           -- (boolean, default: false)
                                                             -- immediately jump to first quickfix
@@ -136,17 +140,28 @@ hopcsharp.nvim exposes a minimal API for building custom navigation workflows.
 
 ------------------------------------------------------------------------------
                                                        *hopcsharp.init_database*
-hopcsharp.init_database()
+hopcsharp.init_database({incremental_parsing})
 
-Initializes the database by parsing all C# files in the current project.
+Initializes (or updates) the database by parsing C# files in the current
+project.
 This function:
 - Runs in a separate headless Neovim instance to avoid blocking
-- Drops and recreates the existing database schema
-- Parses all .cs files found by fd
-- Stores definitions and inheritance information
+- Parses `.cs` files found by `fd`
+- Stores parsed symbols/references in SQLite
+
+Parameters: ~
+
+    {incremental_parsing}  (boolean, optional, default: false)
+        false -> full rebuild: drops existing data and reindexes all files
+        true  -> incremental update: reindexes only files changed since the
+                 last parsed git commit (falls back to full scan when there is
+                 no parse history yet)
 
 Example: >
     require('hopcsharp').init_database()
+
+    -- Parse only changed files since last parsed commit
+    require('hopcsharp').init_database(true)
 <
 
 Note: This operation can take several minutes for large codebases. Progress
@@ -155,13 +170,13 @@ is displayed in the command line.
 
 ------------------------------------------------------------------------------
                                                    *hopcsharp.hop_to_definition*
-hopcsharp.hop_to_definition({config})
+hopcsharp.hop_to_definition({config_override})
 
 Navigates to the definition of the symbol under the cursor.
 
 Parameters: ~
 
-    {config}    (table, optional) configuration object
+    {config_override}    (table, optional) configuration object
     >lua
                 {
                     jump_on_quickfix = false,              -- immediately jump to first entry when qf
@@ -194,12 +209,12 @@ Example: >
 
 ------------------------------------------------------------------------------
                                                *hopcsharp.hop_to_implementation*
-hopcsharp.hop_to_implementation({config})
+hopcsharp.hop_to_implementation({config_override})
 
 Navigates to implementations of the symbol under the cursor.
 
 Parameters: ~
-    {config}    (table, optional) configuration object
+    {config_override}    (table, optional) configuration object
     >lua
                 {
                     jump_on_quickfix = false,              -- immediately jump to first entry when qf
@@ -221,12 +236,12 @@ Example: >
 
 ------------------------------------------------------------------------------
                                                *hopcsharp.hop_to_reference*
-hopcsharp.hop_to_reference({config})
+hopcsharp.hop_to_reference({config_override})
 
 Navigates to references of the symbol under the cursor.
 
 Parameters: ~
-    {config}    (table, optional) configuration object
+    {config_override}    (table, optional) configuration object
     >lua
                 {
                     jump_on_quickfix = false,              -- immediately jump to first entry when qf
@@ -255,15 +270,17 @@ Opens read-only buffer with type hierarchy.
 
 Example: >
     require('hopcsharp').get_type_hierarchy()
+<
 
 ------------------------------------------------------------------------------
                                                               *hopcsharp.get_db*
 hopcsharp.get_db()
 
-Returns the SQLite database object for custom queries.
+Returns a database wrapper object for custom queries.
 
 Returns: ~
-    sqlite_db object (see sqlite.lua documentation)
+    hopcsharp DB wrapper object around sqlite_db. Supports:
+    eval, execute, select, delete, insert.
 
 This function allows you to build custom navigation flows by querying the
 database directly with SQL.
@@ -421,4 +438,3 @@ If the database becomes corrupted, rerun |hopcsharp.init_database| again.
 
 ==============================================================================
 vim:tw=78:ts=8:ft=help:norl:
-

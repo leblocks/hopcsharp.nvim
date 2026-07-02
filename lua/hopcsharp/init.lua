@@ -16,7 +16,6 @@ local M = {}
 
 vim.g.hopcsharp_processing = false
 
--- TODO new vimdoc
 M.__init_database = function(incremental_parsing)
     local buffer_size = config.__get_config().database.buffer_size
     local writer = BufferedWriter:new(database.__get_db(), buffer_size)
