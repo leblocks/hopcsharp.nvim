@@ -31,12 +31,11 @@ M.__by_name_and_current_namespace = function(current_word, node)
         node = node:parent()
     end
 
-    -- TODO make sure that definition is not internal
-    -- internal modifier skips using\namespace checks and only
-    -- checks if it is the same assembly
-
     return {
         can_handle = function()
+            -- TODO make sure that definition is not internal
+            -- internal modifier skips using\namespace checks and only
+            -- checks if it is the same assembly
             return node ~= nil
         end,
         get_hops = function()
