@@ -821,6 +821,8 @@ describe('parse.query', function()
             }
         ]]
 
+        local modifiers = {}
+
         local visited = false
         local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
         parser:parse(false, function(_, trees)
@@ -830,11 +832,191 @@ describe('parse.query', function()
                 for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
                     local name = vim.treesitter.get_node_text(node, content, nil)
                     visited = true
-                    print(name)
+                    table.insert(modifiers, name)
                 end
             end)
         end)
+        table.sort(modifiers)
+        assert(#modifiers == 2)
+        assert(modifiers[1] == 'internal')
+        assert(modifiers[2] == 'static')
         assert(visited)
+    end)
 
+    it('modifiers - interface_declaration', function()
+        local content = [[
+            internal static interface InterfaceWithInternalModifier
+            {
+            }
+        ]]
+
+        local modifiers = {}
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(modifiers, name)
+                end
+            end)
+        end)
+        table.sort(modifiers)
+        assert(#modifiers == 2)
+        assert(modifiers[1] == 'internal')
+        assert(modifiers[2] == 'static')
+        assert(visited)
+    end)
+
+    it('modifiers - enum_declaration', function()
+        local content = [[
+            internal static enum EnumWithInternalModifier
+            {
+            }
+        ]]
+
+        local modifiers = {}
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(modifiers, name)
+                end
+            end)
+        end)
+        table.sort(modifiers)
+        assert(#modifiers == 2)
+        assert(modifiers[1] == 'internal')
+        assert(modifiers[2] == 'static')
+        assert(visited)
+    end)
+
+    it('modifiers - struct_declaration', function()
+        local content = [[
+            internal static struct EnumWithInternalModifier
+            {
+            }
+        ]]
+
+        local modifiers = {}
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(modifiers, name)
+                end
+            end)
+        end)
+        table.sort(modifiers)
+        assert(#modifiers == 2)
+        assert(modifiers[1] == 'internal')
+        assert(modifiers[2] == 'static')
+        assert(visited)
+    end)
+
+    it('modifiers - record_declaration', function()
+        local content = [[
+            internal static record RecordWithInternalModifier
+            {
+            }
+        ]]
+
+        local modifiers = {}
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(modifiers, name)
+                end
+            end)
+        end)
+        table.sort(modifiers)
+        assert(#modifiers == 2)
+        assert(modifiers[1] == 'internal')
+        assert(modifiers[2] == 'static')
+        assert(visited)
+    end)
+
+    it('modifiers - local_function_statement', function()
+        local content = [[
+            public static Task MethodWithModifier()
+            {
+            }
+        ]]
+
+        local modifiers = {}
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(modifiers, name)
+                end
+            end)
+        end)
+        table.sort(modifiers)
+        assert(#modifiers == 2)
+        assert(modifiers[1] == 'public')
+        assert(modifiers[2] == 'static')
+        assert(visited)
+    end)
+
+    it('modifiers - method_declaration', function()
+        local content = [[
+            public Class
+            {
+                public static Task MethodWithModifier()
+                {
+                }
+            }
+        ]]
+
+        local modifiers = {}
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                    local name = vim.treesitter.get_node_text(node, content, nil)
+                    visited = true
+                    table.insert(modifiers, name)
+                end
+            end)
+        end)
+        table.sort(modifiers)
+        assert(#modifiers == 2)
+        assert(modifiers[1] == 'public')
+        assert(modifiers[2] == 'static')
+        assert(visited)
     end)
 end)
