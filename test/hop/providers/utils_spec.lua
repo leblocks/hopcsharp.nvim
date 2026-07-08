@@ -23,4 +23,28 @@ describe('hop.providers.utils', function()
         assert(current_word == 'Method1')
         assert(node_type == database_utils.types.METHOD)
     end)
+
+    it('__get_node_modifiers - method', function()
+        -- TODO
+    end)
+
+    it('__get_node_modifiers - class', function()
+        -- TODO
+    end)
+
+    it('__get_node_modifiers - interface', function()
+        -- TODO
+    end)
+
+    it('__get_node_modifiers - struct', function()
+        -- TODO
+    end)
+
+    it('__get_node_modifiers - record', function()
+        -- TODO
+    end)
+
+    it('__get_node_modifiers - empty', function()
+        -- TODO
+    end)
 end)

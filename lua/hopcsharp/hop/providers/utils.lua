@@ -78,4 +78,10 @@ M.__get_node_type = function(current_word, node)
     return current_word, node_type
 end
 
+---@param node TSNode | nil Tree sitter node
+---@return string[] Type modifiers
+M.__get_node_modifiers = function(node)
+    -- TODO for each type check if we have 'internal' modifier
+end
+
 return M

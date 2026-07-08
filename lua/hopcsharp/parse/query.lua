@@ -185,4 +185,14 @@ M.type_argument_list = utils.__get_query([[
     )
 ]])
 
+M.modifiers = utils.__get_query([[
+    -- (enum_declaration name: (identifier) @name)
+    (class_declaration (modifier))
+    -- (struct_declaration name: (identifier) @name)
+    -- (record_declaration name: (identifier) @name)
+    -- (method_declaration name: (identifier) @name)
+    -- (interface_declaration name: (identifier) @name)
+    -- (constructor_declaration name: (identifier) @name)
+]])
+
 return M
