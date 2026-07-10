@@ -990,9 +990,9 @@ describe('parse.query', function()
 
     it('modifiers - method_declaration', function()
         local content = [[
-            public Class
+            protected Class
             {
-                public static Task MethodWithModifier()
+                public static async Task MethodWithModifier()
                 {
                 }
             }
@@ -1014,9 +1014,10 @@ describe('parse.query', function()
             end)
         end)
         table.sort(modifiers)
-        assert(#modifiers == 2)
-        assert(modifiers[1] == 'public')
-        assert(modifiers[2] == 'static')
+        assert(#modifiers == 3)
+        assert(modifiers[1] == 'async')
+        assert(modifiers[2] == 'public')
+        assert(modifiers[3] == 'static')
         assert(visited)
     end)
 end)

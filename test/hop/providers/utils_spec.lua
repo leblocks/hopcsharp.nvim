@@ -25,7 +25,16 @@ describe('hop.providers.utils', function()
     end)
 
     it('__get_node_modifiers - method', function()
-        -- TODO
+        test_utils.prepare('test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            10,
+            30)
+
+        local modifiers = utils.__get_node_modifiers(vim.treesitter.get_node())
+        table.sort(modifiers)
+        assert(#modifiers == 2)
+        assert(modifiers[1] == 'public')
+        assert(modifiers[2] == 'static')
     end)
 
     it('__get_node_modifiers - class', function()

@@ -1,3 +1,4 @@
+local query = require('hopcsharp.parse.query')
 local query_utils = require('hopcsharp.parse.utils')
 local database_utils = require('hopcsharp.database.utils')
 
@@ -81,7 +82,19 @@ end
 ---@param node TSNode | nil Tree sitter node
 ---@return string[] Type modifiers
 M.__get_node_modifiers = function(node)
-    -- TODO for each type check if we have 'internal' modifier
+    local modifiers = {}
+
+    if node == nil then
+        return modifiers
+    end
+
+    -- TODO add guards
+    -- TODO think if need to check parent node type?
+    for _, nn, _, _ in query.modifiers:iter_captures(node:parent(), 0, 0, -1) do
+        table.insert(modifiers, vim.treesitter.get_node_text(nn, 0, nil))
+    end
+
+    return modifiers
 end
 
 return M

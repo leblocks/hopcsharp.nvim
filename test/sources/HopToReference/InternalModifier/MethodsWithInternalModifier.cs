@@ -7,7 +7,7 @@ namespace This.Is.Reference.Namespace.Internal
             var type = typeof(Class2);
         }
 
-        internal void Method()
+        public static void Method()
         {
         }
     }
