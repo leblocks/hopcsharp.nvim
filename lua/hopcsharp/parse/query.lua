@@ -185,16 +185,20 @@ M.type_argument_list = utils.__get_query([[
     )
 ]])
 
--- local_function_statement
-M.modifiers = utils.__get_query([[
+M.type_modifiers = utils.__get_query([[
     [
         (enum_declaration (modifier) @name)
         (class_declaration (modifier) @name)
         (struct_declaration (modifier) @name)
         (record_declaration (modifier) @name)
+        (interface_declaration (modifier) @name)
+    ]
+]])
+
+M.method_modifiers = utils.__get_query([[
+    [
         (method_declaration (modifier) @name)
         (local_function_statement (modifier) @name)
-        (interface_declaration (modifier) @name)
     ]
 ]])
 

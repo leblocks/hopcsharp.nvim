@@ -829,7 +829,7 @@ describe('parse.query', function()
             assert(trees)
             parser:for_each_tree(function(tree, _)
                 assert(tree)
-                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                for _, node, _, _ in query.type_modifiers:iter_captures(tree:root(), content, 0, -1) do
                     local name = vim.treesitter.get_node_text(node, content, nil)
                     visited = true
                     table.insert(modifiers, name)
@@ -858,7 +858,7 @@ describe('parse.query', function()
             assert(trees)
             parser:for_each_tree(function(tree, _)
                 assert(tree)
-                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                for _, node, _, _ in query.type_modifiers:iter_captures(tree:root(), content, 0, -1) do
                     local name = vim.treesitter.get_node_text(node, content, nil)
                     visited = true
                     table.insert(modifiers, name)
@@ -887,7 +887,7 @@ describe('parse.query', function()
             assert(trees)
             parser:for_each_tree(function(tree, _)
                 assert(tree)
-                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                for _, node, _, _ in query.type_modifiers:iter_captures(tree:root(), content, 0, -1) do
                     local name = vim.treesitter.get_node_text(node, content, nil)
                     visited = true
                     table.insert(modifiers, name)
@@ -916,7 +916,7 @@ describe('parse.query', function()
             assert(trees)
             parser:for_each_tree(function(tree, _)
                 assert(tree)
-                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                for _, node, _, _ in query.type_modifiers:iter_captures(tree:root(), content, 0, -1) do
                     local name = vim.treesitter.get_node_text(node, content, nil)
                     visited = true
                     table.insert(modifiers, name)
@@ -945,7 +945,7 @@ describe('parse.query', function()
             assert(trees)
             parser:for_each_tree(function(tree, _)
                 assert(tree)
-                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                for _, node, _, _ in query.type_modifiers:iter_captures(tree:root(), content, 0, -1) do
                     local name = vim.treesitter.get_node_text(node, content, nil)
                     visited = true
                     table.insert(modifiers, name)
@@ -974,7 +974,7 @@ describe('parse.query', function()
             assert(trees)
             parser:for_each_tree(function(tree, _)
                 assert(tree)
-                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                for _, node, _, _ in query.method_modifiers:iter_captures(tree:root(), content, 0, -1) do
                     local name = vim.treesitter.get_node_text(node, content, nil)
                     visited = true
                     table.insert(modifiers, name)
@@ -1006,7 +1006,7 @@ describe('parse.query', function()
             assert(trees)
             parser:for_each_tree(function(tree, _)
                 assert(tree)
-                for _, node, _, _ in query.modifiers:iter_captures(tree:root(), content, 0, -1) do
+                for _, node, _, _ in query.method_modifiers:iter_captures(tree:root(), content, 0, -1) do
                     local name = vim.treesitter.get_node_text(node, content, nil)
                     visited = true
                     table.insert(modifiers, name)

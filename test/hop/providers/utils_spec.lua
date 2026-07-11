@@ -25,10 +25,12 @@ describe('hop.providers.utils', function()
     end)
 
     it('__get_node_modifiers - method', function()
-        test_utils.prepare('test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+        test_utils.prepare(
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
             'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
             10,
-            30)
+            9
+        )
 
         local modifiers = utils.__get_node_modifiers(vim.treesitter.get_node())
         table.sort(modifiers)
@@ -37,23 +39,102 @@ describe('hop.providers.utils', function()
         assert(modifiers[2] == 'static')
     end)
 
+    it('__get_node_modifiers - local function statement', function()
+        test_utils.prepare(
+            'test/sources/HopToReference/InternalModifier/LocalFunctionStatement.cs',
+            'test/sources/HopToReference/InternalModifier/LocalFunctionStatement.cs',
+            1,
+            28
+        )
+
+        local modifiers = utils.__get_node_modifiers(vim.treesitter.get_node())
+        table.sort(modifiers)
+        assert(#modifiers == 3)
+        assert(modifiers[1] == 'async')
+        assert(modifiers[2] == 'internal')
+        assert(modifiers[3] == 'static')
+    end)
+
     it('__get_node_modifiers - class', function()
-        -- TODO
+        test_utils.prepare(
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            3,
+            35
+        )
+
+        local modifiers = utils.__get_node_modifiers(vim.treesitter.get_node())
+        table.sort(modifiers)
+        assert(#modifiers == 3)
+        assert(modifiers[1] == 'internal')
+        assert(modifiers[2] == 'partial')
+        assert(modifiers[3] == 'static')
     end)
 
     it('__get_node_modifiers - interface', function()
-        -- TODO
+        test_utils.prepare(
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            15,
+            22
+        )
+
+        local modifiers = utils.__get_node_modifiers(vim.treesitter.get_node())
+        table.sort(modifiers)
+        assert(#modifiers == 1)
+        assert(modifiers[1] == 'public')
     end)
 
     it('__get_node_modifiers - struct', function()
-        -- TODO
+        test_utils.prepare(
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            15,
+            22
+        )
+
+        local modifiers = utils.__get_node_modifiers(vim.treesitter.get_node())
+        assert(#modifiers == 1)
+        assert(modifiers[1] == 'public')
     end)
 
     it('__get_node_modifiers - record', function()
-        -- TODO
+        test_utils.prepare(
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            30,
+            28
+        )
+
+        local modifiers = utils.__get_node_modifiers(vim.treesitter.get_node())
+        table.sort(modifiers)
+        assert(#modifiers == 2)
+        assert(modifiers[1] == 'internal')
+        assert(modifiers[2] == 'static')
+    end)
+
+    it('__get_node_modifiers - enum', function()
+        test_utils.prepare(
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            23,
+            18
+        )
+
+        local modifiers = utils.__get_node_modifiers(vim.treesitter.get_node())
+        assert(#modifiers == 1)
+        assert(modifiers[1] == 'private')
     end)
 
     it('__get_node_modifiers - empty', function()
-        -- TODO
+        test_utils.prepare(
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            'test/sources/HopToReference/InternalModifier/MethodsWithInternalModifier.cs',
+            34,
+            11
+        )
+
+        local modifiers = utils.__get_node_modifiers(vim.treesitter.get_node())
+        assert(#modifiers == 0)
     end)
 end)
