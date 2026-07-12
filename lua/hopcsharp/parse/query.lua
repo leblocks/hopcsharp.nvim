@@ -189,6 +189,7 @@ M.type_modifiers = utils.__get_query([[
     [
         (enum_declaration (modifier) @name)
         (class_declaration (modifier) @name)
+        (constructor_declaration (modifier) @name)
         (struct_declaration (modifier) @name)
         (record_declaration (modifier) @name)
         (interface_declaration (modifier) @name)

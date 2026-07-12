@@ -96,6 +96,7 @@ M.__get_node_modifiers = function(node)
         'record_declaration',
         'method_declaration',
         'interface_declaration',
+        'constructor_declaration',
         'local_function_statement',
     }
 
