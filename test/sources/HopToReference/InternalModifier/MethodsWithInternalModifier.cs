@@ -34,5 +34,24 @@ namespace This.Is.Reference.Namespace.Internal
     class JustClass
     {
     }
+
+    internal interface InternalInterface
+    {
+    }
+
+    static record NonInternalRecordMe
+    {
+    }
+
+    internal enum Enumsky
+    {
+        ONE,
+        TWO,
+        THREE,
+    }
+
+    internal static struct InternalModifierStruct
+    {
+    }
 }
 
