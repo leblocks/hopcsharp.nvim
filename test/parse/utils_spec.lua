@@ -59,4 +59,12 @@ describe('parse.utils', function()
         assert(files[5] == 'test/sources/usings/FirstExample.cs')
         assert(files[6] == 'test/sources/usings/SecondExample.cs')
     end)
+
+    it('__get_changed_files -- diff_filter applied correctly', function()
+        local commit1 = 'e04b5b38d85e4c07b41c8cb737cb6d7bd6838073'
+        local commit2 = '7515d034893f64d7151b7b13924bb1c2dbaa5c65'
+        -- filter added files out
+        local files = utils.__get_changed_files(commit1, commit2, 'a')
+        assert(#files == 0)
+    end)
 end)
