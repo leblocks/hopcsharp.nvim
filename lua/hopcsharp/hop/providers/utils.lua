@@ -123,4 +123,10 @@ M.__get_node_modifiers = function(node)
     return modifiers
 end
 
+---@param namespace string Namespace name
+---@return string[] List of outer namespaces
+M.__get_outer_namespaces = function(namespace)
+    -- TODO
+end
+
 return M
