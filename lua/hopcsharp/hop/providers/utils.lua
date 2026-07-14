@@ -1,3 +1,5 @@
+local query = require('hopcsharp.parse.query')
+local general_utils = require('hopcsharp.utils')
 local query_utils = require('hopcsharp.parse.utils')
 local database_utils = require('hopcsharp.database.utils')
 
@@ -76,6 +78,49 @@ M.__get_node_type = function(current_word, node)
     end
 
     return current_word, node_type
+end
+
+---@param node TSNode | nil Tree sitter node
+---@return string[] Type modifiers
+M.__get_node_modifiers = function(node)
+    local modifiers = {}
+
+    if node == nil then
+        return modifiers
+    end
+
+    local supported_nodes = {
+        'enum_declaration',
+        'class_declaration',
+        'struct_declaration',
+        'record_declaration',
+        'method_declaration',
+        'interface_declaration',
+        'constructor_declaration',
+        'local_function_statement',
+    }
+
+    local parent_node = node:parent()
+
+    if not general_utils.__contains(supported_nodes, parent_node:type()) then
+        return modifiers
+    end
+
+    -- check for type modifiers first
+    for _, nn, _, _ in query.type_modifiers:iter_captures(parent_node, 0, 0, -1) do
+        table.insert(modifiers, vim.treesitter.get_node_text(nn, 0, nil))
+    end
+
+    if #modifiers ~= 0 then
+        return modifiers
+    end
+
+    -- check for method modifiers first
+    for _, nn, _, _ in query.method_modifiers:iter_captures(parent_node, 0, 0, -1) do
+        table.insert(modifiers, vim.treesitter.get_node_text(nn, 0, nil))
+    end
+
+    return modifiers
 end
 
 return M

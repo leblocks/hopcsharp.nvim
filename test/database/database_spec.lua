@@ -30,7 +30,6 @@ describe('database', function()
         })
     end)
 
-    -- TODO tests for namespaces
     it('__drop_by_path - happy path', function()
         config.__set_config({ debug = true })
         utils.init_test_database()

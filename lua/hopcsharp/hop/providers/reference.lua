@@ -1,6 +1,7 @@
 local database = require('hopcsharp.database')
 local dbutils = require('hopcsharp.database.utils')
-local utils = require('hopcsharp.hop.providers.utils')
+local provider_utils = require('hopcsharp.hop.providers.utils')
+local utils = require('hopcsharp.utils')
 local query = require('hopcsharp.database.query')
 local treesitter_query = require('hopcsharp.parse.query')
 
@@ -25,19 +26,31 @@ end
 ---@param current_word string Word under cursor
 ---@param node TSNode | nil Node under cursor
 M.__by_name_and_current_namespace = function(current_word, node)
-    local name, _ = utils.__get_node_type(current_word, node)
+    local name, _ = provider_utils.__get_node_type(current_word, node)
+
+    local modifiers = {}
+
+    if node ~= nil then
+        modifiers = provider_utils.__get_node_modifiers(node)
+    end
 
     while node ~= nil and node:type() ~= 'compilation_unit' do
         node = node:parent()
     end
 
-    -- TODO make sure that definition is not internal
-    -- internal modifier skips using\namespace checks and only
-    -- checks if it is the same assembly
-
     return {
         can_handle = function()
-            return node ~= nil
+            if node == nil then
+                return false
+            end
+
+            if utils.__contains(modifiers, 'internal') then
+                -- internal modifier skips using\namespace checks and only
+                -- checks if it is the same assembly
+                return false
+            end
+
+            return true
         end,
         get_hops = function()
             if node == nil then
