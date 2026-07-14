@@ -10,7 +10,7 @@ local type_argument = require('hopcsharp.parse.type_argument')
 
 local M = {}
 
-M.__get_outdated_source_files = function()
+M.__get_changed_source_files = function(diff_filter)
     local last_commit = history.__get_last_parsed_commit()
 
     -- no history, get all files
@@ -19,7 +19,7 @@ M.__get_outdated_source_files = function()
     end
 
     -- get only changed ones
-    return utils.__get_changed_files(last_commit, '.')
+    return utils.__get_changed_files(last_commit, '.', diff_filter)
 end
 
 M.__get_source_files = function()

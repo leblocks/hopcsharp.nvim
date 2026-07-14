@@ -37,16 +37,23 @@ M.__get_commit_hash = function()
     return nil
 end
 
-M.__get_changed_files = function(start_commit, end_commit)
-    debug.__log_debug(
-        'vim.system git diff --name-only ' .. start_commit .. ' ' .. end_commit .. ' in ' .. vim.fn.getcwd()
-    )
+M.__get_changed_files = function(start_commit, end_commit, diff_filter)
 
-    local result = vim.system(
-        { 'git', 'diff', '--name-only', start_commit, end_commit },
-        { text = true, cwd = vim.fn.getcwd() }
-    )
-        :wait()
+    local arguments = {
+        'git',
+        'diff',
+        '--name-only',
+        start_commit,
+        end_commit,
+    }
+
+    if diff_filter then
+        table.insert(arguments, '--diff-filter=' .. diff_filter)
+    end
+
+    debug.__log_debug('__get_changed_files ' .. vim.inspect(arguments))
+
+    local result = vim.system(arguments, { text = true, cwd = vim.fn.getcwd() }):wait()
 
     debug.__log_debug(vim.inspect(result))
 

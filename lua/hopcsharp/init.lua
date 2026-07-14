@@ -23,10 +23,13 @@ M.__init_database = function(incremental_parsing)
     local files
 
     if incremental_parsing then
-        files = parse.__get_outdated_source_files()
+        local changed_files = parse.__get_changed_source_files()
+        database.__drop_by_path(changed_files)
+
+        -- 'd' filter out files that were deleted
+        -- so we won't try to reparse those
+        files = parse.__get_changed_source_files('d')
         debug.__log_debug('incremental parsing found ' .. #files .. ' files to process')
-        -- drop by files
-        database.__drop_by_path(files)
     else
         files = parse.__get_source_files()
         debug.__log_debug('full parsing found ' .. #files .. ' files to process')
