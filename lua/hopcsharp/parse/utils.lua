@@ -38,7 +38,6 @@ M.__get_commit_hash = function()
 end
 
 M.__get_changed_files = function(start_commit, end_commit, diff_filter)
-
     local arguments = {
         'git',
         'diff',
