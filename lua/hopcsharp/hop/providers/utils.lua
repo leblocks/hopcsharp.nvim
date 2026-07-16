@@ -137,7 +137,7 @@ M.__get_outer_namespaces = function(namespace)
     end
 
     local parts = {}
-    for part in string.gmatch(namespace, "([^%.]+)") do
+    for part in string.gmatch(namespace, '([^%.]+)') do
         table.insert(parts, part)
     end
 

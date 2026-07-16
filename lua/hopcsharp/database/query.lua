@@ -273,12 +273,18 @@ M.get_reference_by_name_and_current_namespace = function(name, namespaces)
         WHERE (r.name = '%s' OR r.name GLOB '%s' OR r.name || 'Attribute' = '%s')
             -- or we have using with that namespace
             -- or we are in the same namespace
-            AND ((u.namespace IN (%s)) OR (n.name IN (%s)))
+            -- or there are references in a nested namespaces
+            AND ((u.namespace IN (%s)) OR (n.name IN (%s)) OR (n.name GLOB %s))
         ORDER BY
             r.name ASC,
             n.name ASC,
             f.path ASC
     ]]
+
+    -- TODO check if GLOB didn't introduce table scan
+    -- TODO cover in tests
+    -- TODO comment and explain why we are doing it
+    local namespace_glob = "'" .. namespaces[1] .. "*'"
 
     for i, namespace in ipairs(namespaces) do
         namespaces[i] = '"' .. namespace .. '"'
@@ -286,7 +292,7 @@ M.get_reference_by_name_and_current_namespace = function(name, namespaces)
 
     local namespace_string = table.concat(namespaces, ',')
 
-    return string.format(query, name, name .. '<*>', name, namespace_string, namespace_string)
+    return string.format(query, name, name .. '<*>', name, namespace_string, namespace_string, namespace_glob)
 end
 
 M.get_reference_by_name_and_type = function(name, type)
