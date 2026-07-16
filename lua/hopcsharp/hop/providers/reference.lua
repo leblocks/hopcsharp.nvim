@@ -63,7 +63,7 @@ M.__by_name_and_current_namespace = function(current_word, node)
             end
 
             local db = database.__get_db()
-            return db:eval(query.get_reference_by_name_and_current_namespace(name, namespace))
+            return db:eval(query.get_reference_by_name_and_current_namespace(name, namespace)), dbutils.get_reference_type_name
         end,
     }
 end

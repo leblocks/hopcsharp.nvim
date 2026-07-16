@@ -126,7 +126,32 @@ end
 ---@param namespace string Namespace name
 ---@return string[] List of outer namespaces
 M.__get_outer_namespaces = function(namespace)
-    -- TODO
+    local namespaces = {}
+
+    if namespace == nil then
+        return namespaces
+    end
+
+    if namespace == '' then
+        return namespaces
+    end
+
+    local parts = {}
+    for part in string.gmatch(namespace, "([^%.]+)") do
+        table.insert(parts, part)
+    end
+
+    local i = 1
+    while i < #parts do
+        local n = {}
+        for j = 1, i, 1 do
+            table.insert(n, parts[j])
+        end
+        i = i + 1
+        table.insert(namespaces, table.concat(n, '.'))
+    end
+
+    return namespaces
 end
 
 return M
