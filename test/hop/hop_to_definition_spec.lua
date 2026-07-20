@@ -229,4 +229,14 @@ describe('hop_to_definition', function()
 
         assert(called)
     end)
+
+    it('__hop_to_definition hops correctly This.Is.Nested.Namespace namespace to This.Is.Nested namespace', function()
+        -- TODO
+        assert(false)
+    end)
+
+    it('__hop_to_definition hops correctly This.Is.Nested.Namespace namespace to This.Is namespace', function()
+        -- TODO
+        assert(false)
+    end)
 end)

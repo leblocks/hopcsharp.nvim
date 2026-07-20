@@ -91,7 +91,6 @@ M.__by_name_type_and_current_namespace = function(current_word, node)
                 table.insert(namespace, vim.treesitter.get_node_text(nn, 0, nil))
             end
 
-            -- TODO cover in tests to make sure it is needed
             -- insert outer namespace that are not included by usings
             -- because namespace has access to all types defined in outer namespaces
             for _, n in ipairs(utils.__get_outer_namespaces(namespace[1] or '')) do
