@@ -281,9 +281,8 @@ M.get_reference_by_name_and_current_namespace = function(name, namespaces)
             f.path ASC
     ]]
 
-    -- TODO check if GLOB didn't introduce table scan
     -- namespace 'starts with' GLOB to check nested namespaces
-    local nested_namespaces_glob = "'" .. namespaces[1] .. "*'"
+    local nested_namespaces_glob = "'" .. namespaces[1] .. ".*'"
 
     for i, namespace in ipairs(namespaces) do
         namespaces[i] = '"' .. namespace .. '"'
