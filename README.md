@@ -101,10 +101,23 @@ defaults. See `:h hopcsharp.setup` for more details.
 ### init_database
 
 ```lua
-require('hopcsharp').init_database()
+require('hopcsharp').init_database(incremental_parsing)
 ```
 This function launches the database initialization process in a separate headless Neovim instance to avoid blocking the
 current session.
+
+`incremental_parsing` is optional:
+
+- `false` or omitted: rebuilds the database from scratch
+- `true`: reindexes only files changed since the last parsed git commit, and falls back to a full scan when no parse
+  history exists yet
+
+Example:
+
+```lua
+require('hopcsharp').init_database()
+require('hopcsharp').init_database(true)
+```
 
 ### hop_to_definition
 
@@ -168,4 +181,3 @@ All pickers are available via `require('hopcsharp.pickers.fzf')`:
 | `attribute_definitions` | Browse attribute definitions |
 
 See `:h hopcsharp-fzf-pickers` for more details.
-
