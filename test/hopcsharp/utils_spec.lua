@@ -87,6 +87,9 @@ describe('utils', function()
         end)
 
         assert(not called)
+
+        -- restore global value
+        vim.g.hopcsharp_processing = false
     end)
 
     it('__block_on_processing - returns result', function()
