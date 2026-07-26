@@ -87,6 +87,9 @@ describe('utils', function()
         end)
 
         assert(not called)
+
+        -- restore global value
+        vim.g.hopcsharp_processing = false
     end)
 
     it('__block_on_processing - returns result', function()
@@ -103,7 +106,7 @@ describe('utils', function()
 
     it('__scheduled_iteration - empty table', function()
         local called = false
-        utils.__scheduled_iteration({}, function(i, item, items)
+        utils.__scheduled_iteration({}, function(_, _, _)
             called = true
         end)
         assert(not called)
@@ -111,15 +114,7 @@ describe('utils', function()
 
     it('__scheduled_iteration - nil', function()
         local called = false
-        utils.__scheduled_iteration(nil, function(i, item, items)
-            called = true
-        end)
-        assert(not called)
-    end)
-
-    it('__scheduled_iteration - dictionary', function()
-        local called = false
-        utils.__scheduled_iteration({}, function(i, item, items)
+        utils.__scheduled_iteration(nil, function(_, _, _)
             called = true
         end)
         assert(not called)
@@ -133,9 +128,20 @@ describe('utils', function()
             'test3',
         }
 
+        local call_count = 0
+
         utils.__scheduled_iteration(entries, function(i, item, items)
             assert(items[i] == item)
+            assert(entries[i] == item)
+            assert(#items == #entries)
+            call_count = call_count + 1
         end)
+
+        vim.wait(1000, function()
+            return call_count == #entries
+        end)
+
+        assert(call_count == #entries)
     end)
 
     it('__escape_ansi - escapes correctly', function()
