@@ -1,6 +1,5 @@
 local hop = require('hopcsharp.hop')
 local utils = require('test.utils')
-local config = require('hopcsharp.config')
 
 describe('hop_to_reference', function()
     it('__hop_to_reference hops correctly', function()
@@ -99,7 +98,6 @@ describe('hop_to_reference', function()
     end)
 
     it('__hop_to_reference hops correctly considering used namespaces - 2 (file is in the same namespace)', function()
-        config.__set_config({ debug = true })
         local files_to_parse = {
             'test/sources/HopToReference/ByNameAndCurrentNamespace/Definition1.cs',
             'test/sources/HopToReference/ByNameAndCurrentNamespace/Definition2.cs',
@@ -121,4 +119,76 @@ describe('hop_to_reference', function()
         assert(position[2] == 8)
         assert(position[3] == 25)
     end)
+
+    it('__hop_to_reference hops correctly to references in nested namespaces - (Outer to Middle)', function()
+        local files_to_parse = {
+            'test/sources/HopToReference/NestedNamespaces/Outer/Outer.cs',
+            'test/sources/HopToReference/NestedNamespaces/AnotherOuter/AnotherOuter.cs',
+            'test/sources/HopToReference/NestedNamespaces/AnotherOuter/Middle/Middle.cs',
+            'test/sources/HopToReference/NestedNamespaces/Outer/Middle/Middle.cs',
+            'test/sources/HopToReference/NestedNamespaces/Outer/Middle/Nested/Nested.cs',
+        }
+
+        utils.prepare_multiple(files_to_parse, files_to_parse[1], 4, 18)
+
+        -- must find reference from Outer to Middle and from Outer to Nested
+        hop.__hop_to_reference({ jump_on_quickfix = true })
+
+        local buf = vim.api.nvim_get_current_buf()
+        local name = vim.fs.normalize(vim.api.nvim_buf_get_name(buf))
+
+        assert(name:find('test/sources/HopToReference/NestedNamespaces/Outer/Middle/Middle.cs$') ~= nil)
+        local position = vim.fn.getcursorcharpos(0)
+        assert(position[2] == 8)
+        assert(position[3] == 39)
+    end)
+
+    it('__hop_to_reference hops correctly to references in nested namespaces - (Middle to Nested)', function()
+        local files_to_parse = {
+            'test/sources/HopToReference/NestedNamespaces/Outer/Outer.cs',
+            'test/sources/HopToReference/NestedNamespaces/AnotherOuter/AnotherOuter.cs',
+            'test/sources/HopToReference/NestedNamespaces/AnotherOuter/Middle/Middle.cs',
+            'test/sources/HopToReference/NestedNamespaces/Outer/Middle/Middle.cs',
+            'test/sources/HopToReference/NestedNamespaces/Outer/Middle/Nested/Nested.cs',
+        }
+
+        utils.prepare_multiple(files_to_parse, files_to_parse[3], 12, 18)
+
+        -- must find reference from Outer to Middle and from Outer to Nested
+        hop.__hop_to_reference({ jump_on_quickfix = true })
+
+        local buf = vim.api.nvim_get_current_buf()
+        local name = vim.fs.normalize(vim.api.nvim_buf_get_name(buf))
+
+        assert(name:find('test/sources/HopToReference/NestedNamespaces/Outer/Middle/Nested/Nested.cs$') ~= nil)
+        local position = vim.fn.getcursorcharpos(0)
+        assert(position[2] == 8)
+        assert(position[3] == 40)
+    end)
+
+    it(
+        '__hop_to_reference hops correctly to references in nested namespaces - (AnotherOuter to AnotherOuter.Middle)',
+        function()
+            local files_to_parse = {
+                'test/sources/HopToReference/NestedNamespaces/Outer/Outer.cs',
+                'test/sources/HopToReference/NestedNamespaces/AnotherOuter/AnotherOuter.cs',
+                'test/sources/HopToReference/NestedNamespaces/AnotherOuter/Middle/Middle.cs',
+                'test/sources/HopToReference/NestedNamespaces/Outer/Middle/Middle.cs',
+                'test/sources/HopToReference/NestedNamespaces/Outer/Middle/Nested/Nested.cs',
+            }
+
+            utils.prepare_multiple(files_to_parse, files_to_parse[2], 4, 18)
+
+            -- must find reference from Outer to Middle and from Outer to Nested
+            hop.__hop_to_reference({ jump_on_quickfix = true })
+
+            local buf = vim.api.nvim_get_current_buf()
+            local name = vim.fs.normalize(vim.api.nvim_buf_get_name(buf))
+
+            assert(name:find('test/sources/HopToReference/NestedNamespaces/AnotherOuter/Middle/Middle.cs$') ~= nil)
+            local position = vim.fn.getcursorcharpos(0)
+            assert(position[2] == 8)
+            assert(position[3] == 39)
+        end
+    )
 end)

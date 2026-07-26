@@ -229,4 +229,61 @@ describe('hop_to_definition', function()
 
         assert(called)
     end)
+
+    it(
+        '__hop_to_definition hops correctly from This.Is.Nested.Namespace namespace to This.Is.Nested namespace',
+        function()
+            local files_to_parse = {
+                'test/sources/HopToDefinitionByNestedNamespace/This/Is/Nested2/File.cs',
+                'test/sources/HopToDefinitionByNestedNamespace/This/Is/Nested/File.cs',
+                'test/sources/HopToDefinitionByNestedNamespace/This/Is/Nested/Namespace/File.cs',
+            }
+
+            utils.prepare_multiple(files_to_parse, files_to_parse[3], 8, 28)
+
+            local called = false
+
+            hop.__hop_to_definition({
+                callback = function(definitions)
+                    called = true
+                    assert(#definitions == 1)
+                    assert(definitions[1].name == 'ClassDefinitionFromParentNamespace')
+                    assert(definitions[1].namespace == 'This.Is.Nested')
+                    assert(definitions[1].row == 10)
+                    assert(definitions[1].column == 17)
+                    assert(definitions[1].type == databaseutils.types.CLASS)
+                end,
+            })
+
+            assert(called)
+        end
+    )
+
+    it('__hop_to_definition hops correctly from This.Is.Nested.Namespace namespace to This.Is namespace', function()
+        local files_to_parse = {
+            'test/sources/HopToDefinitionByNestedNamespace/This/Is/File.cs',
+            'test/sources/HopToDefinitionByNestedNamespace/This/Is2/File.cs',
+            'test/sources/HopToDefinitionByNestedNamespace/This/Is/Nested2/File.cs',
+            'test/sources/HopToDefinitionByNestedNamespace/This/Is/Nested/File.cs',
+            'test/sources/HopToDefinitionByNestedNamespace/This/Is/Nested/Namespace/File.cs',
+        }
+
+        utils.prepare_multiple(files_to_parse, files_to_parse[5], 9, 29)
+
+        local called = false
+
+        hop.__hop_to_definition({
+            callback = function(definitions)
+                called = true
+                assert(#definitions == 1)
+                assert(definitions[1].name == 'ClassDefinitionFromGrandParentNamespace')
+                assert(definitions[1].namespace == 'This.Is')
+                assert(definitions[1].row == 10)
+                assert(definitions[1].column == 17)
+                assert(definitions[1].type == databaseutils.types.CLASS)
+            end,
+        })
+
+        assert(called)
+    end)
 end)

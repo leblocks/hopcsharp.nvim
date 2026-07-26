@@ -85,7 +85,7 @@ M.__hop_to = function(hop_providers, config_override)
 
                 -- immediate jump if there is only one case
                 if #filtered_items == 1 then
-                    log_hop_to(i, 'immediate jump insteaf of quickfix')
+                    log_hop_to(i, 'immediate jump instead of quickfix')
                     hop_utils.__hop(filtered_items[1].path, filtered_items[1].row + 1, filtered_items[1].column)
                     return
                 end
