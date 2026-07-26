@@ -3,7 +3,7 @@ local parse_utils = require('hopcsharp.parse.utils')
 
 local wait_for_parsing = function()
     vim.wait(5000, function()
-        return (not vim.g.hopcsharp_processing)
+        return not vim.g.hopcsharp_processing
     end)
 end
 
