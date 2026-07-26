@@ -1,6 +1,17 @@
 local database = require('hopcsharp.database')
 local parse_utils = require('hopcsharp.parse.utils')
 
+local wait_for_parsing = function()
+    vim.wait(5000, function()
+        return (not vim.g.hopcsharp_processing)
+    end)
+end
+
+local init_database = function()
+    require('hopcsharp').__init_database()
+    wait_for_parsing()
+end
+
 describe('hopcsharp', function()
     it('can require hopcsharp', function()
         require('hopcsharp')
@@ -9,7 +20,7 @@ describe('hopcsharp', function()
     it('__init_database adds parse history', function()
         local db = database.__get_db()
         db:eval([[ DELETE FROM parse_history ]])
-        require('hopcsharp').__init_database()
+        init_database()
         local commit = parse_utils.__get_commit_hash()
         local history = db:eval([[ SELECT * FROM parse_history ]])
         assert(#history == 1)
@@ -19,10 +30,12 @@ describe('hopcsharp', function()
 
     it('__init_database - incremental_parsing true can be called', function()
         require('hopcsharp').__init_database(true)
+        wait_for_parsing()
     end)
 
     it('__init_database - incremental_parsing false can be called', function()
         require('hopcsharp').__init_database(false)
+        wait_for_parsing()
     end)
 
     it('__init_database - incremental_parsing true - does not drop history', function()
@@ -30,6 +43,7 @@ describe('hopcsharp', function()
         db:eval([[ DELETE FROM parse_history ]])
         require('hopcsharp').__init_database()
         require('hopcsharp').__init_database(true)
+        wait_for_parsing()
         local history = db:eval([[ SELECT * FROM parse_history ]])
         assert(#history == 2)
         assert(history[1].id == 1)
