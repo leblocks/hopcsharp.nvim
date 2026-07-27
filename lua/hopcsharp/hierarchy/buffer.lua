@@ -5,6 +5,10 @@ local M = {}
 
 local prefix = '   '
 
+local wrap_word_match = function(word)
+    return '\\<' .. word .. '\\>'
+end
+
 M.__get_hierarchy_buffer_name = function(type_name)
     return 'hopcsharp://hierarchy/' .. type_name
 end
@@ -23,9 +27,9 @@ M.__create_hierarchy_buffer = function(type_name, tree_root)
 
         vim.api.nvim_create_autocmd('BufWinEnter', {
             callback = function()
-                vim.fn.matchadd('@lsp.type.enum', type_name)
+                vim.fn.matchadd('@lsp.type.enum', wrap_word_match(type_name))
                 for _, leaf_node in ipairs(leaf_nodes) do
-                    vim.fn.matchadd('@lsp.type.enumMember', leaf_node)
+                    vim.fn.matchadd('@lsp.type.enumMember', wrap_word_match(leaf_node))
                 end
             end,
             buffer = buf,
