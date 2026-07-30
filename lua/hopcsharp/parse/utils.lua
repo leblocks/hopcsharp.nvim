@@ -40,15 +40,17 @@ end
 M.__get_changed_files = function(start_commit, end_commit, diff_filter)
     local arguments = {
         'git',
+        '--no-pager',
         'diff',
         '--name-only',
-        start_commit,
-        end_commit,
     }
 
     if diff_filter then
         table.insert(arguments, '--diff-filter=' .. diff_filter)
     end
+
+    table.insert(arguments, start_commit)
+    table.insert(arguments, end_commit)
 
     debug.__log_debug('__get_changed_files ' .. vim.inspect(arguments))
 
