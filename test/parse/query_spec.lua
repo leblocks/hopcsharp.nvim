@@ -161,6 +161,58 @@ describe('parse.query', function()
         assert(visited_count == 2)
     end)
 
+    it('declaration identifier - property', function()
+        local content = [[
+            namespace My.Test.Namespace;
+            public class Class1 {
+                public int Property { get; set; }
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.declaration_identifier:iter_captures(tree:root(), content, 0, -1) do
+                    if node:parent():type() == 'property_declaration' then
+                        local name = vim.treesitter.get_node_text(node, content, nil)
+                        visited = true
+                        assert(name == 'Property')
+                    end
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
+    it('declaration identifier - field', function()
+        local content = [[
+            namespace My.Test.Namespace;
+            public class Class1 {
+                private int m_DeclaredField;
+            }
+        ]]
+
+        local visited = false
+        local parser = assert(vim.treesitter.get_string_parser(content, 'c_sharp', { error = false }))
+        parser:parse(false, function(_, trees)
+            assert(trees)
+            parser:for_each_tree(function(tree, _)
+                assert(tree)
+                for _, node, _, _ in query.declaration_identifier:iter_captures(tree:root(), content, 0, -1) do
+                    if node:parent():type() == 'variable_declarator' then
+                        local name = vim.treesitter.get_node_text(node, content, nil)
+                        visited = true
+                        assert(name == 'm_DeclaredField')
+                    end
+                end
+            end)
+        end)
+        assert(visited)
+    end)
+
     it('base identifier', function()
         local content = [[
             namespace My.Test.Namespace;

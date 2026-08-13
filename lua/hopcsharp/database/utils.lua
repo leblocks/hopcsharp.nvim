@@ -29,6 +29,8 @@ M.types = {
     ENUM = 5,
     METHOD = 6,
     CONSTRUCTOR = 7,
+    FIELD = 8,
+    PROPERTY = 9,
 }
 
 M.reference_types = {
@@ -68,6 +70,14 @@ M.get_type_name = function(type)
 
     if type == M.types.CONSTRUCTOR then
         return 'constructor'
+    end
+
+    if type == M.types.FIELD then
+        return 'field'
+    end
+
+    if type == M.types.PROPERTY then
+        return 'property'
     end
 end
 
