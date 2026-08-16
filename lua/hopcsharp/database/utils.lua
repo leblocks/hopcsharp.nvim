@@ -41,6 +41,7 @@ M.reference_types = {
     TYPE_ARGUMENT = 5,
     TYPEOF_EXPRESSION = 6,
     PARAMETER = 7,
+    MEMBER_ACCESS = 8,
 }
 
 M.get_type_name = function(type)
@@ -108,6 +109,10 @@ M.get_reference_type_name = function(type)
 
     if type == M.reference_types.PARAMETER then
         return 'parameter'
+    end
+
+    if type == M.reference_types.MEMBER_ACCESS then
+        return 'member'
     end
 end
 

@@ -30,9 +30,10 @@ M.reference = utils.__get_query([[
       (invocation_expression function: [
         (identifier) @name
         (generic_name (identifier) @name)
-        (member_access_expression name: (identifier) @name)
-        (member_access_expression name: (generic_name (identifier) @name))
       ])
+
+      (member_access_expression name: (identifier) @name)
+      (member_access_expression name: (generic_name (identifier) @name))
 
       (variable_declaration type: [
             (identifier) @name
