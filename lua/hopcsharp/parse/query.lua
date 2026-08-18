@@ -11,6 +11,8 @@ M.declaration_identifier = utils.__get_query([[
         (method_declaration name: (identifier) @name)
         (interface_declaration name: (identifier) @name)
         (constructor_declaration name: (identifier) @name)
+        (property_declaration name: (identifier) @name)
+        (field_declaration (variable_declaration (variable_declarator name: (identifier) @name)))
     ]
 ]])
 
@@ -28,9 +30,10 @@ M.reference = utils.__get_query([[
       (invocation_expression function: [
         (identifier) @name
         (generic_name (identifier) @name)
-        (member_access_expression name: (identifier) @name)
-        (member_access_expression name: (generic_name (identifier) @name))
       ])
+
+      (member_access_expression name: (identifier) @name)
+      (member_access_expression name: (generic_name (identifier) @name))
 
       (variable_declaration type: [
             (identifier) @name
