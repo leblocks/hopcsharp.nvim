@@ -29,8 +29,6 @@ M.types = {
     ENUM = 5,
     METHOD = 6,
     CONSTRUCTOR = 7,
-    FIELD = 8,
-    PROPERTY = 9,
 }
 
 M.reference_types = {
@@ -41,7 +39,6 @@ M.reference_types = {
     TYPE_ARGUMENT = 5,
     TYPEOF_EXPRESSION = 6,
     PARAMETER = 7,
-    MEMBER_ACCESS = 8,
 }
 
 M.get_type_name = function(type)
@@ -72,14 +69,6 @@ M.get_type_name = function(type)
     if type == M.types.CONSTRUCTOR then
         return 'constructor'
     end
-
-    if type == M.types.FIELD then
-        return 'field'
-    end
-
-    if type == M.types.PROPERTY then
-        return 'property'
-    end
 end
 
 M.get_reference_type_name = function(type)
@@ -109,10 +98,6 @@ M.get_reference_type_name = function(type)
 
     if type == M.reference_types.PARAMETER then
         return 'parameter'
-    end
-
-    if type == M.reference_types.MEMBER_ACCESS then
-        return 'member'
     end
 end
 

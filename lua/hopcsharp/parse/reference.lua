@@ -15,7 +15,7 @@ M.__parse_reference = function(tree, path_id, namespace_id, file_content, writer
 
         -- should not be a problem with nulls
         -- those nodes are always inside other nodes
-        if parent_node_type == 'generic_name' then
+        if parent_node_type == 'generic_name' or parent_node_type == 'member_access_expression' then
             parent_node_type = node:parent():parent():type()
         end
 
@@ -28,7 +28,9 @@ M.__parse_reference = function(tree, path_id, namespace_id, file_content, writer
         elseif parent_node_type == 'invocation_expression' then
             type = dbutils.reference_types.METHOD_INVOCATION
         elseif parent_node_type == 'member_access_expression' then
-            type = dbutils.reference_types.MEMBER_ACCESS
+            -- in context of a query that is being used,
+            -- it must be a method invocation
+            type = dbutils.reference_types.METHOD_INVOCATION
         elseif parent_node_type == 'attribute' then
             type = dbutils.reference_types.ATTRIBUTE
         elseif parent_node_type == 'variable_declaration' then

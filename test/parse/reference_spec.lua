@@ -69,14 +69,14 @@ describe('parse.reference', function()
                 assert(row.namespace == 'This.Is.Reference.Namespace')
             end
 
-            -- method Run (member accessed)
-            rows = db:eval(query.get_reference_by_name_and_type('Run', utils.reference_types.MEMBER_ACCESS))
+            -- method Run
+            rows = db:eval(query.get_reference_by_name_and_type('Run', utils.reference_types.METHOD_INVOCATION))
 
             assert(#rows == 2)
             for _, row in ipairs(rows) do
                 assert(row.name == 'Run')
                 assert(row.path:match('test/sources/hop_to_reference.cs$'))
-                assert(row.type == utils.reference_types.MEMBER_ACCESS)
+                assert(row.type == utils.reference_types.METHOD_INVOCATION)
                 assert(row.namespace == 'This.Is.Reference.Namespace')
             end
 

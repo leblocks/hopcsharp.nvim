@@ -36,11 +36,6 @@ M.__parse_definitions = function(tree, path_id, namespace_id, file_content, writ
             type = dbutils.types.INTERFACE
         elseif parent_node_type == 'constructor_declaration' then
             type = dbutils.types.CONSTRUCTOR
-        elseif parent_node_type == 'variable_declarator' then
-            -- see query for field_declaration
-            type = dbutils.types.FIELD
-        elseif parent_node_type == 'property_declaration' then
-            type = dbutils.types.PROPERTY
         end
 
         local row, column, _, _ = node:range()
