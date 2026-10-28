@@ -30,6 +30,20 @@ describe('database', function()
         })
     end)
 
+    it('__drop_by_path - load test should success', function()
+        utils.init_test_database()
+
+        local paths = {}
+
+        for i = 1, 1000, 1 do
+            table.insert(paths, vim.fs.normalize('meow//woof' .. i))
+        end
+
+        database.__drop_by_path(paths)
+
+    end)
+
+
     it('__drop_by_path - happy path', function()
         config.__set_config({ debug = true })
         utils.init_test_database()
