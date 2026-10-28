@@ -15,52 +15,23 @@ for contributing to the project.
 
 ## Running Tests
 
-### Using Make
+### Using just
 
-If you have `make` installed, you can use the provided Makefile:
+Install [just](https://github.com/casey/just), then use the recipes in the `justfile`:
 
 1. **Prepare the test environment** (downloads dependencies):
    ```bash
-   make prepare
+   just prepare
    ```
 
 2. **Run tests**:
    ```bash
-   make test
+   just test
    ```
 
 3. **Run linter**:
    ```bash
-   make lint
-   ```
-
-### Without Make
-
-If you don't have `make` installed, you can run the commands manually:
-
-1. **Prepare the test environment**:
-   ```bash
-   # Clone test dependencies
-   git clone --depth 1 https://github.com/nvim-lua/plenary.nvim .ci/vendor/pack/vendor/start/plenary.nvim
-   git clone --depth 1 https://github.com/kkharji/sqlite.lua .ci/vendor/pack/vendor/start/sqlite.nvim
-   git clone --depth 1 https://github.com/nvim-treesitter/nvim-treesitter .ci/vendor/pack/vendor/start/nvim-treesitter.nvim
-   ```
-
-2. **Run tests**:
-   ```bash
-   # in a folder
-   nvim --headless --clean -u scripts/minimal_init.lua -c "PlenaryBustedDirectory test/ { minimal_init = 'scripts/minimal_init.lua', sequential = true }"
-   ```
-
-   ```bash
-   # in a file
-   nvim --headless --clean -u scripts/minimal_init.lua -c "PlenaryBustedFile test/parse/definition_spec.lua"
-   ```
-
-3. **Run linter** (requires luacheck):
-   ```bash
-   luacheck lua/hopcsharp
-   luacheck test
+   just lint
    ```
 
 ## Code Style
