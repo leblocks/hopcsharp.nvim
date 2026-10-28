@@ -33,6 +33,6 @@ lint-stylua:
     stylua --color always --check test
 
 lint-luacheck:
-    luacheck lua/treetags
+    luacheck lua/hopcsharp
     luacheck test
 
