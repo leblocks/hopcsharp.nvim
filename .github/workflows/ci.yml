@@ -27,14 +27,18 @@ jobs:
           neovim: true
           version: ${{ matrix.rev }}
 
+      - uses: extractions/setup-just@v4
+        with:
+          just-version: '1.59.0'
+
       - name: Prepare
         run: |
           ${{ matrix.install-fd }}
           fd --version
-          make prepare
+          just prepare
 
       - name: Run tests
         run: |
           nvim --version
-          make test
+          just test
 
