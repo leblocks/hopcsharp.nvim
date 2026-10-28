@@ -20,7 +20,7 @@ jobs:
           sudo luarocks install luacheck
 
       - name: Lint
-        run: sudo just lint
+        run: sudo just lint-luacheck
 
   stylua:
     name: stylua
