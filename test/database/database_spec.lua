@@ -34,11 +34,10 @@ describe('database', function()
         config.__set_config({ debug = true })
         utils.init_test_database()
 
-        local path = vim.fs.normalize('test\\sources\\get_type_hierarchy.cs')
+        local path = vim.fs.normalize('test//sources//get_type_hierarchy.cs')
         local db = database.__get_db()
 
         local file = db:select('files', { where = { path = path } })
-
         database.__drop_by_path(path)
         local count = db:eval([[SELECT COUNT(1) FROM files WHERE id = :id ]], { id = file[1].id })
         assert(count[1]['COUNT(1)'] == 0)
