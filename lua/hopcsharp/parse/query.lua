@@ -11,6 +11,8 @@ M.declaration_identifier = utils.__get_query([[
         (method_declaration name: (identifier) @name)
         (interface_declaration name: (identifier) @name)
         (constructor_declaration name: (identifier) @name)
+        (property_declaration name: (identifier) @name)
+        (field_declaration (variable_declaration (variable_declarator name: (identifier) @name)))
     ]
 ]])
 
