@@ -24,7 +24,11 @@ M.__init_database = function(incremental_parsing)
 
     if incremental_parsing then
         local changed_files = parse.__get_changed_source_files()
-        database.__drop_by_path(changed_files)
+
+        for _, path in ipairs(changed_files) do
+            debug.__log_debug('dropping ' .. path)
+            database.__drop_by_path(path)
+        end
 
         -- 'd' filter out files that were deleted
         -- so we won't try to reparse those

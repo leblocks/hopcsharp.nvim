@@ -34,34 +34,27 @@ describe('database', function()
         config.__set_config({ debug = true })
         utils.init_test_database()
 
-        local paths = {
-            vim.fs.normalize('test\\sources\\get_type_hierarchy.cs'),
-            vim.fs.normalize('test\\sources\\hop_to_definition.cs'),
-        }
-
+        local path = vim.fs.normalize('test//sources//get_type_hierarchy.cs')
         local db = database.__get_db()
 
-        local files = db:select('files', { where = { path = paths } })
+        local file = db:select('files', { where = { path = path } })
+        database.__drop_by_path(path)
+        local count = db:eval([[SELECT COUNT(1) FROM files WHERE id = :id ]], { id = file[1].id })
+        assert(count[1]['COUNT(1)'] == 0)
 
-        database.__drop_by_path(paths)
-        for _, file in ipairs(files) do
-            local count = db:eval([[SELECT COUNT(1) FROM files WHERE id = :id ]], { id = file.id })
-            assert(count[1]['COUNT(1)'] == 0)
+        count = db:eval([[SELECT COUNT(1) FROM namespaces WHERE path_id = :id ]], { id = file[1].id })
+        assert(count[1]['COUNT(1)'] == 0)
 
-            count = db:eval([[SELECT COUNT(1) FROM namespaces WHERE path_id = :id ]], { id = file.id })
-            assert(count[1]['COUNT(1)'] == 0)
+        count = db:eval([[SELECT COUNT(1) FROM usings WHERE path_id = :id ]], { id = file[1].id })
+        assert(count[1]['COUNT(1)'] == 0)
 
-            count = db:eval([[SELECT COUNT(1) FROM usings WHERE path_id = :id ]], { id = file.id })
-            assert(count[1]['COUNT(1)'] == 0)
+        count = db:eval([[SELECT COUNT(1) FROM reference WHERE path_id = :id ]], { id = file[1].id })
+        assert(count[1]['COUNT(1)'] == 0)
 
-            count = db:eval([[SELECT COUNT(1) FROM reference WHERE path_id = :id ]], { id = file.id })
-            assert(count[1]['COUNT(1)'] == 0)
+        count = db:eval([[SELECT COUNT(1) FROM inheritance WHERE path_id = :id ]], { id = file[1].id })
+        assert(count[1]['COUNT(1)'] == 0)
 
-            count = db:eval([[SELECT COUNT(1) FROM inheritance WHERE path_id = :id ]], { id = file.id })
-            assert(count[1]['COUNT(1)'] == 0)
-
-            count = db:eval([[SELECT COUNT(1) FROM definitions WHERE path_id = :id ]], { id = file.id })
-            assert(count[1]['COUNT(1)'] == 0)
-        end
+        count = db:eval([[SELECT COUNT(1) FROM definitions WHERE path_id = :id ]], { id = file[1].id })
+        assert(count[1]['COUNT(1)'] == 0)
     end)
 end)
